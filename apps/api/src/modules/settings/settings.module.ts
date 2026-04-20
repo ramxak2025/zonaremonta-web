@@ -71,7 +71,12 @@ class SettingsController {
    */
   private validatePublicKey(key: string, value: unknown): void {
     if (!(PUBLIC_KEYS as string[]).includes(key)) return;
-    const fieldSchema = (publicSettingsSchema.shape as Record<string, { safeParse: (v: unknown) => { success: boolean } }>)[key];
+    const shape = publicSettingsSchema.shape as Record<
+      string,
+      { safeParse: (v: unknown) => { success: boolean } } | undefined
+    >;
+    const fieldSchema = shape[key];
+    if (!fieldSchema) return;
     const result = fieldSchema.safeParse(value);
     if (!result.success) {
       throw new BadRequestException(`Невалидное значение для "${key}"`);

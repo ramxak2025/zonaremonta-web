@@ -28,7 +28,7 @@ export class TokenService {
   signAccess(payload: JwtPayload): string {
     return this.jwt.sign(payload, {
       secret: this.accessSecret,
-      expiresIn: process.env.JWT_ACCESS_TTL ?? '15m',
+      expiresIn: parseTtlSeconds(process.env.JWT_ACCESS_TTL ?? '15m'),
     });
   }
 
@@ -36,8 +36,8 @@ export class TokenService {
   async issueRefresh(userId: string, meta: { ip?: string; userAgent?: string }): Promise<string> {
     const raw = randomBytes(48).toString('base64url');
     const hash = createHash('sha256').update(raw).digest('hex');
-    const ttlDays = parseTtlDays(process.env.JWT_REFRESH_TTL ?? '30d');
-    const expiresAt = new Date(Date.now() + ttlDays * 86_400_000);
+    const ttlSec = parseTtlSeconds(process.env.JWT_REFRESH_TTL ?? '30d');
+    const expiresAt = new Date(Date.now() + ttlSec * 1000);
     await this.prisma.refreshToken.create({
       data: {
         userId,
@@ -73,9 +73,20 @@ export class TokenService {
   }
 }
 
-function parseTtlDays(ttl: string): number {
-  const m = /^(\d+)([dhm])$/.exec(ttl);
-  if (!m) return 30;
+/**
+ * Парсит TTL-строку вида "15m" / "24h" / "30d" в секунды.
+ * Используем число секунд — это стандартный формат JWT `expiresIn` с гарантированным типом.
+ */
+function parseTtlSeconds(ttl: string): number {
+  const m = /^(\d+)([smhd])$/.exec(ttl);
+  if (!m) return 900; // 15 минут по умолчанию
   const n = Number(m[1]);
-  return m[2] === 'd' ? n : m[2] === 'h' ? n / 24 : n / 1440;
+  const unit = m[2];
+  switch (unit) {
+    case 's': return n;
+    case 'm': return n * 60;
+    case 'h': return n * 3600;
+    case 'd': return n * 86400;
+    default: return 900;
+  }
 }
