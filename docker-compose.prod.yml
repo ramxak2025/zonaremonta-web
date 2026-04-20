@@ -1,0 +1,73 @@
+# Production compose для VDS 05auto.ru
+# Nginx — на хосте (через ./infra/nginx/05auto.conf) или в контейнере, если отключён системный.
+# Postgres и Redis — как обычно; volumes прибиваются в /var/lib/05auto.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - /var/lib/05auto/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $POSTGRES_USER']
+      interval: 10s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - /var/lib/05auto/redis:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      NODE_ENV: production
+      API_PORT: 4000
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-30d}
+      TOTP_ISSUER: ${TOTP_ISSUER:-05auto}
+      SMS_PROVIDER: ${SMS_PROVIDER}
+      SMSC_LOGIN: ${SMSC_LOGIN}
+      SMSC_PASSWORD: ${SMSC_PASSWORD}
+      SMSRU_API_ID: ${SMSRU_API_ID}
+      UPLOADS_DIR: /var/lib/05auto/uploads
+      CORS_ORIGINS: https://05auto.ru
+      SENTRY_DSN: ${SENTRY_DSN}
+    volumes:
+      - /var/lib/05auto/uploads:/var/lib/05auto/uploads
+    ports:
+      - '127.0.0.1:4000:4000'
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: https://05auto.ru
+      NEXT_PUBLIC_SITE_URL: https://05auto.ru
+      NEXT_PUBLIC_PHONE: ${NEXT_PUBLIC_PHONE}
+      NEXT_PUBLIC_ADDRESS: ${NEXT_PUBLIC_ADDRESS}
+      NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
+    ports:
+      - '127.0.0.1:3000:3000'
