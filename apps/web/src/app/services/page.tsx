@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Hero } from '@/components/sections/Hero';
 import { WhatWeInstall } from '@/components/sections/WhatWeInstall';
-import { SavingsCalculator } from '@/components/sections/SavingsCalculator';
+import { ChineseCars } from '@/components/sections/ChineseCars';
+import { CalculatorPro } from '@/components/sections/CalculatorPro';
 import { Faq } from '@/components/sections/Faq';
 import { FinalCta } from '@/components/sections/FinalCta';
 import { getPublicSettings } from '@/lib/settings';
@@ -23,10 +23,10 @@ export default async function ServicesPage() {
   return (
     <>
       <Header />
-      <main>
-        <Hero settings={settings} />
+      <main className="pt-4 md:pt-8">
         <WhatWeInstall />
-        <SavingsCalculator settings={settings} />
+        <ChineseCars />
+        <CalculatorPro settings={settings} />
         <Faq />
         <FinalCta settings={settings} />
       </main>

@@ -11,7 +11,7 @@ export default function LkLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <main className="section py-12">{children}</main>
+      {children}
       <Footer />
     </>
   );

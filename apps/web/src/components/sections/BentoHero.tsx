@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Clock, Fuel, MapPin, ShieldCheck, Star } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, Clock, Fuel, MapPin, ShieldCheck, Star } from 'lucide-react';
 import type { PublicSettings } from '@05auto/shared';
 import { getContactLinks } from '@/lib/site';
-import { PhoneFilledIcon, WhatsAppIcon, YandexMapsIcon } from '../BrandIcons';
+import { PhoneFilledIcon, YandexMapsIcon } from '../BrandIcons';
 import { HexIcon } from '../HexIcon';
 
 interface Props {
@@ -13,24 +13,16 @@ export function BentoHero({ settings }: Props) {
   const l = getContactLinks();
   const phone = settings['site.phone'].value;
   const address = settings['site.address'].value;
-  const rating = settings['reviews.yandex.rating'].value;
-  const reviews = settings['reviews.yandex.count'].value;
+  const yRating = settings['reviews.yandex.rating'].value;
+  const yCount = settings['reviews.yandex.count'].value;
+  const gRating = settings['reviews.twogis.rating'].value;
+  const gCount = settings['reviews.twogis.count'].value;
 
   return (
     <section className="relative overflow-hidden">
-      {/* Фон: мягкие radial-градиенты + hex-grid */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(900px 560px at 85% -5%, rgba(232,18,36,0.18), transparent 60%), radial-gradient(700px 500px at -10% 30%, rgba(74,159,217,0.1), transparent 60%)',
-        }}
-      />
       <div aria-hidden className="absolute inset-0 hex-grid pointer-events-none opacity-70" />
 
-      <div className="section relative pt-6 pb-10 md:pt-12 md:pb-20">
-        {/* Eyebrow-плашка */}
+      <div className="section relative pt-6 pb-10 md:pt-10 md:pb-20">
         <div className="mb-5 md:mb-7">
           <span className="chip">
             <span className="dot" />
@@ -38,28 +30,25 @@ export function BentoHero({ settings }: Props) {
           </span>
         </div>
 
-        {/* BENTO GRID — 6 колонок, разнокалиберные */}
         <div
           className="grid gap-3 md:gap-4"
-          style={{
-            gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
-          }}
+          style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}
         >
-          {/* ── HERO-карточка (большая) ── */}
+          {/* ── Большая hero-карточка (без CTA-кнопок) ── */}
           <article className="liquid-glass p-6 md:p-10 col-span-6 lg:col-span-4 lg:row-span-2 relative overflow-hidden flex flex-col">
             <HexIcon
               size={360}
               filled={false}
-              className="absolute -right-24 -top-20 text-white/[0.04] pointer-events-none"
+              className="absolute -right-24 -top-20 text-white/[0.05] pointer-events-none"
             />
             <div className="relative">
-              <div className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/50">
+              <div className="inline-flex items-center gap-2 text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/55">
                 <span className="accent-bar" />
                 Специализация
               </div>
               <h1
                 className="font-display font-bold uppercase text-white mt-4 leading-[0.95]"
-                style={{ fontSize: 'clamp(32px, 7vw, 72px)', letterSpacing: '-0.03em' }}
+                style={{ fontSize: 'clamp(34px, 7vw, 76px)', letterSpacing: '-0.03em' }}
               >
                 Установка{' '}
                 <span
@@ -75,67 +64,52 @@ export function BentoHero({ settings }: Props) {
                 <br />
                 в Махачкале
               </h1>
-              <p className="mt-5 text-[14px] md:text-[17px] text-white/70 leading-relaxed max-w-xl">
-                Только современные системы: 4-е поколение для инжекторов и 4+ для прямого впрыска
-                (TSI, GDI, FSI, D-4S). Под ключ за 1 день, гарантия 1 год, регистрация в ГИБДД.
+              <p className="mt-5 text-[14px] md:text-[17px] text-white/75 leading-relaxed max-w-xl">
+                Только современные системы: 4-е поколение для обычных инжекторных авто и 4+ для
+                двигателей с прямым впрыском (TSI, GDI, FSI, D-4S). Под ключ за 1 день,
+                гарантия 1 год, регистрация в ГИБДД.
               </p>
             </div>
 
-            {/* 2 CTA — stacked на mobile, в ряд на sm+ */}
-            <div className="mt-7 flex flex-col sm:flex-row gap-2.5">
-              <a href={l.phoneHref} className="btn btn-primary btn-lg flex-1 sm:flex-none">
-                <PhoneFilledIcon className="w-5 h-5" />
-                Позвонить сейчас
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href={l.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-lg text-white flex-1 sm:flex-none"
-                style={{
-                  background: 'linear-gradient(180deg, #25D366 0%, #128C7E 100%)',
-                  boxShadow: '0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 22px -6px rgba(37,211,102,0.5)',
-                }}
-              >
-                <WhatsAppIcon className="w-5 h-5" />
-                WhatsApp
-              </a>
+            {/* Trust-row с двумя рейтингами */}
+            <div className="mt-7 flex flex-wrap items-center gap-2.5">
+              <RatingBadge
+                source="Яндекс"
+                rating={yRating}
+                count={yCount}
+                color="#FFCC00"
+              />
+              <RatingBadge
+                source="2GIS"
+                rating={gRating}
+                count={gCount}
+                color="#5FBA47"
+              />
+              <span className="hidden md:inline text-white/45">·</span>
+              <span className="text-[13px] text-white/65 hidden md:inline">
+                Гарантия 1 год · Регистрация в ГИБДД
+              </span>
             </div>
 
-            {/* Trust-row прямо в hero */}
-            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-white/55">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star
-                      key={i}
-                      width={14}
-                      height={14}
-                      strokeWidth={1.5}
-                      fill={i <= Math.floor(rating) ? '#FFCC00' : 'none'}
-                      className="text-[#FFCC00]"
-                    />
-                  ))}
-                </div>
-                <span className="text-white font-semibold">{rating.toFixed(1)}</span>
-                <span>· {reviews} отзывов</span>
-              </div>
-              <div className="h-3 w-px bg-white/10 hidden sm:block" />
-              <span>Гарантия 1 год</span>
-              <div className="h-3 w-px bg-white/10 hidden sm:block" />
-              <span>Регистрация в ГИБДД</span>
+            {/* Вторичные ссылки на ключевые действия */}
+            <div className="mt-7 flex flex-wrap gap-3 text-[13px]">
+              <Link href="/calculator" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white">
+                Рассчитать экономию <ArrowUpRight className="w-4 h-4" />
+              </Link>
+              <span className="text-white/20">·</span>
+              <Link href="/#services" className="inline-flex items-center gap-1.5 text-white/80 hover:text-white">
+                Подробно об услугах <ArrowUpRight className="w-4 h-4" />
+              </Link>
             </div>
           </article>
 
           {/* ── Окупаемость ── */}
-          <article className="liquid-glass p-5 md:p-6 col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[160px] lg:min-h-[200px]">
+          <article className="liquid-glass p-5 md:p-6 col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[170px] lg:min-h-[200px]">
             <div className="flex items-center justify-between">
               <span className="chip !py-1 !px-2.5 !text-[10px]">
                 <Clock className="w-3 h-3" />
                 Окупается
               </span>
-              <HexIcon size={24} className="text-primary/40" />
             </div>
             <div>
               <div
@@ -150,18 +124,17 @@ export function BentoHero({ settings }: Props) {
               >
                 ~8
               </div>
-              <div className="text-white/55 text-[12px] mt-1.5">месяцев</div>
+              <div className="text-white/60 text-[12px] mt-1.5">месяцев</div>
             </div>
           </article>
 
           {/* ── Экономия ── */}
-          <article className="liquid-glass p-5 md:p-6 col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[160px] lg:min-h-[200px]">
+          <article className="liquid-glass p-5 md:p-6 col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[170px] lg:min-h-[200px]">
             <div className="flex items-center justify-between">
               <span className="chip !py-1 !px-2.5 !text-[10px]">
                 <Fuel className="w-3 h-3" />
                 Экономия
               </span>
-              <HexIcon size={24} className="text-[#4A9FD9]/50" />
             </div>
             <div>
               <div className="flex items-baseline gap-1">
@@ -173,7 +146,7 @@ export function BentoHero({ settings }: Props) {
                 </span>
                 <span className="font-display text-2xl md:text-3xl text-white/70">%</span>
               </div>
-              <div className="text-white/55 text-[12px] mt-1.5">на топливе</div>
+              <div className="text-white/60 text-[12px] mt-1.5">на топливе</div>
             </div>
           </article>
 
@@ -182,7 +155,7 @@ export function BentoHero({ settings }: Props) {
             <HexIcon
               size={200}
               filled={false}
-              className="absolute -right-10 -bottom-10 text-white/[0.04] pointer-events-none"
+              className="absolute -right-10 -bottom-10 text-white/[0.05] pointer-events-none"
             />
             <div className="flex items-center gap-3 relative">
               <div className="w-11 h-11 grid place-items-center relative flex-none">
@@ -190,7 +163,7 @@ export function BentoHero({ settings }: Props) {
                 <span className="relative text-white font-display font-bold text-xs">4+</span>
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-white/50">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-white/55">
                   Средний чек
                 </div>
                 <div className="font-display text-[28px] md:text-[32px] text-white leading-none mt-1">
@@ -202,12 +175,12 @@ export function BentoHero({ settings }: Props) {
               {[
                 'Установка ГБО 4-го поколения',
                 'Диагностика на стенде',
-                'Настройка ЭБУ и карты',
+                'Настройка ЭБУ и карт',
                 'Регистрация в ГИБДД',
               ].map((t) => (
                 <li
                   key={t}
-                  className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.03] border border-white/5 text-[13px] text-white/85"
+                  className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.04] border border-white/[0.07] text-[13px] text-white/85"
                 >
                   <CheckCircle2 className="w-4 h-4 text-[#22C55E] flex-none" strokeWidth={2.5} />
                   <span>{t}</span>
@@ -228,10 +201,10 @@ export function BentoHero({ settings }: Props) {
               </span>
             </div>
             <div>
-              <div className="text-[9px] uppercase tracking-[0.2em] text-white/40">Позвонить</div>
+              <div className="text-[9px] uppercase tracking-[0.2em] text-white/45">Позвонить</div>
               <div
                 className="font-display text-white mt-1 leading-tight"
-                style={{ fontSize: 'clamp(14px, 3.2vw, 18px)' }}
+                style={{ fontSize: 'clamp(15px, 3.2vw, 18px)' }}
               >
                 {phone}
               </div>
@@ -246,13 +219,13 @@ export function BentoHero({ settings }: Props) {
             className="liquid-glass p-5 col-span-3 lg:col-span-1 relative overflow-hidden flex flex-col justify-between min-h-[140px] active:scale-[0.98] transition-transform"
           >
             <div className="flex items-center justify-between">
-              <span className="w-10 h-10 rounded-xl grid place-items-center bg-[#4A9FD9]/15 border border-[#4A9FD9]/25 flex-none">
+              <span className="w-10 h-10 rounded-xl grid place-items-center bg-[#FFCC00]/15 border border-[#FFCC00]/25 flex-none">
                 <YandexMapsIcon className="w-4 h-4 text-[#FFCC00]" />
               </span>
-              <MapPin className="w-4 h-4 text-white/30" />
+              <MapPin className="w-4 h-4 text-white/35" />
             </div>
             <div>
-              <div className="text-[9px] uppercase tracking-[0.2em] text-white/40">
+              <div className="text-[9px] uppercase tracking-[0.2em] text-white/45">
                 Мы находимся
               </div>
               <div
@@ -269,16 +242,42 @@ export function BentoHero({ settings }: Props) {
             <span className="w-11 h-11 rounded-xl grid place-items-center bg-white/[0.04] border border-white/10 flex-none">
               <ShieldCheck className="w-5 h-5 text-[#22C55E]" strokeWidth={2.2} />
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="text-white font-semibold text-[14px]">Гарантия 1 год</div>
-              <div className="text-white/55 text-[12px]">на все работы</div>
+              <div className="text-white/60 text-[12px]">на все работы</div>
             </div>
-            <Link href="#services" className="ml-auto btn-ghost btn !h-9 !px-4 !text-[12px]">
+            <Link href="#services" className="btn btn-ghost !h-9 !px-4 !text-[12px] flex-none">
               Услуги
             </Link>
           </article>
         </div>
       </div>
     </section>
+  );
+}
+
+function RatingBadge({
+  source, rating, count, color,
+}: { source: string; rating: number; count: number; color: string }) {
+  return (
+    <div
+      className="inline-flex items-center gap-2 pl-2 pr-3.5 py-1.5 rounded-full"
+      style={{
+        background: 'rgba(255,255,255,0.05)',
+        border: '1px solid rgba(255,255,255,0.08)',
+      }}
+    >
+      <span
+        className="inline-flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full text-black text-[11px] font-bold"
+        style={{ background: color }}
+      >
+        <Star width={11} height={11} fill="currentColor" strokeWidth={0} />
+        {rating.toFixed(1)}
+      </span>
+      <span className="text-[12px] text-white/75 font-medium">
+        {source}
+      </span>
+      <span className="text-[11px] text-white/40">· {count}</span>
+    </div>
   );
 }

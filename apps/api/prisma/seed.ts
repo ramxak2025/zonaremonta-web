@@ -1,4 +1,5 @@
 import { PrismaClient, type Prisma } from '@prisma/client';
+import * as argon2 from 'argon2';
 import {
   VEHICLE_BRANDS,
   CLIENT_EXPENSE_CATEGORIES,
@@ -115,6 +116,74 @@ async function seedFaq(): Promise<void> {
   });
 }
 
+async function seedDemoAccounts(): Promise<void> {
+  // Создаются только если их ещё нет. Пароли одинаковые для демо.
+  const pwHash = await argon2.hash('Demo05auto!', { type: argon2.argon2id });
+
+  // Директор
+  await prisma.user.upsert({
+    where: { email: 'director@demo.05auto.ru' },
+    update: {},
+    create: {
+      email: 'director@demo.05auto.ru',
+      role: 'DIRECTOR',
+      passwordHash: pwHash,
+      status: 'ACTIVE',
+      totpEnabled: false,
+    },
+  });
+
+  // Мастер
+  const masterUser = await prisma.user.upsert({
+    where: { email: 'master@demo.05auto.ru' },
+    update: {},
+    create: {
+      email: 'master@demo.05auto.ru',
+      role: 'MASTER',
+      passwordHash: pwHash,
+      status: 'ACTIVE',
+      totpEnabled: false,
+      master: { create: { fullName: 'Ахмед Магомедов', specializations: ['GBO'] } },
+    },
+  });
+
+  // Демо-клиент (email + phone)
+  await prisma.user.upsert({
+    where: { email: 'client@demo.05auto.ru' },
+    update: {},
+    create: {
+      email: 'client@demo.05auto.ru',
+      role: 'CLIENT',
+      passwordHash: pwHash,
+      status: 'ACTIVE',
+      client: {
+        create: {
+          phone: '+79999999999',
+          name: 'Магомед Демо',
+          notes: 'Демо-аккаунт для просмотра',
+        },
+      },
+    },
+  });
+
+  // Вторичная мета — чтобы подсказки отображались в админке
+  await prisma.setting.upsert({
+    where: { key: 'demo.accounts' },
+    update: {},
+    create: {
+      key: 'demo.accounts',
+      value: {
+        director: { email: 'director@demo.05auto.ru', password: 'Demo05auto!' },
+        master: { email: 'master@demo.05auto.ru', password: 'Demo05auto!' },
+        client: { email: 'client@demo.05auto.ru', password: 'Demo05auto!', phone: '+79999999999' },
+      },
+    },
+  });
+
+  // Используем masterUser чтобы TypeScript не ругнулся
+  void masterUser.id;
+}
+
 async function seedSettings(): Promise<void> {
   // Источник правды — DEFAULT_SETTINGS из @05auto/shared (типизировано zod-схемой).
   // При повторном запуске существующие значения НЕ перетираются (update = то же, что create, но
@@ -147,7 +216,14 @@ async function main(): Promise<void> {
   console.log('✓ faq');
   await seedSettings();
   console.log('✓ settings');
+  await seedDemoAccounts();
+  console.log('✓ demo accounts');
   console.log('✅ seed done');
+  console.log('');
+  console.log('=== ДЕМО-АККАУНТЫ ===');
+  console.log('Директор: director@demo.05auto.ru / Demo05auto!');
+  console.log('Мастер:   master@demo.05auto.ru  / Demo05auto!');
+  console.log('Клиент:   client@demo.05auto.ru / Demo05auto!  (или тел. +79999999999)');
 }
 
 main()

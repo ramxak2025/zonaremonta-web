@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Wrench, Calculator, Package, UserCircle2, type LucideIcon } from 'lucide-react';
-import { HexIcon } from './HexIcon';
 
 interface Tab {
   href: string;
@@ -12,36 +11,11 @@ interface Tab {
 }
 
 const TABS: readonly Tab[] = [
-  {
-    href: '/',
-    label: 'Главная',
-    icon: Home,
-    isActive: (p) => p === '/',
-  },
-  {
-    href: '/services',
-    label: 'Услуги',
-    icon: Wrench,
-    isActive: (p) => p.startsWith('/services'),
-  },
-  {
-    href: '/#calc',
-    label: 'Расчёт',
-    icon: Calculator,
-    isActive: () => false,
-  },
-  {
-    href: '/catalog',
-    label: 'Каталог',
-    icon: Package,
-    isActive: (p) => p.startsWith('/catalog'),
-  },
-  {
-    href: '/lk',
-    label: 'Кабинет',
-    icon: UserCircle2,
-    isActive: (p) => p.startsWith('/lk'),
-  },
+  { href: '/', label: 'Главная', icon: Home, isActive: (p) => p === '/' },
+  { href: '/services', label: 'Услуги', icon: Wrench, isActive: (p) => p.startsWith('/services') },
+  { href: '/calculator', label: 'Расчёт', icon: Calculator, isActive: (p) => p.startsWith('/calculator') },
+  { href: '/catalog', label: 'Каталог', icon: Package, isActive: (p) => p.startsWith('/catalog') },
+  { href: '/lk', label: 'Кабинет', icon: UserCircle2, isActive: (p) => p.startsWith('/lk') },
 ];
 
 function haptic(): void {
@@ -66,7 +40,7 @@ export function MobileTabBar() {
         <nav
           className="grid grid-cols-5 gap-0.5 p-1.5"
           style={{
-            background: 'rgba(10, 10, 12, 0.82)',
+            background: 'rgba(19, 19, 24, 0.85)',
             backdropFilter: 'blur(24px) saturate(1.5)',
             WebkitBackdropFilter: 'blur(24px) saturate(1.5)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
@@ -89,29 +63,20 @@ export function MobileTabBar() {
                   active
                     ? {
                         background:
-                          'linear-gradient(180deg, rgba(255,62,79,0.2) 0%, rgba(232,18,36,0.32) 100%)',
-                        border: '1px solid rgba(232,18,36,0.4)',
+                          'linear-gradient(180deg, rgba(255,62,79,0.22) 0%, rgba(232,18,36,0.35) 100%)',
+                        border: '1px solid rgba(232,18,36,0.45)',
                         boxShadow:
-                          '0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 20px -6px rgba(232,18,36,0.45)',
+                          '0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 20px -6px rgba(232,18,36,0.5)',
                       }
                     : undefined
                 }
               >
-                <span className="relative grid place-items-center w-7 h-7">
-                  {active && (
-                    <HexIcon
-                      size={28}
-                      filled={false}
-                      className="absolute text-primary/60"
-                    />
-                  )}
-                  <Icon
-                    strokeWidth={active ? 2.4 : 1.9}
-                    className={`w-[18px] h-[18px] relative transition-colors ${
-                      active ? 'text-white' : 'text-white/55'
-                    }`}
-                  />
-                </span>
+                <Icon
+                  strokeWidth={active ? 2.4 : 1.9}
+                  className={`w-[20px] h-[20px] transition-colors ${
+                    active ? 'text-white' : 'text-white/55'
+                  }`}
+                />
                 <span
                   className={`text-[10px] font-semibold leading-none uppercase tracking-[0.04em] ${
                     active ? 'text-white' : 'text-white/55'

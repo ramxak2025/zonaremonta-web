@@ -41,6 +41,11 @@ export const publicSettingsSchema = z
     'reviews.yandex.rating': numberValue,
     'reviews.yandex.count': numberValue,
 
+    // --- 2GIS reviews ---
+    'reviews.twogis.url': urlValue,
+    'reviews.twogis.rating': numberValue,
+    'reviews.twogis.count': numberValue,
+
     // --- Site contacts ---
     'site.phone': stringValue,
     'site.whatsapp': stringValue,
@@ -76,8 +81,12 @@ export const DEFAULT_SETTINGS: Required<PublicSettings> = {
   'calc.defaultInstallPrice': { value: 38000 },
 
   'reviews.yandex.url': { value: 'https://yandex.ru/profile/130786711189?lang=ru' },
-  'reviews.yandex.rating': { value: 4.6 },
+  'reviews.yandex.rating': { value: 4.9 },
   'reviews.yandex.count': { value: 87 },
+
+  'reviews.twogis.url': { value: 'https://2gis.ru/makhachkala' },
+  'reviews.twogis.rating': { value: 5.0 },
+  'reviews.twogis.count': { value: 42 },
 
   'site.phone': { value: '+7 (988) 000-00-00' },
   'site.whatsapp': { value: '79880000000' },

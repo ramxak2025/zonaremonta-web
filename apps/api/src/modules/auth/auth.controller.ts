@@ -2,8 +2,26 @@ import { Body, Controller, HttpCode, Post, Req, Res, UnauthorizedException } fro
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
+import { IsEmail, IsOptional, IsString, Length, Matches, MinLength } from 'class-validator';
 import { AuthService } from './auth.service';
 import { SmsRequestDto, SmsVerifyDto, StaffLoginDto, TotpConfirmDto } from './dto';
+
+class ClientEmailLoginDto {
+  @IsEmail() email!: string;
+  @IsString() @MinLength(8) password!: string;
+}
+
+class ClientRegisterDto {
+  @IsEmail() email!: string;
+  @IsString() @MinLength(10) password!: string;
+  @IsString() @Matches(/^\+7\d{10}$/) phone!: string;
+  @IsOptional() @IsString() @Length(2, 80) name?: string;
+}
+
+class ClientVerifyDto {
+  @IsString() @Matches(/^\+7\d{10}$/) phone!: string;
+  @IsString() @Matches(/^\d{6}$/) code!: string;
+}
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthUser } from '@05auto/shared';
@@ -82,6 +100,54 @@ export class AuthController {
   @HttpCode(200)
   confirm2fa(@CurrentUser() user: AuthUser, @Body() dto: TotpConfirmDto) {
     return this.auth.confirm2faEnrollment(user.id, dto.code);
+  }
+
+  // ===== Client: email + password =====
+  @Public()
+  @Throttle({ default: { limit: 10, ttl: 15 * 60 * 1000 } })
+  @Post('email/login')
+  @HttpCode(200)
+  async clientEmailLogin(
+    @Body() dto: ClientEmailLoginDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const r = await this.auth.clientEmailLogin(dto.email, dto.password, {
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+    });
+    setRefreshCookie(res, r.refreshToken);
+    return { accessToken: r.accessToken, role: r.role };
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 15 * 60 * 1000 } })
+  @Post('email/register')
+  @HttpCode(200)
+  async clientEmailRegister(@Body() dto: ClientRegisterDto) {
+    return this.auth.clientEmailRegister({
+      email: dto.email,
+      password: dto.password,
+      phone: dto.phone,
+      name: dto.name,
+    });
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 6, ttl: 15 * 60 * 1000 } })
+  @Post('email/verify')
+  @HttpCode(200)
+  async clientEmailVerify(
+    @Body() dto: ClientVerifyDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const r = await this.auth.clientEmailVerify(dto.phone, dto.code, {
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+    });
+    setRefreshCookie(res, r.refreshToken);
+    return { accessToken: r.accessToken, role: r.role };
   }
 
   @Public()

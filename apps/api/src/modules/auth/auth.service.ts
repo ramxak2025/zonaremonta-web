@@ -165,6 +165,98 @@ export class AuthService {
     return { enabled: true };
   }
 
+  // ======================= CLIENT: email + password + SMS verification =======================
+
+  async clientEmailLogin(email: string, password: string, meta: { ip?: string; userAgent?: string }) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+      include: { client: true },
+    });
+    if (!user || !user.passwordHash || user.role !== 'CLIENT') {
+      throw new UnauthorizedException('Неверные email или пароль');
+    }
+    if (user.status === 'BLOCKED') throw new UnauthorizedException('Аккаунт заблокирован');
+    const ok = await argon2.verify(user.passwordHash, password);
+    if (!ok) throw new UnauthorizedException('Неверные email или пароль');
+
+    await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+    const accessToken = this.tokens.signAccess({
+      sub: user.id,
+      role: 'CLIENT',
+      clientId: user.client?.id,
+    });
+    const refreshToken = await this.tokens.issueRefresh(user.id, meta);
+    return { accessToken, refreshToken, role: 'CLIENT' as Role };
+  }
+
+  async clientEmailRegister(params: {
+    email: string;
+    password: string;
+    phone: string;
+    name?: string;
+  }) {
+    const email = params.email.toLowerCase();
+    const existsEmail = await this.prisma.user.findUnique({ where: { email } });
+    if (existsEmail) throw new BadRequestException('Email уже зарегистрирован');
+    const existsPhone = await this.prisma.client.findUnique({ where: { phone: params.phone } });
+    if (existsPhone) throw new BadRequestException('Телефон уже зарегистрирован');
+
+    // Создаём неактивированного клиента (status=BLOCKED до SMS-подтверждения)
+    const hash = await argon2.hash(params.password, { type: argon2.argon2id });
+    await this.prisma.user.create({
+      data: {
+        role: 'CLIENT',
+        email,
+        passwordHash: hash,
+        status: 'BLOCKED',
+        client: { create: { phone: params.phone, name: params.name?.trim() } },
+      },
+    });
+    // Шлём SMS для верификации
+    await this.requestSmsCode(params.phone);
+    return { sent: true };
+  }
+
+  async clientEmailVerify(phone: string, code: string, meta: { ip?: string; userAgent?: string }) {
+    // Проверяем код
+    const codeHash = createHash('sha256').update(code).digest('hex');
+    const latest = await this.prisma.smsCode.findFirst({
+      where: { phone, consumedAt: null, expiresAt: { gt: new Date() } },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!latest) throw new UnauthorizedException('Код не найден или просрочен');
+    if (latest.codeHash !== codeHash) {
+      await this.prisma.smsCode.update({
+        where: { id: latest.id },
+        data: { attempts: { increment: 1 } },
+      });
+      throw new UnauthorizedException('Неверный код');
+    }
+    await this.prisma.smsCode.update({
+      where: { id: latest.id },
+      data: { consumedAt: new Date() },
+    });
+
+    // Активируем пользователя
+    const client = await this.prisma.client.findUnique({
+      where: { phone },
+      include: { user: true },
+    });
+    if (!client) throw new UnauthorizedException('Пользователь не найден');
+    await this.prisma.user.update({
+      where: { id: client.userId },
+      data: { status: 'ACTIVE', lastLoginAt: new Date() },
+    });
+
+    const accessToken = this.tokens.signAccess({
+      sub: client.userId,
+      role: 'CLIENT',
+      clientId: client.id,
+    });
+    const refreshToken = await this.tokens.issueRefresh(client.userId, meta);
+    return { accessToken, refreshToken, role: 'CLIENT' as Role };
+  }
+
   // ======================= REFRESH =======================
 
   async refresh(raw: string, meta: { ip?: string; userAgent?: string }) {
