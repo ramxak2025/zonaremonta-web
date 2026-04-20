@@ -24,7 +24,7 @@ RUN pnpm --filter @05auto/api build
 RUN ls -la /repo/apps/api/dist && test -f /repo/apps/api/dist/main.js || (echo "ERROR: dist/main.js NOT FOUND" && find /repo/apps/api/dist -type f 2>/dev/null; exit 1)
 # pnpm deploy создаёт самостоятельный бандл в /app-deploy с реальными файлами
 # (резолвит symlinks pnpm workspace, исключает devDeps)
-RUN pnpm --filter @05auto/api deploy --prod --legacy /app-deploy
+RUN pnpm --filter @05auto/api deploy --prod /app-deploy
 RUN ls -la /app-deploy/node_modules/.bin/ | head -20 && test -x /app-deploy/node_modules/.bin/prisma || (echo "ERROR: prisma bin not found" && exit 1)
 
 FROM node:${NODE_VERSION} AS runner
