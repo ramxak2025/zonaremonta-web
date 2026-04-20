@@ -37,9 +37,10 @@ test-results
 # prisma
 apps/api/prisma/migrations/dev.db*
 
-# uploads (never commit)
-uploads/
-var/
+# uploads storage (never commit) — только корневая папка и /var
+/uploads/
+/var/
+/var/lib/
 
 # misc
 .turbo
