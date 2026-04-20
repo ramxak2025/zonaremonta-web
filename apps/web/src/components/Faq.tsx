@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 const items = [
@@ -27,12 +28,12 @@ const items = [
 
 export function Faq() {
   return (
-    <section className="section py-24">
-      <div className="mb-10">
+    <section className="section py-16 sm:py-24">
+      <div className="mb-8 sm:mb-12">
         <span className="chip">Частые вопросы</span>
         <h2 className="h-section mt-3">FAQ</h2>
       </div>
-      <div className="divide-y divide-ink-10 rounded-2xl bg-white border border-ink-10 shadow-soft">
+      <div className="flex flex-col gap-3">
         {items.map((it, i) => (
           <FaqItem key={it.q} q={it.q} a={it.a} defaultOpen={i === 0} />
         ))}
@@ -58,21 +59,31 @@ export function Faq() {
 function FaqItem({ q, a, defaultOpen }: { q: string; a: string; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(Boolean(defaultOpen));
   return (
-    <button
-      type="button"
-      onClick={() => setOpen((v) => !v)}
-      aria-expanded={open}
-      className="w-full text-left p-6 hover:bg-surface-muted/60 transition-colors"
-    >
-      <div className="flex items-center justify-between gap-4">
-        <span className="font-medium">{q}</span>
-        <ChevronDown className={`w-5 h-5 text-ink-50 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </div>
-      <div
-        className={`grid transition-all duration-300 ${open ? 'grid-rows-[1fr] opacity-100 mt-3' : 'grid-rows-[0fr] opacity-0'}`}
+    <motion.div layout className="liquid-glass overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 active:scale-[0.99] transition-transform"
       >
-        <div className="overflow-hidden text-ink-70 text-sm">{a}</div>
-      </div>
-    </button>
+        <span className="font-medium text-base sm:text-lg">{q}</span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.25 }}>
+          <ChevronDown className="w-5 h-5 text-ink-50 flex-none" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <p className="px-5 sm:px-6 pb-5 sm:pb-6 text-ink-70 leading-relaxed">{a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import '../styles/globals.css';
 import { SITE } from '@/lib/site';
 import { Providers } from './providers';
+import { MobileTabBar } from '@/components/MobileTabBar';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-inter', display: 'swap' });
 
@@ -31,13 +32,19 @@ export const viewport: Viewport = {
   themeColor: '#E81224',
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={inter.variable}>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <MobileTabBar />
+          {/* Отступ под mobile tab bar, чтобы контент не залезал */}
+          <div className="md:hidden h-24" aria-hidden />
+        </Providers>
       </body>
     </html>
   );
