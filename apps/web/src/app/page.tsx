@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { Hero } from '@/components/sections/Hero';
+import { BentoHero } from '@/components/sections/BentoHero';
 import { TrustBar } from '@/components/sections/TrustBar';
 import { WhatWeInstall } from '@/components/sections/WhatWeInstall';
 import { SavingsCalculator } from '@/components/sections/SavingsCalculator';
@@ -39,7 +39,7 @@ export default async function Home() {
       <StructuredData settings={settings} />
       <Header />
       <main>
-        <Hero settings={settings} />
+        <BentoHero settings={settings} />
         <TrustBar />
         <WhatWeInstall />
         <SavingsCalculator settings={settings} />
