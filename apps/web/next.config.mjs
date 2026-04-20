@@ -15,6 +15,10 @@ const nextConfig = {
     ],
   },
   transpilePackages: ['@05auto/shared', '@05auto/ui'],
+  eslint: {
+    // ESLint гоняем отдельно в CI, а не в prod build
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     return [
       {
