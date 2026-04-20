@@ -167,7 +167,7 @@ export function WhatWeInstall() {
       </p>
 
       <div className="mt-10 flex flex-wrap gap-3">
-        <Link href="#calc" className="btn btn-primary">
+        <Link href="/calculator" className="btn btn-primary">
           Рассчитать экономию под моё авто
         </Link>
         <a href={l.whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">

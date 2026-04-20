@@ -17,7 +17,7 @@ export function Footer() {
           <h3 className="text-[11px] uppercase tracking-widest text-white/40 mb-4">Сайт</h3>
           <ul className="space-y-2.5 text-sm text-white/70">
             <li><Link href="/#services" className="hover:text-white">Услуги</Link></li>
-            <li><Link href="/#calc" className="hover:text-white">Калькулятор</Link></li>
+            <li><Link href="/calculator" className="hover:text-white">Калькулятор</Link></li>
             <li><Link href="/#contact" className="hover:text-white">Контакты</Link></li>
             <li><Link href="/lk" className="hover:text-white">Личный кабинет</Link></li>
           </ul>

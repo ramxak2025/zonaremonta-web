@@ -1,6 +1,5 @@
 import { ArrowUpRight, Star } from 'lucide-react';
 import type { PublicSettings } from '@05auto/shared';
-import { YandexMapsIcon } from '../BrandIcons';
 
 interface Props {
   settings: Required<PublicSettings>;

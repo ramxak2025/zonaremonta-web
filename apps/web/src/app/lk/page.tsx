@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { CheckCircle2, Lock, Mail, Phone, ShieldCheck, UserPlus } from 'lucide-react';
+import { CheckCircle2, Mail, Phone, ShieldCheck, UserPlus } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
 import { HexIcon } from '@/components/HexIcon';
 
