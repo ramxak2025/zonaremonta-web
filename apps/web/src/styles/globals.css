@@ -4,7 +4,18 @@
 
 :root {
   --font-inter: 'Inter', system-ui, sans-serif;
-  --font-geist: 'Geist', 'Inter', system-ui, sans-serif;
+  --font-oswald: 'Oswald', 'Inter', system-ui, sans-serif;
+  --bg: #08080A;
+  --bg-2: #0E0E11;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --ink: #FFFFFF;
+  --ink-70: rgba(255, 255, 255, 0.72);
+  --ink-50: rgba(255, 255, 255, 0.5);
+  --ink-30: rgba(255, 255, 255, 0.3);
+  --primary: #E81224;
+  --primary-2: #FF3E4F;
+  --secondary: #4A9FD9;
 }
 
 html {
@@ -12,33 +23,73 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  background: var(--bg);
+  color-scheme: dark;
 }
 
 body {
-  @apply bg-[#F6F7FA] text-ink;
+  color: var(--ink);
   font-family: var(--font-inter);
   overflow-x: hidden;
-  background-image:
-    radial-gradient(1200px 800px at -10% -10%, rgba(232, 18, 36, 0.12), transparent 40%),
-    radial-gradient(1000px 900px at 110% 10%, rgba(74, 159, 217, 0.14), transparent 45%),
-    radial-gradient(900px 700px at 50% 120%, rgba(255, 62, 79, 0.10), transparent 50%);
+  background:
+    radial-gradient(1200px 700px at -5% -10%, rgba(232, 18, 36, 0.18), transparent 55%),
+    radial-gradient(1000px 900px at 110% 15%, rgba(74, 159, 217, 0.14), transparent 55%),
+    radial-gradient(900px 700px at 50% 120%, rgba(255, 62, 79, 0.1), transparent 55%),
+    var(--bg);
   background-attachment: fixed;
 }
 
-/* ============ LIQUID GLASS LAYER ============ */
+/* === Honeycomb pattern (фирменный) === */
+.hex-grid {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 4 L91 27 L91 73 L50 96 L9 73 L9 27 Z' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1.4'/><circle cx='50' cy='50' r='18' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1.4'/></svg>");
+  background-size: 96px 96px;
+  background-position: center;
+}
+
+/* ============ TYPOGRAPHY ============ */
+.font-display {
+  font-family: var(--font-oswald);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Fluid responsive headings */
+.h-hero {
+  font-family: var(--font-oswald);
+  font-weight: 700;
+  font-size: clamp(40px, 8vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.h-section {
+  font-family: var(--font-oswald);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.h-sub {
+  font-family: var(--font-oswald);
+  font-weight: 500;
+  font-size: clamp(20px, 2.2vw, 28px);
+  letter-spacing: -0.01em;
+}
+
+/* ============ LIQUID GLASS (dark) ============ */
 @layer components {
-  /* Реалистичное iOS-стекло: мульти-слой + шум + подсветка края */
   .liquid-glass {
     position: relative;
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(28px) saturate(1.6);
-    -webkit-backdrop-filter: blur(28px) saturate(1.6);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(30px) saturate(1.6);
+    -webkit-backdrop-filter: blur(30px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.9) inset,
-      0 -1px 0 rgba(255, 255, 255, 0.3) inset,
-      0 10px 30px -12px rgba(28, 28, 30, 0.16),
-      0 30px 80px -30px rgba(28, 28, 30, 0.22);
+      0 1px 0 rgba(255, 255, 255, 0.08) inset,
+      0 -1px 0 rgba(255, 255, 255, 0.03) inset,
+      0 20px 60px -30px rgba(0, 0, 0, 0.6),
+      0 8px 24px -8px rgba(0, 0, 0, 0.35);
     border-radius: 28px;
   }
   .liquid-glass::before {
@@ -48,147 +99,271 @@ body {
     border-radius: inherit;
     padding: 1px;
     background: linear-gradient(135deg,
-      rgba(255, 255, 255, 0.9) 0%,
-      rgba(255, 255, 255, 0.1) 35%,
-      rgba(255, 255, 255, 0.05) 65%,
-      rgba(255, 255, 255, 0.4) 100%);
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.02) 40%,
+      rgba(255, 255, 255, 0.02) 60%,
+      rgba(255, 255, 255, 0.1) 100%);
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask-composite: exclude;
     -webkit-mask-composite: xor;
     pointer-events: none;
   }
 
-  .liquid-glass-dark {
-    background: rgba(28, 28, 30, 0.75);
-    backdrop-filter: blur(28px) saturate(1.6);
-    -webkit-backdrop-filter: blur(28px) saturate(1.6);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.08) inset,
-      0 10px 40px -12px rgba(0, 0, 0, 0.5);
-    border-radius: 28px;
-    color: white;
+  .liquid-glass-strong {
+    background: rgba(20, 20, 24, 0.7);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Pill — для floating nav */
-  .pill {
-    border-radius: 999px;
-  }
+  .pill { border-radius: 999px; }
 
-  /* Кнопки нового уровня */
+  /* Buttons */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 h-12 font-medium select-none transition-all duration-200 active:scale-[0.97];
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0 1.5rem;
+    height: 48px;
     border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
   }
+  .btn:active { transform: scale(0.97); }
+
   .btn-primary {
-    @apply btn text-white;
-    background: linear-gradient(180deg, #FF3E4F 0%, #E81224 60%, #B40E1C 100%);
+    color: white;
+    background: linear-gradient(180deg, #FF3E4F 0%, #E81224 55%, #B40E1C 100%);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.4) inset,
-      0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-      0 12px 28px -8px rgba(232, 18, 36, 0.45),
-      0 2px 6px rgba(232, 18, 36, 0.2);
+      0 1px 0 rgba(255, 255, 255, 0.3) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+      0 14px 32px -10px rgba(232, 18, 36, 0.55),
+      0 0 0 1px rgba(232, 18, 36, 0.4);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent 30%);
+    pointer-events: none;
   }
   .btn-primary:hover {
-    filter: brightness(1.05);
+    filter: brightness(1.1);
     transform: translateY(-1px);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.4) inset,
-      0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-      0 18px 40px -10px rgba(232, 18, 36, 0.55);
   }
+
   .btn-glass {
-    @apply btn text-ink;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.9) inset,
-      0 8px 20px -6px rgba(28, 28, 30, 0.12);
-  }
-  .btn-ghost-dark {
-    @apply btn text-white;
-    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset;
+  }
+  .btn-glass:hover { background: rgba(255, 255, 255, 0.12); }
+
+  .btn-outline {
+    color: white;
+    background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .section {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-  .h-hero {
-    @apply font-display text-[40px] sm:text-[56px] lg:text-[72px] font-semibold leading-[1.05] tracking-[-0.02em];
-  }
-  .h-section {
-    @apply font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.02em];
-  }
+  /* Chip */
   .chip {
-    @apply inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm text-ink-70;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 8px -2px rgba(28, 28, 30, 0.06);
-  }
-  .chip-dark {
-    @apply inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(16px);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border-radius: 999px;
     color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
-  .card {
-    @apply liquid-glass p-6;
+  .chip .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--primary);
+    box-shadow: 0 0 10px rgba(232, 18, 36, 0.8);
   }
 
-  /* Blob-фон для hero */
-  .blob {
+  .section {
+    margin-inline: auto;
+    max-width: 80rem;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) { .section { padding-inline: 1.5rem; } }
+  @media (min-width: 1024px) { .section { padding-inline: 2rem; } }
+
+  /* Brand gradient text */
+  .text-brand-gradient {
+    background: linear-gradient(135deg, #FF3E4F 0%, #E81224 60%, #4A9FD9 140%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Subtle glow dot */
+  .dot-primary {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #E81224;
+  }
+  .dot-primary::after {
+    content: '';
     position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.55;
-    pointer-events: none;
+    inset: -6px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(232, 18, 36, 0.4), transparent 70%);
   }
 
-  /* Tactile hover scale */
-  .tactile {
-    @apply transition-transform duration-200 active:scale-[0.97];
+  /* Red glowing hairline accent (как красная полоса в логотипе) */
+  .accent-bar {
+    display: inline-block;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    box-shadow: 0 0 12px rgba(232, 18, 36, 0.7);
   }
 }
 
-/* ======= FADE + REVEAL ======= */
+/* Blob */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  33% { transform: translateY(-28px) translateX(18px); }
+  66% { transform: translateY(16px) translateX(-20px); }
+}
+.float-slow { animation: float 16s ease-in-out infinite; }
+.float-slower { animation: float 24s ease-in-out infinite; }
+
+/* Reveal */
 .reveal {
-  animation: reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes reveal {
-  from { opacity: 0; transform: translateY(20px); filter: blur(8px); }
+  from { opacity: 0; transform: translateY(24px); filter: blur(10px); }
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-/* Плавающая точка */
-@keyframes float {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  33% { transform: translateY(-20px) translateX(10px); }
-  66% { transform: translateY(10px) translateX(-15px); }
-}
-.float-slow { animation: float 14s ease-in-out infinite; }
-.float-slower { animation: float 20s ease-in-out infinite; }
-
-/* Специально для mobile: больше воздуха */
-@media (max-width: 640px) {
-  .section { padding-left: 1rem; padding-right: 1rem; }
+/* Character reveal (применяется через JS на hero) */
+@keyframes char-in {
+  from { opacity: 0; transform: translateY(40%) rotate(4deg); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0) rotate(0); filter: blur(0); }
 }
 
-/* Safe area inset для iPhone */
-.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
-.pt-safe { padding-top: calc(env(safe-area-inset-top) + 1rem); }
+/* Shine sweep — проходящий блик */
+@keyframes shine {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(350%) skewX(-20deg); }
+}
+.shine-hover { position: relative; overflow: hidden; }
+.shine-hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: translateX(-150%) skewX(-20deg);
+  transition: transform 0.7s;
+  pointer-events: none;
+}
+.shine-hover:hover::after { transform: translateX(350%) skewX(-20deg); }
 
-/* Убрать default outline, оставить кастомный focus-visible */
+/* Safe area */
+.pt-safe { padding-top: calc(env(safe-area-inset-top) + 0.75rem); }
+.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
+
+/* Custom range slider */
+input[type='range'] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  width: 100%;
+  height: 22px;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #FF3E4F, #E81224);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 6px 14px -4px rgba(232, 18, 36, 0.7);
+  border: 2px solid rgba(0, 0, 0, 0.6);
+}
+input[type='range']::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+input[type='range']::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #FF3E4F, #E81224);
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  box-shadow: 0 6px 14px -4px rgba(232, 18, 36, 0.7);
+}
+
+/* Focus */
 :focus { outline: none; }
 :focus-visible {
-  outline: 2px solid rgba(232, 18, 36, 0.5);
+  outline: 2px solid rgba(232, 18, 36, 0.7);
   outline-offset: 3px;
   border-radius: 12px;
+}
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #E81224 0%, #FF3E4F 50%, #4A9FD9 100%);
+  transform-origin: 0 0;
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(232, 18, 36, 0.6);
+}
+
+/* Divider с hex-паттерном */
+.hex-divider {
+  height: 80px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 8 L88 29 L88 71 L50 92 L12 71 L12 29 Z' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1.4'/></svg>");
+  background-size: 80px 80px;
+  background-repeat: space no-repeat;
+  background-position: center;
 }

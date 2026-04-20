@@ -1,37 +1,22 @@
 'use client';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const items = [
-  {
-    q: 'Сколько экономит ГБО?',
-    a: 'В зависимости от пробега и расхода — от 40% до 55% на топливе. Калькулятор на сайте покажет цифры под ваше авто.',
-  },
-  {
-    q: 'Какое поколение ГБО ставить?',
-    a: 'Для карбюраторных — 2-е; для инжекторных — 4-е (самый массовый вариант); для двигателей с прямым впрыском — 6-е.',
-  },
-  {
-    q: 'Как часто делать поверку баллона?',
-    a: 'Композитный — раз в 2 года, металлический — раз в 5 лет. Без поверки эксплуатация незаконна.',
-  },
-  {
-    q: 'Даёте ли гарантию?',
-    a: 'Да. На работы — 1 год, на оборудование — заводская гарантия производителя.',
-  },
-  {
-    q: 'Нужно ли регистрировать ГБО в ГИБДД?',
-    a: 'Да. Это обязательное требование. Помогаем с пакетом документов для регистрации изменений.',
-  },
+  { q: 'Сколько экономит ГБО?', a: 'В зависимости от пробега и расхода — от 40% до 55% на топливе. Калькулятор на сайте покажет цифры под ваше авто.' },
+  { q: 'Какое поколение ГБО ставить?', a: 'Для карбюраторных — 2-е; для инжекторных — 4-е (самый массовый вариант); для двигателей с прямым впрыском — 6-е.' },
+  { q: 'Как часто делать поверку баллона?', a: 'Композитный — раз в 2 года, металлический — раз в 5 лет. Без поверки эксплуатация незаконна.' },
+  { q: 'Даёте ли гарантию?', a: 'Да. На работы — 1 год, на оборудование — заводская гарантия производителя.' },
+  { q: 'Нужно ли регистрировать ГБО в ГИБДД?', a: 'Да. Это обязательное требование. Помогаем с пакетом документов для регистрации изменений.' },
 ];
 
 export function Faq() {
   return (
     <section className="section py-16 sm:py-24">
       <div className="mb-8 sm:mb-12">
-        <span className="chip">Частые вопросы</span>
-        <h2 className="h-section mt-3">FAQ</h2>
+        <span className="chip"><span className="dot" />Частые вопросы</span>
+        <h2 className="h-section mt-3 text-white">FAQ</h2>
       </div>
       <div className="flex flex-col gap-3">
         {items.map((it, i) => (
@@ -66,9 +51,13 @@ function FaqItem({ q, a, defaultOpen }: { q: string; a: string; defaultOpen?: bo
         aria-expanded={open}
         className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 active:scale-[0.99] transition-transform"
       >
-        <span className="font-medium text-base sm:text-lg">{q}</span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.25 }}>
-          <ChevronDown className="w-5 h-5 text-ink-50 flex-none" />
+        <span className="font-display text-base sm:text-lg text-white tracking-tight">{q}</span>
+        <motion.span
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.25 }}
+          className="w-9 h-9 rounded-full border border-white/15 grid place-items-center flex-none bg-white/5"
+        >
+          <Plus className="w-4 h-4 text-white/80" />
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
@@ -80,7 +69,7 @@ function FaqItem({ q, a, defaultOpen }: { q: string; a: string; defaultOpen?: bo
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="px-5 sm:px-6 pb-5 sm:pb-6 text-ink-70 leading-relaxed">{a}</p>
+            <p className="px-5 sm:px-6 pb-5 sm:pb-6 text-white/65 leading-relaxed">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>

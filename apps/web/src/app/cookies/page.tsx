@@ -8,19 +8,18 @@ export default function CookiesPage() {
   return (
     <>
       <Header />
-      <main className="section py-16 prose prose-neutral max-w-3xl">
-        <h1 className="h-section">Использование cookies</h1>
+      <main className="section py-16 max-w-3xl text-white/80 space-y-5">
+        <h1 className="h-section text-white">Использование cookies</h1>
         <p>
-          Сайт использует <strong>только технические cookies</strong>, необходимые для его работы:
-          авторизация (refresh_token, httpOnly), защита от CSRF, предпочтения интерфейса.
+          Сайт использует <strong className="text-white">только технические cookies</strong>:
+          авторизация (refresh_token), защита от CSRF, предпочтения интерфейса.
         </p>
         <p>
-          Аналитические и рекламные cookies третьих сторон (Яндекс.Метрика, Google Analytics, VK Pixel и т. п.)
-          на сайте не используются. Они будут подключены после подачи оператором уведомления в
-          Роскомнадзор и обновления данной страницы с cookie-баннером.
+          Аналитические и рекламные cookies третьих сторон не используются.
+          Они будут подключены после подачи уведомления в Роскомнадзор.
         </p>
         <p>
-          Вы можете отключить cookies в настройках браузера — некоторые функции сайта в этом случае станут недоступны.
+          Отключить cookies можно в настройках браузера — часть функций сайта в этом случае станет недоступна.
         </p>
       </main>
       <Footer />

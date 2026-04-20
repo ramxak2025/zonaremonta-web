@@ -1,65 +1,120 @@
 'use client';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Wrench, Gauge, Package, Zap } from 'lucide-react';
+import { Wrench, Gauge, Package, Zap, ArrowUpRight } from 'lucide-react';
+import { HexIcon } from './HexIcon';
 
-const items = [
+const ease = [0.22, 1, 0.36, 1] as const;
+
+interface Item {
+  title: string;
+  text: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  href: string;
+  tint: 'red' | 'blue';
+  size: 'lg' | 'md' | 'sm';
+}
+
+const items: Item[] = [
   {
-    icon: Zap,
     title: 'Установка ГБО',
-    text: '2-е, 4-е и 6-е поколения. Официальные бренды, комплект под двигатель.',
-    gradient: 'linear-gradient(135deg, #E81224 0%, #FF3E4F 100%)',
+    text: '2-е, 4-е и 6-е поколения. Официальные бренды, подбор под двигатель.',
+    icon: Zap,
+    href: '/services#install',
+    tint: 'red',
+    size: 'lg',
   },
   {
-    icon: Wrench,
     title: 'Ремонт ГБО',
-    text: 'Редукторы, форсунки, клапаны, проводка. Сначала диагностика — потом цена.',
-    gradient: 'linear-gradient(135deg, #4A9FD9 0%, #2F7AB0 100%)',
+    text: 'Редукторы, форсунки, клапаны, проводка.',
+    icon: Wrench,
+    href: '/services#repair',
+    tint: 'blue',
+    size: 'md',
   },
   {
-    icon: Gauge,
     title: 'Диагностика',
-    text: 'Проверка на стенде, подключение к ЭБУ, калибровка карт расхода.',
-    gradient: 'linear-gradient(135deg, #FF3E4F 0%, #E81224 100%)',
+    text: 'На стенде, подключение к ЭБУ, калибровка.',
+    icon: Gauge,
+    href: '/services#diagnostic',
+    tint: 'red',
+    size: 'md',
   },
   {
-    icon: Package,
     title: 'Комплектующие',
-    text: 'Склад в Махачкале: редукторы, форсунки, баллоны, фитинги, расходники.',
-    gradient: 'linear-gradient(135deg, #2F7AB0 0%, #4A9FD9 100%)',
+    text: 'Склад в Махачкале. Редукторы, форсунки, баллоны, фитинги.',
+    icon: Package,
+    href: '/catalog',
+    tint: 'blue',
+    size: 'lg',
   },
 ];
 
 export function Services() {
   return (
-    <section id="services" className="section py-16 sm:py-24">
-      <div className="flex items-end justify-between mb-8 sm:mb-12">
-        <div>
-          <span className="chip">Что мы делаем</span>
-          <h2 className="h-section mt-3">Услуги</h2>
-        </div>
+    <section id="services" className="section py-16 sm:py-24 relative">
+      <div className="mb-8 sm:mb-12">
+        <span className="chip">
+          <span className="dot" />
+          Что мы делаем
+        </span>
+        <h2 className="h-section mt-3 text-white">Услуги</h2>
       </div>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {items.map((it, i) => (
-          <motion.article
-            key={it.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
-            whileHover={{ y: -6 }}
-            className="liquid-glass p-6 cursor-default group"
-          >
-            <div
-              className="relative w-14 h-14 rounded-2xl grid place-items-center mb-5 overflow-hidden"
-              style={{ background: it.gradient, boxShadow: '0 10px 24px -10px rgba(0,0,0,0.35)' }}
+
+      <div
+        className="grid gap-3 sm:gap-4"
+        style={{
+          gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+          gridAutoRows: 'minmax(160px, auto)',
+        }}
+      >
+        {items.map((it, i) => {
+          const colSpan =
+            it.size === 'lg' ? 'col-span-6 sm:col-span-4' : it.size === 'md' ? 'col-span-6 sm:col-span-2' : 'col-span-3';
+          const tintBg =
+            it.tint === 'red'
+              ? 'linear-gradient(135deg, rgba(232,18,36,0.22), rgba(255,62,79,0.08))'
+              : 'linear-gradient(135deg, rgba(74,159,217,0.22), rgba(74,159,217,0.06))';
+          const tintBorder = it.tint === 'red' ? 'rgba(232,18,36,0.35)' : 'rgba(74,159,217,0.35)';
+          const tintColor = it.tint === 'red' ? 'text-primary' : 'text-secondary';
+
+          return (
+            <motion.article
+              key={it.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.6, delay: i * 0.08, ease }}
+              whileHover={{ y: -5 }}
+              className={`${colSpan} liquid-glass relative overflow-hidden p-6 group`}
             >
-              <span className="absolute inset-x-2 top-2 h-3 rounded-xl bg-white/40 blur-[1px]" aria-hidden />
-              <it.icon strokeWidth={2.2} className="w-7 h-7 text-white relative" />
-            </div>
-            <h3 className="font-display text-xl mb-2">{it.title}</h3>
-            <p className="text-ink-70 text-sm leading-relaxed">{it.text}</p>
-          </motion.article>
-        ))}
+              <Link href={it.href} className="absolute inset-0 z-10" aria-label={it.title} />
+              <HexIcon
+                size={220}
+                filled={false}
+                className="absolute -right-16 -bottom-16 text-white/[0.04] group-hover:text-white/[0.08] transition-colors"
+              />
+              <div className="flex items-start justify-between">
+                <span
+                  className="relative w-14 h-14 grid place-items-center"
+                  style={{
+                    background: tintBg,
+                    border: `1px solid ${tintBorder}`,
+                    borderRadius: 20,
+                    boxShadow: '0 1px 0 rgba(255,255,255,0.08) inset',
+                  }}
+                >
+                  <it.icon strokeWidth={2.2} className={`w-6 h-6 ${tintColor}`} />
+                </span>
+                <ArrowUpRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:rotate-12 transition-all" />
+              </div>
+              <h3 className="font-display text-2xl sm:text-3xl mt-5 text-white tracking-tight">
+                {it.title}
+              </h3>
+              <p className="text-sm text-white/65 mt-2 leading-relaxed max-w-sm">{it.text}</p>
+            </motion.article>
+          );
+        })}
       </div>
     </section>
   );

@@ -1,11 +1,23 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Oswald } from 'next/font/google';
 import '../styles/globals.css';
 import { SITE } from '@/lib/site';
 import { Providers } from './providers';
 import { MobileTabBar } from '@/components/MobileTabBar';
+import { ScrollProgress } from '@/components/ScrollProgress';
 
-const inter = Inter({ subsets: ['latin', 'cyrillic'], variable: '--font-inter', display: 'swap' });
+const inter = Inter({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const oswald = Oswald({
+  subsets: ['latin', 'cyrillic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-oswald',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.siteUrl),
@@ -29,21 +41,22 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#E81224',
+  themeColor: '#08080A',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={inter.variable}>
+    <html lang="ru" className={`${inter.variable} ${oswald.variable} dark`}>
       <body>
         <Providers>
+          <ScrollProgress />
           {children}
           <MobileTabBar />
-          {/* Отступ под mobile tab bar, чтобы контент не залезал */}
-          <div className="md:hidden h-24" aria-hidden />
+          <div className="md:hidden h-28" aria-hidden />
         </Providers>
       </body>
     </html>
