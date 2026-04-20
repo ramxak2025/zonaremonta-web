@@ -17,6 +17,9 @@ RUN pnpm install --frozen-lockfile || pnpm install
 # --- build ---
 FROM deps AS build
 COPY . .
+# shared и ui сначала собираются, чтобы web видел их как готовые пакеты
+RUN pnpm --filter @05auto/shared build
+RUN pnpm --filter @05auto/ui build
 RUN pnpm --filter @05auto/web build
 
 # --- runner ---

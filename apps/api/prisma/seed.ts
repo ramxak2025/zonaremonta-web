@@ -5,7 +5,7 @@ import {
   TRANSACTION_CATEGORIES,
   DEFAULT_SERVICES,
   PART_CATEGORIES,
-} from '../../../packages/shared/src';
+} from '@05auto/shared';
 
 const prisma = new PrismaClient();
 

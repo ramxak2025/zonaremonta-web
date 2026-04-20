@@ -3,11 +3,8 @@ ARG NODE_VERSION=20-alpine
 
 FROM node:${NODE_VERSION} AS base
 RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
-# libvips для sharp
-RUN apk add --no-cache vips-dev build-base python3
+RUN apk add --no-cache vips-dev build-base python3 openssl
 WORKDIR /repo
-
-RUN apk add --no-cache openssl
 
 FROM base AS deps
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
@@ -17,6 +14,8 @@ RUN pnpm install --frozen-lockfile || pnpm install
 
 FROM deps AS build
 COPY . .
+# сначала собираем shared (он нужен api как скомпилированный пакет)
+RUN pnpm --filter @05auto/shared build
 RUN pnpm --filter @05auto/api exec prisma generate
 RUN pnpm --filter @05auto/api build
 
@@ -28,7 +27,8 @@ WORKDIR /app
 COPY --from=build /repo/apps/api/dist ./dist
 COPY --from=build /repo/apps/api/prisma ./prisma
 COPY --from=build /repo/apps/api/package.json ./
-COPY --from=build /repo/packages/shared ./node_modules/@05auto/shared
+COPY --from=build /repo/packages/shared/dist ./node_modules/@05auto/shared/dist
+COPY --from=build /repo/packages/shared/package.json ./node_modules/@05auto/shared/package.json
 COPY --from=build /repo/node_modules ./node_modules
 
 EXPOSE 4000

@@ -19,13 +19,7 @@
     "declaration": true,
     "declarationMap": true,
     "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@05auto/shared": ["packages/shared/src/index.ts"],
-      "@05auto/shared/*": ["packages/shared/src/*"],
-      "@05auto/ui": ["packages/ui/src/index.ts"],
-      "@05auto/ui/*": ["packages/ui/src/*"]
-    }
+    "noEmit": true
   },
   "exclude": ["node_modules", "dist", ".next", "build", "coverage"]
 }

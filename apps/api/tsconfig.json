@@ -7,13 +7,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "baseUrl": ".",
-    "paths": {
-      "@05auto/shared": ["../../packages/shared/src/index.ts"],
-      "@05auto/shared/*": ["../../packages/shared/src/*"]
-    }
+    "paths": {}
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts", "test/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "prisma"]
 }

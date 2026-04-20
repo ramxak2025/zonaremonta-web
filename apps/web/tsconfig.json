@@ -12,11 +12,7 @@
     "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@05auto/shared": ["../../packages/shared/src/index.ts"],
-      "@05auto/shared/*": ["../../packages/shared/src/*"],
-      "@05auto/ui": ["../../packages/ui/src/index.ts"],
-      "@05auto/ui/*": ["../../packages/ui/src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
