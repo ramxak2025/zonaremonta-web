@@ -1,0 +1,662 @@
+// Prisma schema — «Зона Ремонта» / 05auto
+// Postgres 16. Все id — UUID. Таймстемпы в UTC.
+// Миграции храним в prisma/migrations, seed — в prisma/seed.ts.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =========================================================
+// Пользователи и роли
+// =========================================================
+
+enum Role {
+  CLIENT
+  MASTER
+  DIRECTOR
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+}
+
+model User {
+  id             String     @id @default(uuid()) @db.Uuid
+  role           Role
+  status         UserStatus @default(ACTIVE)
+  email          String?    @unique
+  passwordHash   String?
+  totpSecret     String?
+  totpEnabled    Boolean    @default(false)
+  lastLoginAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  client  Client?
+  master  Master?
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+
+  @@index([role, status])
+}
+
+model Client {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @unique @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone      String   @unique
+  name       String?
+  notes      String?
+  tags       String[] @default([])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  vehicles          Vehicle[]
+  expenses          ClientExpense[]
+  appointments      Appointment[]
+  workOrders        WorkOrder[]
+  reminders         Reminder[]
+  callbackRequests  CallbackRequest[]
+  notifications     Notification[]
+
+  @@index([phone])
+  @@index([createdAt])
+}
+
+enum MasterSpecialization {
+  GBO
+  DIAGNOSTIC
+  GENERAL_REPAIR
+}
+
+model Master {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @unique @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName        String
+  specializations MasterSpecialization[] @default([])
+  salaryScheme    Json?    // { type: 'fixed' | 'percent' | 'mix', base?: number, pct?: number }
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  workOrders   WorkOrder[]
+  appointments Appointment[]
+}
+
+// =========================================================
+// Авторизация
+// =========================================================
+
+model SmsCode {
+  id         String   @id @default(uuid()) @db.Uuid
+  phone      String
+  codeHash   String
+  attempts   Int      @default(0)
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  consumedAt DateTime?
+  ip         String?
+
+  @@index([phone, createdAt])
+  @@index([expiresAt])
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  userAgent  String?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// =========================================================
+// Авто и справочники
+// =========================================================
+
+model VehicleBrand {
+  id        String          @id @default(uuid()) @db.Uuid
+  slug      String          @unique
+  name      String
+  models    VehicleModel[]
+  createdAt DateTime        @default(now())
+}
+
+model VehicleModel {
+  id       String       @id @default(uuid()) @db.Uuid
+  brandId  String       @db.Uuid
+  brand    VehicleBrand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  slug     String
+  name     String
+  vehicles Vehicle[]
+
+  @@unique([brandId, slug])
+}
+
+enum CylinderType {
+  COMPOSITE
+  METAL
+}
+
+model Vehicle {
+  id                     String        @id @default(uuid()) @db.Uuid
+  clientId               String        @db.Uuid
+  client                 Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  brandId                String        @db.Uuid
+  brand                  VehicleBrand  @relation(fields: [brandId], references: [id])
+  modelId                String        @db.Uuid
+  model                  VehicleModel  @relation(fields: [modelId], references: [id])
+  year                   Int
+  licensePlate           String
+  vin                    String        @unique
+  mileageKm              Int?
+  mileageUpdatedAt       DateTime?
+  hasGbo                 Boolean       @default(false)
+  cylinderType           CylinderType?
+  cylinderLastCheckDate  DateTime?
+  photos                 String[]      @default([])
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  expenses        ClientExpense[]
+  appointments    Appointment[]
+  workOrders      WorkOrder[]
+  reminders       Reminder[]
+  externalWorks   ExternalWorkEntry[]
+
+  @@index([clientId])
+  @@index([licensePlate])
+  @@index([hasGbo])
+}
+
+model VehicleModelRequest {
+  id        String   @id @default(uuid()) @db.Uuid
+  clientId  String   @db.Uuid
+  brandText String
+  modelText String
+  createdAt DateTime @default(now())
+  resolved  Boolean  @default(false)
+}
+
+// =========================================================
+// Услуги, склад, заказ-наряды
+// =========================================================
+
+model Service {
+  id          String  @id @default(uuid()) @db.Uuid
+  slug        String  @unique
+  name        String
+  category    String
+  basePrice   Decimal @db.Decimal(12, 2)
+  durationMin Int
+  description String?
+  isActive    Boolean @default(true)
+
+  workItems     WorkOrderItem[]
+  appointmentServices AppointmentService[]
+}
+
+model PartCategory {
+  id    String @id @default(uuid()) @db.Uuid
+  slug  String @unique
+  name  String
+  parts Part[]
+}
+
+model Part {
+  id           String        @id @default(uuid()) @db.Uuid
+  sku          String        @unique
+  name         String
+  categoryId   String        @db.Uuid
+  category     PartCategory  @relation(fields: [categoryId], references: [id])
+  manufacturer String?
+  costPrice    Decimal       @db.Decimal(12, 2)
+  retailPrice  Decimal       @db.Decimal(12, 2)
+  stockQty     Int           @default(0)
+  minStockQty  Int           @default(0)
+  description  String?
+  photos       String[]      @default([])
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  movements  StockMovement[]
+  workItems  WorkOrderItem[]
+
+  @@index([categoryId])
+  @@index([stockQty])
+}
+
+enum StockMovementType {
+  RECEIPT       // приход по накладной
+  WRITE_OFF     // ручное списание
+  WORK_ORDER    // списание по наряду
+  RETURN        // возврат
+  ADJUSTMENT    // инвентаризация
+}
+
+model StockMovement {
+  id          String            @id @default(uuid()) @db.Uuid
+  partId      String            @db.Uuid
+  part        Part              @relation(fields: [partId], references: [id])
+  type        StockMovementType
+  qty         Int
+  priceAtMove Decimal           @db.Decimal(12, 2)
+  invoiceId   String?           @db.Uuid
+  invoice     SupplierInvoice?  @relation(fields: [invoiceId], references: [id])
+  workOrderId String?           @db.Uuid
+  workOrder   WorkOrder?        @relation(fields: [workOrderId], references: [id])
+  reason      String?
+  createdAt   DateTime          @default(now())
+  createdById String?           @db.Uuid
+
+  @@index([partId, createdAt])
+  @@index([type])
+}
+
+model Supplier {
+  id       String            @id @default(uuid()) @db.Uuid
+  name     String
+  inn      String?
+  contacts String?
+  invoices SupplierInvoice[]
+}
+
+model SupplierInvoice {
+  id         String          @id @default(uuid()) @db.Uuid
+  supplierId String          @db.Uuid
+  supplier   Supplier        @relation(fields: [supplierId], references: [id])
+  number     String
+  date       DateTime
+  total      Decimal         @db.Decimal(14, 2)
+  comment    String?
+  createdAt  DateTime        @default(now())
+  movements  StockMovement[]
+}
+
+enum WorkOrderStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+model WorkOrder {
+  id         String          @id @default(uuid()) @db.Uuid
+  clientId   String          @db.Uuid
+  client     Client          @relation(fields: [clientId], references: [id])
+  vehicleId  String          @db.Uuid
+  vehicle    Vehicle         @relation(fields: [vehicleId], references: [id])
+  masterId   String?         @db.Uuid
+  master     Master?         @relation(fields: [masterId], references: [id])
+  status     WorkOrderStatus @default(NEW)
+  totalCost  Decimal         @default(0) @db.Decimal(12, 2)
+  comment    String?
+  photosBefore String[]      @default([])
+  photosAfter  String[]      @default([])
+  openedAt   DateTime        @default(now())
+  closedAt   DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  items         WorkOrderItem[]
+  stockMovements StockMovement[]
+  transactions  Transaction[]
+
+  @@index([clientId])
+  @@index([vehicleId])
+  @@index([masterId])
+  @@index([status])
+  @@index([openedAt])
+}
+
+enum WorkItemKind {
+  SERVICE
+  PART
+}
+
+model WorkOrderItem {
+  id          String        @id @default(uuid()) @db.Uuid
+  workOrderId String        @db.Uuid
+  workOrder   WorkOrder     @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  kind        WorkItemKind
+  serviceId   String?       @db.Uuid
+  service     Service?      @relation(fields: [serviceId], references: [id])
+  partId      String?       @db.Uuid
+  part        Part?         @relation(fields: [partId], references: [id])
+  name        String
+  qty         Decimal       @default(1) @db.Decimal(10, 2)
+  unitPrice   Decimal       @db.Decimal(12, 2)
+  subtotal    Decimal       @db.Decimal(12, 2)
+
+  @@index([workOrderId])
+}
+
+// =========================================================
+// Запись на сервис
+// =========================================================
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+model AppointmentSlot {
+  id        String   @id @default(uuid()) @db.Uuid
+  startAt   DateTime
+  endAt     DateTime
+  capacity  Int      @default(1)
+  isActive  Boolean  @default(true)
+
+  appointments Appointment[]
+
+  @@index([startAt])
+}
+
+model Appointment {
+  id          String            @id @default(uuid()) @db.Uuid
+  clientId    String            @db.Uuid
+  client      Client            @relation(fields: [clientId], references: [id])
+  vehicleId   String            @db.Uuid
+  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id])
+  slotId      String            @db.Uuid
+  slot        AppointmentSlot   @relation(fields: [slotId], references: [id])
+  masterId    String?           @db.Uuid
+  master      Master?           @relation(fields: [masterId], references: [id])
+  status      AppointmentStatus @default(PENDING)
+  comment     String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  services AppointmentService[]
+
+  @@index([clientId])
+  @@index([slotId])
+  @@index([status])
+}
+
+model AppointmentService {
+  id            String      @id @default(uuid()) @db.Uuid
+  appointmentId String      @db.Uuid
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  serviceId     String      @db.Uuid
+  service       Service     @relation(fields: [serviceId], references: [id])
+
+  @@unique([appointmentId, serviceId])
+}
+
+// =========================================================
+// Клиентские траты и напоминания
+// =========================================================
+
+model ClientExpenseCategory {
+  id       String          @id @default(uuid()) @db.Uuid
+  slug     String          @unique
+  name     String
+  icon     String?
+  expenses ClientExpense[]
+}
+
+model ClientExpense {
+  id         String                 @id @default(uuid()) @db.Uuid
+  clientId   String                 @db.Uuid
+  client     Client                 @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  vehicleId  String?                @db.Uuid
+  vehicle    Vehicle?               @relation(fields: [vehicleId], references: [id])
+  categoryId String                 @db.Uuid
+  category   ClientExpenseCategory  @relation(fields: [categoryId], references: [id])
+  amount     Decimal                @db.Decimal(12, 2)
+  date       DateTime
+  comment    String?
+  receiptUrl String?
+  createdAt  DateTime               @default(now())
+
+  @@index([clientId, date])
+  @@index([vehicleId])
+}
+
+model ExternalWorkEntry {
+  id         String   @id @default(uuid()) @db.Uuid
+  vehicleId  String   @db.Uuid
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  date       DateTime
+  workType   String
+  place      String?
+  cost       Decimal? @db.Decimal(12, 2)
+  comment    String?
+  receiptUrl String?
+  createdAt  DateTime @default(now())
+
+  @@index([vehicleId])
+}
+
+enum ReminderType {
+  OSAGO
+  MAINTENANCE
+  CYLINDER_RECHECK
+  OIL_CHANGE
+  FILTER_CHANGE
+  CUSTOM
+}
+
+model Reminder {
+  id        String       @id @default(uuid()) @db.Uuid
+  clientId  String       @db.Uuid
+  client    Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  vehicleId String?      @db.Uuid
+  vehicle   Vehicle?     @relation(fields: [vehicleId], references: [id])
+  type      ReminderType
+  title     String
+  dueAt     DateTime
+  notified  Boolean      @default(false)
+  completed Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  @@index([dueAt, notified])
+}
+
+// =========================================================
+// Финансы
+// =========================================================
+
+enum TransactionDirection {
+  INCOME
+  EXPENSE
+}
+
+model TransactionCategory {
+  id        String               @id @default(uuid()) @db.Uuid
+  slug      String               @unique
+  name      String
+  direction TransactionDirection
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String               @id @default(uuid()) @db.Uuid
+  direction   TransactionDirection
+  categoryId  String               @db.Uuid
+  category    TransactionCategory  @relation(fields: [categoryId], references: [id])
+  amount      Decimal              @db.Decimal(14, 2)
+  date        DateTime
+  workOrderId String?              @db.Uuid
+  workOrder   WorkOrder?           @relation(fields: [workOrderId], references: [id])
+  comment     String?
+  createdAt   DateTime             @default(now())
+  createdById String?              @db.Uuid
+
+  @@index([direction, date])
+  @@index([categoryId])
+}
+
+// =========================================================
+// Публичные заявки, контент
+// =========================================================
+
+enum CallbackStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  SPAM
+}
+
+model CallbackRequest {
+  id        String         @id @default(uuid()) @db.Uuid
+  name      String?
+  phone     String
+  clientId  String?        @db.Uuid
+  client    Client?        @relation(fields: [clientId], references: [id])
+  status    CallbackStatus @default(NEW)
+  source    String?
+  note      String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model BlogPost {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique
+  title       String
+  excerpt     String?
+  contentMd   String
+  coverUrl    String?
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  seoTitle    String?
+  seoDescription String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([published, publishedAt])
+}
+
+model Review {
+  id        String   @id @default(uuid()) @db.Uuid
+  author    String
+  rating    Int
+  text      String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model FaqItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  question  String
+  answer    String
+  order     Int      @default(0)
+  published Boolean  @default(true)
+}
+
+model Certificate {
+  id        String  @id @default(uuid()) @db.Uuid
+  title     String
+  imageUrl  String
+  order     Int     @default(0)
+  published Boolean @default(true)
+}
+
+// Инструкции для мастеров (директор редактирует)
+model Instruction {
+  id          String              @id @default(uuid()) @db.Uuid
+  title       String
+  brandSlug   String?
+  modelSlug   String?
+  category    String
+  contentMd   String
+  published   Boolean             @default(true)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  media       InstructionMedia[]
+
+  @@index([brandSlug, modelSlug])
+}
+
+enum InstructionMediaType {
+  PHOTO
+  VK_VIDEO
+}
+
+model InstructionMedia {
+  id            String               @id @default(uuid()) @db.Uuid
+  instructionId String               @db.Uuid
+  instruction   Instruction          @relation(fields: [instructionId], references: [id], onDelete: Cascade)
+  type          InstructionMediaType
+  url           String               // для VK — ссылка oembed/embed
+  caption       String?
+  order         Int                  @default(0)
+}
+
+// =========================================================
+// Уведомления, аудит, настройки
+// =========================================================
+
+enum NotificationChannel {
+  SMS
+  IN_APP
+  EMAIL
+}
+
+enum NotificationStatus {
+  QUEUED
+  SENT
+  FAILED
+  READ
+}
+
+model Notification {
+  id        String               @id @default(uuid()) @db.Uuid
+  clientId  String?              @db.Uuid
+  client    Client?              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  channel   NotificationChannel
+  status    NotificationStatus   @default(QUEUED)
+  subject   String?
+  body      String
+  payload   Json?
+  sentAt    DateTime?
+  error     String?
+  createdAt DateTime             @default(now())
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String?  @db.Uuid
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  entity    String?
+  entityId  String?
+  ip        String?
+  userAgent String?
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([entity, entityId])
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
