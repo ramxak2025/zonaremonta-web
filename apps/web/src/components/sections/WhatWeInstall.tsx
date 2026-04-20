@@ -65,12 +65,12 @@ export function WhatWeInstall() {
   const l = getContactLinks();
   return (
     <section id="services" className="section section-y">
-      <div className="max-w-3xl mb-12 md:mb-16">
-        <span className="eyebrow">Что мы ставим</span>
-        <h2 className="h-1 mt-3 text-white">Только 4-е и 4+ поколение. Больше ничего.</h2>
-        <p className="lead mt-4">
-          Фокус на двух направлениях позволяет держать склад оригинальных комплектующих
-          и глубокую экспертизу мастеров — а не распыляться на устаревшие системы.
+      <div className="max-w-3xl mb-10 md:mb-14">
+        <span className="eyebrow">Что мы устанавливаем</span>
+        <h2 className="h-1 mt-4 text-white">Только 4-е и 4+. Потому что знаем их идеально.</h2>
+        <p className="lead mt-5">
+          Два направления вместо десяти — это когда каждый мастер видел вашу модель
+          сотни раз, на складе всегда есть оригинальные комплектующие, а ошибаться негде.
         </p>
       </div>
 
@@ -167,11 +167,16 @@ export function WhatWeInstall() {
       </p>
 
       <div className="mt-10 flex flex-wrap gap-3">
-        <Link href="/calculator" className="btn btn-primary">
+        <Link href="/calculator" className="btn btn-primary btn-lg">
           Рассчитать экономию под моё авто
         </Link>
-        <a href={l.whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
-          Задать вопрос в WhatsApp
+        <a
+          href={l.whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-ghost btn-lg"
+        >
+          Проконсультироваться в WhatsApp
         </a>
       </div>
     </section>

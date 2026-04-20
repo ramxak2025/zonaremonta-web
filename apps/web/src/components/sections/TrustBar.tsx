@@ -24,37 +24,35 @@ export function TrustBar({ settings }: Props) {
       className="border-y border-white/[0.06]"
       style={{
         background:
-          'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.15) 100%)',
+          'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.18) 100%)',
       }}
     >
-      <div className="section py-8 md:py-10">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6 items-center">
+      <div className="section py-10 md:py-14">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-8 items-center">
           {/* Яндекс */}
           <a
             href={yUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 lg:col-span-1 flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.03] transition-colors"
+            className="col-span-1 lg:col-span-1 flex items-center gap-4 group"
           >
             <div
-              className="w-11 h-11 rounded-xl grid place-items-center flex-none"
+              className="w-12 h-12 rounded-2xl grid place-items-center flex-none transition-transform group-hover:scale-105"
               style={{
                 background: 'linear-gradient(135deg, #FFCC00, #FF9500)',
-                boxShadow: '0 1px 0 rgba(255,255,255,0.3) inset',
+                boxShadow: '0 1px 0 rgba(255,255,255,0.35) inset, 0 8px 20px -6px rgba(255,149,0,0.5)',
               }}
             >
               <Star className="w-5 h-5 text-black" fill="currentColor" strokeWidth={0} />
             </div>
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5">
-                <span className="font-display text-2xl text-white leading-none">
+                <span className="font-display text-[28px] text-white leading-none">
                   {yRating.toFixed(1)}
                 </span>
-                <span className="text-[11px] text-white/45">/ 5</span>
+                <span className="text-[11px] text-white/40">/ 5</span>
               </div>
-              <div className="text-[11px] text-white/55 mt-0.5">
-                Яндекс · {yCount} отзывов
-              </div>
+              <div className="text-[12px] text-white/60 mt-1">Яндекс · {yCount} отзывов</div>
             </div>
           </a>
 
@@ -63,37 +61,40 @@ export function TrustBar({ settings }: Props) {
             href={gUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 lg:col-span-1 flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.03] transition-colors"
+            className="col-span-1 lg:col-span-1 flex items-center gap-4 group"
           >
             <div
-              className="w-11 h-11 rounded-xl grid place-items-center flex-none"
+              className="w-12 h-12 rounded-2xl grid place-items-center flex-none transition-transform group-hover:scale-105"
               style={{
                 background: 'linear-gradient(135deg, #5FBA47, #3E8E28)',
-                boxShadow: '0 1px 0 rgba(255,255,255,0.3) inset',
+                boxShadow: '0 1px 0 rgba(255,255,255,0.35) inset, 0 8px 20px -6px rgba(62,142,40,0.5)',
               }}
             >
               <Star className="w-5 h-5 text-white" fill="currentColor" strokeWidth={0} />
             </div>
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5">
-                <span className="font-display text-2xl text-white leading-none">
+                <span className="font-display text-[28px] text-white leading-none">
                   {gRating.toFixed(1)}
                 </span>
-                <span className="text-[11px] text-white/45">/ 5</span>
+                <span className="text-[11px] text-white/40">/ 5</span>
               </div>
-              <div className="text-[11px] text-white/55 mt-0.5">
-                2GIS · {gCount} отзывов
-              </div>
+              <div className="text-[12px] text-white/60 mt-1">2GIS · {gCount} отзывов</div>
             </div>
           </a>
 
           {/* Статы */}
           {STATS.map((s) => (
-            <div key={s.label} className="col-span-2 lg:col-span-1 flex items-center gap-3 p-3">
-              <div className="h-11 w-0.5 bg-gradient-to-b from-primary/60 to-transparent rounded-full flex-none" />
+            <div key={s.label} className="col-span-2 lg:col-span-1 flex items-center gap-4">
+              <div
+                className="w-1 h-12 rounded-full flex-none"
+                style={{
+                  background: 'linear-gradient(180deg, #FF3E4F, rgba(232,18,36,0.1))',
+                }}
+              />
               <div>
-                <div className="font-display text-2xl text-white leading-none">{s.num}</div>
-                <div className="text-[11px] text-white/55 mt-1">{s.label}</div>
+                <div className="font-display text-[28px] text-white leading-none">{s.num}</div>
+                <div className="text-[12px] text-white/60 mt-1">{s.label}</div>
               </div>
             </div>
           ))}

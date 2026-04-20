@@ -48,9 +48,9 @@ body {
   overflow-x: hidden;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   background:
-    radial-gradient(1200px 700px at 90% -5%, rgba(232, 18, 36, 0.26), transparent 55%),
-    radial-gradient(1000px 800px at -10% 20%, rgba(74, 159, 217, 0.18), transparent 55%),
-    radial-gradient(900px 700px at 50% 110%, rgba(255, 62, 79, 0.1), transparent 55%),
+    radial-gradient(1400px 900px at 100% -10%, rgba(232, 18, 36, 0.38), transparent 55%),
+    radial-gradient(1100px 900px at -10% 25%, rgba(74, 159, 217, 0.22), transparent 55%),
+    radial-gradient(1000px 800px at 50% 115%, rgba(255, 62, 79, 0.15), transparent 55%),
     var(--bg);
   background-attachment: fixed;
 }
@@ -130,8 +130,8 @@ body {
 
   /* Hex-сетка фоном — фирменный акцент */
   .hex-grid {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 4 L91 27 L91 73 L50 96 L9 73 L9 27 Z' fill='none' stroke='rgba(255,255,255,0.055)' stroke-width='1.4'/><circle cx='50' cy='50' r='18' fill='none' stroke='rgba(255,255,255,0.055)' stroke-width='1.4'/></svg>");
-    background-size: 96px 96px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 4 L91 27 L91 73 L50 96 L9 73 L9 27 Z' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1.6'/><circle cx='50' cy='50' r='19' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1.6'/></svg>");
+    background-size: 100px 100px;
   }
 
   /* Карточка поверх фона */
@@ -146,17 +146,35 @@ body {
     border-radius: var(--radius-lg);
   }
 
-  /* Liquid glass — для bento-hero и TabBar */
+  /* Liquid glass — для bento-hero и TabBar. Сочное стекло с сильным blur + inner highlight */
   .liquid-glass {
     position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(28px) saturate(1.6);
-    -webkit-backdrop-filter: blur(28px) saturate(1.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(32px) saturate(1.8);
+    -webkit-backdrop-filter: blur(32px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-xl);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.08) inset,
-      0 20px 60px -30px rgba(0, 0, 0, 0.6);
+      0 1px 0 rgba(255, 255, 255, 0.12) inset,
+      0 -1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 20px 60px -30px rgba(0, 0, 0, 0.55),
+      0 8px 24px -12px rgba(0, 0, 0, 0.35);
+  }
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.02) 35%,
+      rgba(255, 255, 255, 0.02) 65%,
+      rgba(255, 255, 255, 0.12) 100%);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
   }
 
   /* Glass-карточка (лёгкая) */

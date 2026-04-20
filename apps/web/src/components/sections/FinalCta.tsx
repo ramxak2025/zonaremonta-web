@@ -56,20 +56,33 @@ export function FinalCta({ settings }: Props) {
           }}
         />
 
-        <div className="relative grid lg:grid-cols-2 gap-10 items-center">
+        <div className="relative grid lg:grid-cols-2 gap-10 md:gap-12 items-center">
           <div>
-            <span className="eyebrow">Связаться с нами</span>
-            <h2 className="h-1 mt-3 text-white">Выберите удобный канал</h2>
-            <p className="lead mt-4">
-              Отвечаем в рабочее время за 15 минут. На выходных — по номеру или WhatsApp.
+            <span className="eyebrow">Мы на связи</span>
+            <h2 className="h-1 mt-4 text-white">
+              Каждый день без ГБО —<br />
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #FF3E4F, #FFCC00)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                }}
+              >
+                это 500 ₽ на АЗС впустую
+              </span>
+            </h2>
+            <p className="lead mt-5">
+              Позвоните, напишите в мессенджер или приезжайте на диагностику — покажем
+              комплект под ваш двигатель и посчитаем точную цену за 15 минут.
             </p>
-            <div className="mt-6 space-y-2 text-sm text-white/60">
+            <div className="mt-7 space-y-2 text-[14px] text-white/70">
               <div>
-                <span className="text-white/40">Адрес: </span>
+                <span className="text-white/45">Адрес: </span>
                 <span className="text-white">{address}</span>
               </div>
               <div>
-                <span className="text-white/40">Часы: </span>
+                <span className="text-white/45">Часы: </span>
                 <span className="text-white">{hours}</span>
               </div>
             </div>

@@ -1,32 +1,29 @@
 import { HexIcon } from './HexIcon';
 
 interface Props {
-  /** размеры подобраны под точное воспроизведение оригинала */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  /** stacked — точно как на фото (двустрочный); mark-only — только hex */
   layout?: 'stacked' | 'mark-only';
   className?: string;
 }
 
+/**
+ * Размеры подобраны под точное воспроизведение оригинального лого:
+ * верхняя строка ЗО⬡НА — гайка 110% высоты букв (визуально чуть больше "О"),
+ * красная полоса, нижняя строка РЕМОНТА со spread-трекингом.
+ */
 const SIZE_MAP = {
-  xs: { top: 13, hex: 11, gap: 0.5, bar: 2, bottom: 9, spread: 0.18 },
-  sm: { top: 16, hex: 14, gap: 1, bar: 2, bottom: 11, spread: 0.2 },
-  md: { top: 20, hex: 17, gap: 1, bar: 2.5, bottom: 14, spread: 0.2 },
-  lg: { top: 32, hex: 28, gap: 2, bar: 3, bottom: 22, spread: 0.22 },
-  xl: { top: 56, hex: 48, gap: 3, bar: 4, bottom: 38, spread: 0.24 },
+  xs: { top: 15, hex: 17, gap: 1, bar: 2, bottom: 11, spread: 0.22, halfGap: 2 },
+  sm: { top: 19, hex: 21, gap: 1.5, bar: 2.5, bottom: 14, spread: 0.22, halfGap: 3 },
+  md: { top: 24, hex: 26, gap: 2, bar: 3, bottom: 17, spread: 0.22, halfGap: 4 },
+  lg: { top: 34, hex: 37, gap: 2, bar: 4, bottom: 24, spread: 0.22, halfGap: 5 },
+  xl: { top: 54, hex: 58, gap: 3, bar: 5, bottom: 38, spread: 0.22, halfGap: 8 },
 } as const;
 
-/**
- * Фирменный логотип «Зона Ремонта».
- *  ЗО⬡А — верхняя строка с гайкой вместо буквы «О»
- *  ━━━━ — фирменная красная полоса
- *  РЕМОНТА — нижняя строка, trackING широкий
- */
 export function Logo({ size = 'md', layout = 'stacked', className = '' }: Props) {
   const s = SIZE_MAP[size];
 
   if (layout === 'mark-only') {
-    return <HexIcon size={s.hex * 1.5} className={`text-white ${className}`} />;
+    return <HexIcon size={s.hex * 1.4} className={`text-white ${className}`} />;
   }
 
   return (
@@ -34,39 +31,42 @@ export function Logo({ size = 'md', layout = 'stacked', className = '' }: Props)
       className={`inline-flex flex-col items-center leading-none select-none text-white ${className}`}
       aria-label="Зона Ремонта"
     >
-      {/* верхняя строка: ЗО⬡А (гайка на месте О) */}
+      {/* Верхняя строка: ЗО⬡НА — гайка вместо буквы О */}
       <span
         className="font-display font-bold inline-flex items-center"
         style={{
           fontSize: `${s.top}px`,
           letterSpacing: '-0.02em',
-          gap: `${s.gap}px`,
         }}
       >
         <span>З</span>
         <HexIcon
           size={s.hex}
-          className="text-current"
-          style={{ transform: 'translateY(6%)' }}
+          className="text-white"
+          style={{
+            marginLeft: `${s.gap}px`,
+            marginRight: `${s.gap}px`,
+            transform: 'translateY(4%)',
+          }}
         />
         <span>Н</span>
-        <span>А</span>
+        <span style={{ marginLeft: `${s.halfGap}px` }}>А</span>
       </span>
 
-      {/* красная полоса с свечением */}
+      {/* Красная фирменная полоса-разделитель */}
       <span
         aria-hidden
         className="block w-full rounded-full"
         style={{
           height: `${s.bar}px`,
-          background: 'linear-gradient(90deg, #B40E1C 0%, #E81224 50%, #B40E1C 100%)',
           marginTop: '3px',
           marginBottom: '3px',
+          background: 'linear-gradient(90deg, #B40E1C 0%, #E81224 50%, #B40E1C 100%)',
           boxShadow: '0 0 10px rgba(232, 18, 36, 0.6)',
         }}
       />
 
-      {/* нижняя строка */}
+      {/* Нижняя строка */}
       <span
         className="font-display font-bold"
         style={{
