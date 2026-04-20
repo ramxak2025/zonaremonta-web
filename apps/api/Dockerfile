@@ -14,24 +14,24 @@ RUN pnpm install --frozen-lockfile || pnpm install
 
 FROM deps AS build
 COPY . .
-# сначала собираем shared (он нужен api как скомпилированный пакет)
+# Собираем shared — его нужно собрать до деплоя, чтобы dist/ попал в бандл
 RUN pnpm --filter @05auto/shared build
 RUN ls -la /repo/packages/shared/dist
+# Генерируем prisma client в node_modules
 RUN pnpm --filter @05auto/api exec prisma generate
+# Собираем api
 RUN pnpm --filter @05auto/api build
 RUN ls -la /repo/apps/api/dist && test -f /repo/apps/api/dist/main.js || (echo "ERROR: dist/main.js NOT FOUND" && find /repo/apps/api/dist -type f 2>/dev/null; exit 1)
+# pnpm deploy создаёт самостоятельный бандл в /app-deploy с реальными файлами
+# (резолвит symlinks pnpm workspace, исключает devDeps)
+RUN pnpm --filter @05auto/api deploy --prod --legacy /app-deploy
+RUN ls -la /app-deploy/node_modules/.bin/ | head -20 && test -x /app-deploy/node_modules/.bin/prisma || (echo "ERROR: prisma bin not found" && exit 1)
 
 FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
 RUN apk add --no-cache vips tini openssl
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 WORKDIR /app
-COPY --from=build /repo/apps/api/dist ./dist
-COPY --from=build /repo/apps/api/prisma ./prisma
-COPY --from=build /repo/apps/api/package.json ./
-COPY --from=build /repo/packages/shared/dist ./node_modules/@05auto/shared/dist
-COPY --from=build /repo/packages/shared/package.json ./node_modules/@05auto/shared/package.json
-COPY --from=build /repo/node_modules ./node_modules
+COPY --from=build /app-deploy /app
 
 EXPOSE 4000
 ENTRYPOINT ["/sbin/tini", "--"]
