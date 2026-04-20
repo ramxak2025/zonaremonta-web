@@ -4,15 +4,17 @@ import { Footer } from '@/components/Footer';
 import { SavingsCalculator } from '@/components/SavingsCalculator';
 import { HexIcon } from '@/components/HexIcon';
 import { DEFAULT_SERVICES } from '@05auto/shared';
+import { getPublicSettings } from '@/lib/settings';
 
 export const metadata: Metadata = {
   title: 'Услуги и цены',
   description: 'Установка ГБО 2/4/6 поколения, диагностика, ремонт, поверка баллона.',
 };
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const settings = await getPublicSettings();
   return (
     <>
       <Header />
@@ -87,7 +89,7 @@ export default function ServicesPage() {
             </div>
           </div>
         </section>
-        <SavingsCalculator />
+        <SavingsCalculator settings={settings} />
       </main>
       <Footer />
     </>
