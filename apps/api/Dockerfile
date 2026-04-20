@@ -7,6 +7,8 @@ RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 RUN apk add --no-cache vips-dev build-base python3
 WORKDIR /repo
 
+RUN apk add --no-cache openssl
+
 FROM base AS deps
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 COPY apps/api/package.json apps/api/package.json
@@ -20,7 +22,7 @@ RUN pnpm --filter @05auto/api build
 
 FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
-RUN apk add --no-cache vips tini
+RUN apk add --no-cache vips tini openssl
 RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 WORKDIR /app
 COPY --from=build /repo/apps/api/dist ./dist

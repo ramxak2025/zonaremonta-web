@@ -3,7 +3,8 @@
 // Миграции храним в prisma/migrations, seed — в prisma/seed.ts.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -131,6 +132,7 @@ model VehicleBrand {
   slug      String          @unique
   name      String
   models    VehicleModel[]
+  vehicles  Vehicle[]
   createdAt DateTime        @default(now())
 }
 
