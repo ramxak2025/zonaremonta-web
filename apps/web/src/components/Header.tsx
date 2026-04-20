@@ -1,15 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Phone } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { Logo } from './Logo';
+import { PhoneFilledIcon } from './BrandIcons';
 
 const nav = [
   { href: '/services', label: 'Услуги' },
   { href: '/catalog', label: 'Каталог' },
   { href: '/blog', label: 'Блог' },
-  { href: '/#contacts', label: 'Контакты' },
+  { href: '/#contact', label: 'Контакты' },
 ];
 
 export function Header() {
@@ -27,7 +27,7 @@ export function Header() {
   return (
     <>
       {/* DESKTOP */}
-      <header className="hidden md:block sticky top-0 z-50 transition-all duration-300">
+      <header className="hidden md:block sticky top-0 z-40 transition-all duration-300">
         <div className={`section mt-3 ${scrolled ? 'py-0' : ''}`}>
           <div className="liquid-glass pill px-6 h-16 flex items-center justify-between">
             <Link href="/" className="flex items-center" aria-label="Зона Ремонта">
@@ -44,38 +44,46 @@ export function Header() {
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center gap-2">
-              <a href={`tel:${phoneDigits}`} className="btn-glass !h-10 !px-4 text-sm">
-                <Phone className="w-4 h-4 text-primary" />
-                <span className="font-medium">{SITE.phone}</span>
-              </a>
-              <Link href="/lk" className="btn-primary !h-10 !px-5 text-sm shine-hover">
-                Кабинет
-              </Link>
-            </div>
+            <a
+              href={`tel:${phoneDigits}`}
+              className="btn btn-primary shine-hover !h-10 !px-5 text-sm"
+            >
+              <PhoneFilledIcon className="w-4 h-4" />
+              {SITE.phone}
+            </a>
           </div>
         </div>
       </header>
 
-      {/* MOBILE top island */}
-      <header className="md:hidden sticky top-0 z-50 pt-safe">
-        <div className="px-3">
-          <div className="liquid-glass pill px-4 h-14 flex items-center justify-between">
-            <Link href="/" className="flex items-center" aria-label="Зона Ремонта">
-              <Logo size="sm" />
+      {/* MOBILE top */}
+      <header className="md:hidden sticky top-0 z-40 pt-safe">
+        <div className="px-2.5">
+          <div className="liquid-glass pill pl-3 pr-2 h-14 flex items-center justify-between">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5"
+              aria-label="Зона Ремонта"
+            >
+              <Logo size="xs" />
             </Link>
             <a
               href={`tel:${phoneDigits}`}
-              className="flex items-center gap-1.5 h-10 px-3.5 rounded-full text-white text-[13px] font-semibold active:scale-95 transition-transform shine-hover relative overflow-hidden"
+              aria-label="Позвонить"
+              className="flex items-center gap-1.5 h-10 px-3.5 rounded-full text-white text-[12px] font-bold uppercase tracking-wider active:scale-95 transition-transform relative overflow-hidden"
               style={{
                 background: 'linear-gradient(180deg, #FF3E4F 0%, #E81224 100%)',
                 boxShadow:
-                  '0 1px 0 rgba(255,255,255,0.4) inset, 0 8px 18px -6px rgba(232,18,36,0.6), 0 0 0 1px rgba(232,18,36,0.3)',
+                  '0 1px 0 rgba(255,255,255,0.35) inset, 0 8px 18px -6px rgba(232,18,36,0.6), 0 0 0 1px rgba(232,18,36,0.4)',
+                letterSpacing: '0.06em',
               }}
-              aria-label="Позвонить"
             >
-              <Phone className="w-4 h-4" />
-              Звонок
+              <span
+                aria-hidden
+                className="absolute inset-x-1 top-1 h-3 rounded-xl pointer-events-none"
+                style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.35), transparent)' }}
+              />
+              <PhoneFilledIcon className="w-4 h-4 relative" />
+              <span className="relative">Звонок</span>
             </a>
           </div>
         </div>

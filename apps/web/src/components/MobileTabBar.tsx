@@ -1,107 +1,122 @@
 'use client';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { motion, LayoutGroup } from 'framer-motion';
-import { Home, Wrench, Calculator, Package, UserCircle2 } from 'lucide-react';
-import { HexIcon } from './HexIcon';
-
-const tabs = [
-  { href: '/', label: 'Главная', icon: Home, match: (p: string) => p === '/' },
-  { href: '/services', label: 'Услуги', icon: Wrench, match: (p: string) => p.startsWith('/services') },
-  { href: '/#calc', label: 'Расчёт', icon: Calculator, match: () => false },
-  { href: '/catalog', label: 'Каталог', icon: Package, match: (p: string) => p.startsWith('/catalog') },
-  { href: '/lk', label: 'Кабинет', icon: UserCircle2, match: (p: string) => p.startsWith('/lk') },
-];
+import { motion } from 'framer-motion';
+import { SITE, getContactLinks } from '@/lib/site';
+import { PhoneFilledIcon, WhatsAppIcon, MaxIcon, YandexMapsIcon } from './BrandIcons';
 
 function haptic() {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
-    try {
-      navigator.vibrate(8);
-    } catch {}
+    try { navigator.vibrate(10); } catch {}
   }
 }
 
+interface CTA {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  bg: string;
+  color: string;
+  ring: string;
+  external?: boolean;
+}
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
 export function MobileTabBar() {
-  const pathname = usePathname() ?? '/';
+  const l = getContactLinks();
+
+  const ctas: CTA[] = [
+    {
+      label: 'Звонок',
+      href: l.phoneHref,
+      icon: PhoneFilledIcon,
+      bg: 'linear-gradient(180deg, #FF3E4F 0%, #E81224 100%)',
+      color: 'text-white',
+      ring: 'rgba(232,18,36,0.55)',
+    },
+    {
+      label: 'WhatsApp',
+      href: l.whatsappHref,
+      icon: WhatsAppIcon,
+      bg: 'linear-gradient(180deg, #25D366 0%, #128C7E 100%)',
+      color: 'text-white',
+      ring: 'rgba(37,211,102,0.55)',
+      external: true,
+    },
+    {
+      label: 'Max',
+      href: l.maxHref,
+      icon: MaxIcon,
+      bg: 'linear-gradient(180deg, #5B9BD5 0%, #2B5F9E 100%)',
+      color: 'text-white',
+      ring: 'rgba(91,155,213,0.55)',
+      external: true,
+    },
+    {
+      label: 'Карта',
+      href: l.mapsHref,
+      icon: YandexMapsIcon,
+      bg: 'linear-gradient(180deg, #FFCC00 0%, #FF9500 100%)',
+      color: 'text-black',
+      ring: 'rgba(255,204,0,0.55)',
+      external: true,
+    },
+  ];
 
   return (
     <div className="md:hidden fixed bottom-0 inset-x-0 z-50 pointer-events-none pb-safe">
-      <div className="mx-3 pointer-events-auto">
-        <LayoutGroup id="tabbar">
-          <motion.nav
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ type: 'spring', damping: 22, stiffness: 220, delay: 0.25 }}
-            className="liquid-glass-strong liquid-glass flex items-stretch justify-between gap-1 p-2 relative"
-            style={{ borderRadius: 30 }}
-          >
-            {tabs.map((t) => {
-              const active = t.match(pathname);
-              const Icon = t.icon;
-              return (
-                <Link
-                  key={t.href}
-                  href={t.href}
-                  onClick={haptic}
-                  className="relative flex-1 min-w-0 h-14 flex flex-col items-center justify-center gap-0.5 rounded-[22px] overflow-visible"
-                  aria-current={active ? 'page' : undefined}
+      <div className="mx-2.5 pointer-events-auto">
+        <motion.nav
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', damping: 22, stiffness: 230, delay: 0.2 }}
+          className="liquid-glass-strong liquid-glass grid grid-cols-4 gap-1.5 p-1.5"
+          style={{ borderRadius: 28 }}
+          aria-label="Быстрые действия"
+        >
+          {ctas.map((c, i) => {
+            const Icon = c.icon;
+            return (
+              <motion.a
+                key={c.label}
+                href={c.href}
+                target={c.external ? '_blank' : undefined}
+                rel={c.external ? 'noopener noreferrer' : undefined}
+                onClick={haptic}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: 'spring', damping: 14, stiffness: 320 }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{
+                  background: c.bg,
+                  boxShadow:
+                    '0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 18px -6px ' +
+                    c.ring +
+                    ', 0 0 0 1px ' +
+                    c.ring,
+                  animationDelay: `${i * 50}ms`,
+                }}
+                className="relative flex flex-col items-center justify-center gap-1 h-14 rounded-[22px] overflow-hidden"
+              >
+                {/* glass highlight наверху */}
+                <span
+                  aria-hidden
+                  className="absolute inset-x-1 top-1 h-3 rounded-xl"
+                  style={{
+                    background:
+                      'linear-gradient(180deg, rgba(255,255,255,0.35), transparent)',
+                  }}
+                />
+                <Icon className={`w-[22px] h-[22px] ${c.color} relative`} />
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider relative ${c.color}`}
+                  style={{ letterSpacing: '0.05em' }}
                 >
-                  {active && (
-                    <motion.span
-                      layoutId="tab-active"
-                      transition={{ type: 'spring', damping: 26, stiffness: 280 }}
-                      className="absolute inset-0 -z-10"
-                      style={{
-                        background:
-                          'linear-gradient(180deg, rgba(255,62,79,0.22) 0%, rgba(232,18,36,0.35) 100%)',
-                        border: '1px solid rgba(232,18,36,0.45)',
-                        borderRadius: 22,
-                        boxShadow:
-                          '0 1px 0 rgba(255,255,255,0.15) inset, 0 10px 24px -8px rgba(232,18,36,0.55), 0 0 30px -4px rgba(232,18,36,0.35)',
-                      }}
-                    />
-                  )}
-
-                  {/* Icon в hex-рамке для фирменного стиля */}
-                  <motion.span
-                    whileTap={{ scale: 0.82 }}
-                    animate={{ scale: active ? 1.06 : 1, y: active ? -1 : 0 }}
-                    transition={{ type: 'spring', damping: 14, stiffness: 320 }}
-                    className="relative grid place-items-center w-[28px] h-[28px]"
-                  >
-                    {/* фоновый hex для активного — рисуем тонкую hex-обводку */}
-                    {active && (
-                      <motion.span
-                        initial={{ opacity: 0, scale: 0.6, rotate: -10 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', damping: 18 }}
-                        className="absolute inset-0"
-                      >
-                        <HexIcon size={28} filled={false} className="text-primary/60" />
-                      </motion.span>
-                    )}
-                    <Icon
-                      strokeWidth={active ? 2.4 : 1.9}
-                      className={`w-[19px] h-[19px] relative transition-colors ${
-                        active ? 'text-white' : 'text-white/55'
-                      }`}
-                    />
-                  </motion.span>
-
-                  <motion.span
-                    animate={{ opacity: active ? 1 : 0.55 }}
-                    className={`text-[10px] leading-none font-semibold tracking-tight uppercase ${
-                      active ? 'text-white' : 'text-white/55'
-                    }`}
-                    style={{ letterSpacing: '0.04em' }}
-                  >
-                    {t.label}
-                  </motion.span>
-                </Link>
-              );
-            })}
-          </motion.nav>
-        </LayoutGroup>
+                  {c.label}
+                </span>
+              </motion.a>
+            );
+          })}
+        </motion.nav>
       </div>
     </div>
   );

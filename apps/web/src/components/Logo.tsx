@@ -1,69 +1,79 @@
 import { HexIcon } from './HexIcon';
 
 interface Props {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  /** horizontal — ЗОНА [hex] РЕМОНТА в одну строку; stacked — в две */
-  layout?: 'horizontal' | 'stacked' | 'mark-only';
+  /** размеры подобраны под точное воспроизведение оригинала */
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  /** stacked — точно как на фото (двустрочный); mark-only — только hex */
+  layout?: 'stacked' | 'mark-only';
   className?: string;
 }
 
 const SIZE_MAP = {
-  sm: { text: 'text-[13px]', hex: 14, gap: 'gap-1.5', bar: 'h-[2px]' },
-  md: { text: 'text-[17px]', hex: 18, gap: 'gap-2', bar: 'h-[2px]' },
-  lg: { text: 'text-[24px]', hex: 26, gap: 'gap-2.5', bar: 'h-[3px]' },
-  xl: { text: 'text-[40px] sm:text-[52px]', hex: 52, gap: 'gap-4', bar: 'h-[4px]' },
+  xs: { top: 13, hex: 11, gap: 0.5, bar: 2, bottom: 9, spread: 0.18 },
+  sm: { top: 16, hex: 14, gap: 1, bar: 2, bottom: 11, spread: 0.2 },
+  md: { top: 20, hex: 17, gap: 1, bar: 2.5, bottom: 14, spread: 0.2 },
+  lg: { top: 32, hex: 28, gap: 2, bar: 3, bottom: 22, spread: 0.22 },
+  xl: { top: 56, hex: 48, gap: 3, bar: 4, bottom: 38, spread: 0.24 },
 } as const;
 
 /**
- * Логотип бренда «Зона Ремонта».
- *  ЗОНА ⬡ РЕМОНТА  — буква О заменена фирменной гайкой.
- *  Красная разделительная черта под верхним рядом.
+ * Фирменный логотип «Зона Ремонта».
+ *  ЗО⬡А — верхняя строка с гайкой вместо буквы «О»
+ *  ━━━━ — фирменная красная полоса
+ *  РЕМОНТА — нижняя строка, trackING широкий
  */
-export function Logo({ size = 'md', layout = 'horizontal', className = '' }: Props) {
+export function Logo({ size = 'md', layout = 'stacked', className = '' }: Props) {
   const s = SIZE_MAP[size];
 
   if (layout === 'mark-only') {
-    return <HexIcon size={s.hex} className={`text-white ${className}`} />;
+    return <HexIcon size={s.hex * 1.5} className={`text-white ${className}`} />;
   }
 
-  if (layout === 'stacked') {
-    return (
-      <div className={`inline-flex flex-col items-center ${className}`}>
-        <span
-          className={`font-display font-bold tracking-tight leading-none inline-flex items-center ${s.gap} ${s.text}`}
-          style={{ letterSpacing: '-0.02em' }}
-        >
-          <span>З</span>
-          <HexIcon size={s.hex} className="text-current translate-y-[0.05em]" />
-          <span>НА</span>
-        </span>
-        <span className={`w-full ${s.bar} bg-primary my-1 rounded-full`} />
-        <span
-          className={`font-display font-bold tracking-wider leading-none ${s.text}`}
-          style={{ letterSpacing: '0.04em' }}
-        >
-          РЕМОНТА
-        </span>
-      </div>
-    );
-  }
-
-  // horizontal
   return (
     <span
-      className={`inline-flex items-center font-display font-bold tracking-tight leading-none ${s.gap} ${s.text} ${className}`}
-      style={{ letterSpacing: '-0.01em' }}
+      className={`inline-flex flex-col items-center leading-none select-none text-white ${className}`}
+      aria-label="Зона Ремонта"
     >
-      <span className="inline-flex items-center">
-        <span>З</span>
-        <HexIcon size={s.hex} className="text-current translate-y-[0.05em] mx-0.5" />
-        <span>НА</span>
-      </span>
+      {/* верхняя строка: ЗО⬡А (гайка на месте О) */}
       <span
-        className={`${s.bar} w-5 bg-primary rounded-full`}
-        style={{ boxShadow: '0 0 8px rgba(232,18,36,0.6)' }}
+        className="font-display font-bold inline-flex items-center"
+        style={{
+          fontSize: `${s.top}px`,
+          letterSpacing: '-0.02em',
+          gap: `${s.gap}px`,
+        }}
+      >
+        <span>З</span>
+        <HexIcon
+          size={s.hex}
+          className="text-current"
+          style={{ transform: 'translateY(6%)' }}
+        />
+        <span>Н</span>
+        <span>А</span>
+      </span>
+
+      {/* красная полоса с свечением */}
+      <span
+        aria-hidden
+        className="block w-full rounded-full"
+        style={{
+          height: `${s.bar}px`,
+          background: 'linear-gradient(90deg, #B40E1C 0%, #E81224 50%, #B40E1C 100%)',
+          marginTop: '3px',
+          marginBottom: '3px',
+          boxShadow: '0 0 10px rgba(232, 18, 36, 0.6)',
+        }}
       />
-      <span className="tracking-wider" style={{ letterSpacing: '0.03em' }}>
+
+      {/* нижняя строка */}
+      <span
+        className="font-display font-bold"
+        style={{
+          fontSize: `${s.bottom}px`,
+          letterSpacing: `${s.spread}em`,
+        }}
+      >
         РЕМОНТА
       </span>
     </span>
