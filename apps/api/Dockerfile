@@ -30,6 +30,8 @@ RUN ls -la /app-deploy/node_modules/.bin/ | head -20 && test -x /app-deploy/node
 FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
 RUN apk add --no-cache vips tini openssl
+# tsx нужен для `prisma db seed` (seed.ts запускается через tsx)
+RUN npm i -g tsx
 WORKDIR /app
 COPY --from=build /app-deploy /app
 
