@@ -16,8 +16,10 @@ FROM deps AS build
 COPY . .
 # сначала собираем shared (он нужен api как скомпилированный пакет)
 RUN pnpm --filter @05auto/shared build
+RUN ls -la /repo/packages/shared/dist
 RUN pnpm --filter @05auto/api exec prisma generate
 RUN pnpm --filter @05auto/api build
+RUN ls -la /repo/apps/api/dist && test -f /repo/apps/api/dist/main.js || (echo "ERROR: dist/main.js NOT FOUND" && find /repo/apps/api/dist -type f 2>/dev/null; exit 1)
 
 FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
