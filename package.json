@@ -1,0 +1,28 @@
+{
+  "name": "zonaremonta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Зона Ремонта / 05auto — автосервис ГБО в Махачкале",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
+    "db:migrate": "pnpm --filter @05auto/api prisma:migrate",
+    "db:seed": "pnpm --filter @05auto/api prisma:seed",
+    "docker:dev": "docker compose -f docker-compose.yml up -d postgres redis",
+    "docker:dev:down": "docker compose -f docker-compose.yml down"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0"
+  }
+}

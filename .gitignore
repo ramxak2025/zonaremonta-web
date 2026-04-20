@@ -1,0 +1,46 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# build output
+dist
+build
+.next
+out
+*.tsbuildinfo
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# coverage
+coverage
+.nyc_output
+
+# testing
+playwright-report
+test-results
+
+# prisma
+apps/api/prisma/migrations/dev.db*
+
+# uploads (never commit)
+uploads/
+var/
+
+# misc
+.turbo
+.cache
