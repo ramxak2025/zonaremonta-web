@@ -1,10 +1,27 @@
-import { Body, Controller, ForbiddenException, Get, Module, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Module,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AppointmentStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthUser } from '@05auto/shared';
+
+interface UpdateAppointmentBody {
+  status?: AppointmentStatus;
+  masterId?: string;
+}
 
 @ApiTags('appointments')
 @Controller('appointments')
@@ -80,10 +97,13 @@ class AppointmentsController {
 
   @Roles('DIRECTOR', 'MASTER')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: { status?: string; masterId?: string }) {
+  update(@Param('id') id: string, @Body() body: UpdateAppointmentBody) {
+    if (body.status && !(Object.values(AppointmentStatus) as string[]).includes(body.status)) {
+      throw new BadRequestException(`Неизвестный статус: ${body.status}`);
+    }
     return this.prisma.appointment.update({
       where: { id },
-      data: { status: body.status as any, masterId: body.masterId },
+      data: { status: body.status, masterId: body.masterId },
     });
   }
 }

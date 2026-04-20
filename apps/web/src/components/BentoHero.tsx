@@ -1,17 +1,27 @@
 'use client';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, Fuel, ShieldCheck, Gauge, Wrench, MapPin } from 'lucide-react';
+import type { PublicSettings } from '@05auto/shared';
 import { HexIcon } from './HexIcon';
 import { getContactLinks } from '@/lib/site';
-import { readSetting, readSettingObj, type SettingsMap } from '@/lib/settings';
 import { PhoneFilledIcon, WhatsAppIcon, YandexMapsIcon, MaxIcon } from './BrandIcons';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+interface Props {
+  settings: Required<PublicSettings>;
+}
+
 function Card({
-  className = '', delay = 0, children, interactive = true,
+  className = '',
+  delay = 0,
+  children,
+  interactive = true,
 }: {
-  className?: string; delay?: number; children: React.ReactNode; interactive?: boolean;
+  className?: string;
+  delay?: number;
+  children: React.ReactNode;
+  interactive?: boolean;
 }) {
   return (
     <motion.div
@@ -26,29 +36,19 @@ function Card({
   );
 }
 
-export function BentoHero({ settings }: { settings: SettingsMap }) {
+export function BentoHero({ settings }: Props) {
   const l = getContactLinks();
-
-  const badge = readSetting<string>(settings, 'hero.badge', 'ГБО в Махачкале · Гарантия 1 год');
-  const title = readSetting<string>(settings, 'hero.title', 'Переводим авто на газ с гарантией.');
-  const subtitle = readSetting<string>(
-    settings,
-    'hero.subtitle',
-    'Установка, ремонт и диагностика ГБО. Сертифицированные мастера, свой склад, гарантия 1 год.',
-  );
-  const ctaText = readSetting<string>(settings, 'hero.primaryCta', 'Позвонить сейчас');
-  const heroImage = readSetting<string>(settings, 'hero.imageUrl', '');
-  const address = readSetting<string>(settings, 'site.address', 'г. Махачкала');
-  const payback = readSettingObj<{ value: string; suffix?: string }>(
-    settings, 'hero.stats.payback', { value: '~8', suffix: 'мес' },
-  );
-  const savings = readSettingObj<{ value: string; suffix?: string }>(
-    settings, 'hero.stats.savings', { value: '55', suffix: '%' },
-  );
+  const badge = settings['hero.badge'].value;
+  const title = settings['hero.title'].value;
+  const subtitle = settings['hero.subtitle'].value;
+  const ctaText = settings['hero.primaryCta'].value;
+  const heroImage = settings['hero.imageUrl'].value;
+  const address = settings['site.address'].value;
+  const payback = settings['hero.stats.payback'];
+  const savings = settings['hero.stats.savings'];
 
   return (
     <section className="relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <div className="blob bg-primary/45 w-[520px] h-[520px] -top-32 -left-20 float-slow" />
         <div className="blob bg-secondary/40 w-[600px] h-[600px] top-20 right-[-160px] float-slower" />
@@ -76,7 +76,6 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
             gridAutoRows: 'minmax(72px, auto)',
           }}
         >
-          {/* --- HERO TITLE --- */}
           <Card
             className="col-span-6 lg:col-span-4 row-span-3 lg:row-span-4 flex flex-col justify-between p-6 sm:p-10"
             delay={0.05}
@@ -104,10 +103,7 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
               </div>
               <h1
                 className="font-display font-bold uppercase text-white mt-3 sm:mt-5 leading-[0.95]"
-                style={{
-                  fontSize: 'clamp(30px, 8vw, 72px)',
-                  letterSpacing: '-0.025em',
-                }}
+                style={{ fontSize: 'clamp(30px, 8vw, 72px)', letterSpacing: '-0.025em' }}
               >
                 {title.split('\n').map((line, i) => (
                   <span key={i} className="block">
@@ -135,7 +131,8 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
                 rel="noopener noreferrer"
                 className="btn !h-12 sm:!h-14 !text-[15px] sm:!text-base flex-1 sm:flex-none text-white"
                 style={{
-                  background: 'linear-gradient(180deg, rgba(37,211,102,0.3) 0%, rgba(37,211,102,0.1) 100%)',
+                  background:
+                    'linear-gradient(180deg, rgba(37,211,102,0.3) 0%, rgba(37,211,102,0.1) 100%)',
                   border: '1px solid rgba(37,211,102,0.45)',
                   boxShadow: '0 1px 0 rgba(255,255,255,0.1) inset',
                 }}
@@ -146,7 +143,6 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
             </div>
           </Card>
 
-          {/* --- ОКУПАЕМОСТЬ --- */}
           <Card className="col-span-3 lg:col-span-2 row-span-2 flex flex-col justify-between p-4 sm:p-6" delay={0.12}>
             <div className="flex items-center justify-between">
               <span className="chip !py-0.5 !px-2 !text-[9px] !bg-primary/15 !border-primary/30 !text-white">
@@ -168,11 +164,12 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
               >
                 {payback.value}
               </div>
-              <div className="text-white/60 text-[11px] sm:text-sm mt-1">{payback.suffix ?? 'мес'}</div>
+              <div className="text-white/60 text-[11px] sm:text-sm mt-1">
+                {payback.suffix ?? ''}
+              </div>
             </div>
           </Card>
 
-          {/* --- ЭКОНОМИЯ --- */}
           <Card className="col-span-3 lg:col-span-2 row-span-2 flex flex-col justify-between p-4 sm:p-6" delay={0.18}>
             <div className="flex items-center justify-between">
               <span className="chip !py-0.5 !px-2 !text-[9px] !bg-secondary/15 !border-secondary/30">
@@ -190,14 +187,13 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
                   {savings.value}
                 </span>
                 <span className="font-display text-2xl sm:text-3xl text-white/70">
-                  {savings.suffix ?? '%'}
+                  {savings.suffix ?? ''}
                 </span>
               </div>
               <div className="text-white/60 text-[11px] sm:text-sm mt-1">на топливе</div>
             </div>
           </Card>
 
-          {/* --- PERKS (desktop only) --- */}
           <Card className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4" delay={0.22}>
             <span className="relative w-10 h-10 grid place-items-center flex-none">
               <HexIcon size={40} className="text-primary/40 absolute" />
@@ -229,7 +225,6 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
             </div>
           </Card>
 
-          {/* --- Адрес (Я.Карты) --- */}
           <motion.a
             href={l.mapsHref}
             target="_blank"
@@ -273,7 +268,6 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
             </div>
           </motion.a>
 
-          {/* --- Max --- */}
           <motion.a
             href={l.maxHref}
             target="_blank"
@@ -285,9 +279,11 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
             whileTap={{ scale: 0.98 }}
             className="col-span-6 lg:col-span-3 row-span-2 relative overflow-hidden p-4 sm:p-6 flex flex-col justify-between group rounded-[28px]"
             style={{
-              background: 'linear-gradient(135deg, rgba(91,155,213,0.22) 0%, rgba(43,95,158,0.35) 100%)',
+              background:
+                'linear-gradient(135deg, rgba(91,155,213,0.22) 0%, rgba(43,95,158,0.35) 100%)',
               border: '1px solid rgba(91,155,213,0.35)',
-              boxShadow: '0 1px 0 rgba(255,255,255,0.1) inset, 0 20px 50px -20px rgba(91,155,213,0.4)',
+              boxShadow:
+                '0 1px 0 rgba(255,255,255,0.1) inset, 0 20px 50px -20px rgba(91,155,213,0.4)',
             }}
           >
             <HexIcon size={220} filled={false} className="absolute -right-14 -bottom-14 text-white/[0.06]" />
@@ -296,7 +292,8 @@ export function BentoHero({ settings }: { settings: SettingsMap }) {
                 className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl grid place-items-center"
                 style={{
                   background: 'linear-gradient(135deg, #5B9BD5 0%, #2B5F9E 100%)',
-                  boxShadow: '0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 24px -8px rgba(91,155,213,0.55)',
+                  boxShadow:
+                    '0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 24px -8px rgba(91,155,213,0.55)',
                 }}
               >
                 <MaxIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />

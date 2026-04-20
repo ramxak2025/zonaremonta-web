@@ -1,28 +1,26 @@
 # syntax=docker/dockerfile:1.7
-# Multi-stage build: web (Next.js 15, standalone output)
+# Multi-stage build: Next.js 15 standalone.
+# Строго --frozen-lockfile, workspace-пакеты собираются до Next.
 ARG NODE_VERSION=20-alpine
 
 FROM node:${NODE_VERSION} AS base
 RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 WORKDIR /repo
 
-# --- deps ---
 FROM base AS deps
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
 COPY packages/ui/package.json packages/ui/package.json
-RUN pnpm install --frozen-lockfile || pnpm install
+RUN pnpm install --frozen-lockfile
 
-# --- build ---
 FROM deps AS build
 COPY . .
-# shared и ui сначала собираются, чтобы web видел их как готовые пакеты
+# Сборка workspace-пакетов до next build
 RUN pnpm --filter @05auto/shared build
 RUN pnpm --filter @05auto/ui build
 RUN pnpm --filter @05auto/web build
 
-# --- runner ---
 FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
 WORKDIR /app

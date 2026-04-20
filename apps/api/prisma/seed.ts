@@ -1,18 +1,16 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, type Prisma } from '@prisma/client';
 import {
   VEHICLE_BRANDS,
   CLIENT_EXPENSE_CATEGORIES,
   TRANSACTION_CATEGORIES,
   DEFAULT_SERVICES,
   PART_CATEGORIES,
+  DEFAULT_SETTINGS,
 } from '@05auto/shared';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log('⏳ seeding…');
-
-  // Марки и модели
+async function seedBrandsAndModels(): Promise<void> {
   for (const brand of VEHICLE_BRANDS) {
     const b = await prisma.vehicleBrand.upsert({
       where: { slug: brand.slug },
@@ -20,7 +18,10 @@ async function main() {
       create: { slug: brand.slug, name: brand.name },
     });
     for (const modelName of brand.models) {
-      const modelSlug = modelName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+      const modelSlug = modelName
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
       await prisma.vehicleModel.upsert({
         where: { brandId_slug: { brandId: b.id, slug: modelSlug } },
         update: { name: modelName },
@@ -28,9 +29,9 @@ async function main() {
       });
     }
   }
-  console.log('✓ brands/models');
+}
 
-  // Категории расходов клиента
+async function seedTaxonomies(): Promise<void> {
   for (const c of CLIENT_EXPENSE_CATEGORIES) {
     await prisma.clientExpenseCategory.upsert({
       where: { slug: c.slug },
@@ -38,8 +39,6 @@ async function main() {
       create: { slug: c.slug, name: c.name, icon: c.icon },
     });
   }
-
-  // Категории транзакций (доход/расход)
   for (const c of TRANSACTION_CATEGORIES.INCOME) {
     await prisma.transactionCategory.upsert({
       where: { slug: c.slug },
@@ -54,9 +53,16 @@ async function main() {
       create: { slug: c.slug, name: c.name, direction: 'EXPENSE' },
     });
   }
-  console.log('✓ categories');
+  for (const c of PART_CATEGORIES) {
+    await prisma.partCategory.upsert({
+      where: { slug: c.slug },
+      update: { name: c.name },
+      create: { slug: c.slug, name: c.name },
+    });
+  }
+}
 
-  // Услуги
+async function seedServices(): Promise<void> {
   for (const s of DEFAULT_SERVICES) {
     await prisma.service.upsert({
       where: { slug: s.slug },
@@ -77,20 +83,10 @@ async function main() {
       },
     });
   }
-  console.log('✓ services');
+}
 
-  // Категории запчастей
-  for (const c of PART_CATEGORIES) {
-    await prisma.partCategory.upsert({
-      where: { slug: c.slug },
-      update: { name: c.name },
-      create: { slug: c.slug, name: c.name },
-    });
-  }
-  console.log('✓ part categories');
-
-  // FAQ
-  const faqs = [
+async function seedFaq(): Promise<void> {
+  const faqs: ReadonlyArray<{ q: string; a: string }> = [
     {
       q: 'Сколько экономит ГБО?',
       a: 'В зависимости от пробега и расхода — от 40% до 55% на топливе. Калькулятор на сайте покажет цифры под ваше авто.',
@@ -112,76 +108,50 @@ async function main() {
       a: 'Да, это обязательное требование. Помогаем с пакетом документов для регистрации изменений.',
     },
   ];
-  let faqOrder = 0;
-  for (const f of faqs) {
-    await prisma.faqItem.create({
-      data: { question: f.q, answer: f.a, order: faqOrder++ },
-    }).catch(() => {});
+  const existing = await prisma.faqItem.count();
+  if (existing > 0) return;
+  await prisma.faqItem.createMany({
+    data: faqs.map((f, order) => ({ question: f.q, answer: f.a, order })),
+  });
+}
+
+async function seedSettings(): Promise<void> {
+  // Источник правды — DEFAULT_SETTINGS из @05auto/shared (типизировано zod-схемой).
+  // При повторном запуске существующие значения НЕ перетираются (update = то же, что create, но
+  // upsert только добавит недостающие ключи).
+  const entries = Object.entries(DEFAULT_SETTINGS) as Array<
+    [string, Prisma.InputJsonValue]
+  >;
+  for (const [key, value] of entries) {
+    const found = await prisma.setting.findUnique({ where: { key } });
+    if (found) continue;
+    await prisma.setting.create({ data: { key, value } });
   }
+  // Координаты — отдельно, их не храним в публичных настройках (не редактируются тут).
+  await prisma.setting.upsert({
+    where: { key: 'site.coordinates' },
+    update: {},
+    create: { key: 'site.coordinates', value: { lat: 42.9831, lng: 47.5047 } },
+  });
+}
+
+async function main(): Promise<void> {
+  console.log('⏳ seeding…');
+  await seedBrandsAndModels();
+  console.log('✓ brands/models');
+  await seedTaxonomies();
+  console.log('✓ taxonomies');
+  await seedServices();
+  console.log('✓ services');
+  await seedFaq();
   console.log('✓ faq');
-
-  // Настройки — владелец редактирует их из ЛК директора
-  const settings = [
-    // --- контакты ---
-    { key: 'site.phone', value: { value: '+7 (988) 000-00-00' } },
-    { key: 'site.whatsapp', value: { value: '79880000000' } },
-    { key: 'site.max', value: { value: 'https://max.ru/05auto' } },
-    {
-      key: 'site.yandexMapsLink',
-      value: {
-        value:
-          'https://yandex.ru/maps/?text=%D0%9C%D0%B0%D1%85%D0%B0%D1%87%D0%BA%D0%B0%D0%BB%D0%B0%20%D0%97%D0%BE%D0%BD%D0%B0%20%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82%D0%B0',
-      },
-    },
-    { key: 'site.address', value: { value: 'г. Махачкала, ул. пример, 1' } },
-    { key: 'site.workingHours', value: { value: 'ПН-СБ: 9:00–20:00, ВС: выходной' } },
-    { key: 'site.coordinates', value: { lat: 42.9831, lng: 47.5047 } },
-
-    // --- главный баннер ---
-    { key: 'hero.badge', value: { value: 'ГБО в Махачкале · Гарантия 1 год' } },
-    { key: 'hero.title', value: { value: 'Переводим авто на газ с гарантией.' } },
-    {
-      key: 'hero.subtitle',
-      value: {
-        value:
-          'Установка, ремонт и диагностика ГБО. Сертифицированные мастера, свой склад, гарантия 1 год.',
-      },
-    },
-    { key: 'hero.primaryCta', value: { value: 'Позвонить сейчас' } },
-    { key: 'hero.imageUrl', value: { value: '' } },
-    { key: 'hero.stats.payback', value: { value: '~8', suffix: 'мес' } },
-    { key: 'hero.stats.savings', value: { value: '55', suffix: '%' } },
-
-    // --- цены топлива (рубли за литр) — владелец вводит актуальные ---
-    { key: 'fuel.ai92.price', value: { value: 58 } },
-    { key: 'fuel.ai95.price', value: { value: 62 } },
-    { key: 'fuel.ai98.price', value: { value: 68 } },
-    { key: 'fuel.ai100.price', value: { value: 75 } },
-    { key: 'fuel.lpg.price', value: { value: 28 } },
-
-    // --- калькулятор ---
-    { key: 'calc.gasOverheadPct', value: { value: 12 } },
-    { key: 'calc.defaultInstallPrice', value: { value: 38000 } },
-
-    // --- отзывы Яндекс ---
-    { key: 'reviews.yandex.url', value: { value: 'https://yandex.ru/profile/130786711189?lang=ru' } },
-    { key: 'reviews.yandex.rating', value: { value: 4.6 } },
-    { key: 'reviews.yandex.count', value: { value: 87 } },
-  ];
-  for (const s of settings) {
-    await prisma.setting.upsert({
-      where: { key: s.key },
-      update: { value: s.value },
-      create: s,
-    });
-  }
+  await seedSettings();
   console.log('✓ settings');
-
   console.log('✅ seed done');
 }
 
 main()
-  .catch((e) => {
+  .catch((e: unknown) => {
     console.error(e);
     process.exit(1);
   })

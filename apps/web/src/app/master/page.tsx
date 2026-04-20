@@ -1,12 +1,24 @@
 'use client';
+import Image from 'next/image';
 import { useState } from 'react';
 import { api, ApiError } from '@/lib/api';
+
+type StaffLoginResponse =
+  | { requires2faEnrollment: true; otpauth: string; qrDataUrl: string }
+  | { requires2fa: true }
+  | { accessToken: string; role: 'MASTER' | 'DIRECTOR' };
 
 export default function MasterLogin() {
   return <StaffLogin roleLabel="мастера" redirectTo="/master/dashboard" />;
 }
 
-export function StaffLogin({ roleLabel, redirectTo }: { roleLabel: string; redirectTo: string }) {
+export function StaffLogin({
+  roleLabel,
+  redirectTo,
+}: {
+  roleLabel: string;
+  redirectTo: string;
+}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [totp, setTotp] = useState('');
@@ -21,18 +33,21 @@ export function StaffLogin({ roleLabel, redirectTo }: { roleLabel: string; redir
     try {
       const body: Record<string, string> = { email, password };
       if (mode === '2fa' && totp) body.totp = totp;
-      const r = await api<any>('/auth/staff/login', { method: 'POST', body: JSON.stringify(body) });
-      if (r.requires2faEnrollment) {
+      const r = await api<StaffLoginResponse>('/auth/staff/login', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      if ('requires2faEnrollment' in r) {
         setQr(r.qrDataUrl);
         setMode('enroll');
         return;
       }
-      if (r.requires2fa) {
+      if ('requires2fa' in r) {
         setMode('2fa');
         return;
       }
       sessionStorage.setItem('access_token', r.accessToken);
-      location.href = redirectTo;
+      window.location.href = redirectTo;
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Ошибка входа');
     } finally {
@@ -56,49 +71,60 @@ export function StaffLogin({ roleLabel, redirectTo }: { roleLabel: string; redir
 
   return (
     <main className="section py-16">
-      <div className="max-w-md mx-auto card">
-        <h1 className="h-section">Вход для {roleLabel}</h1>
-        <p className="text-ink-70 text-sm mt-2">Email + пароль + одноразовый код TOTP (Google Authenticator / Яндекс.Ключ).</p>
+      <div className="max-w-md mx-auto liquid-glass p-8">
+        <h1 className="h-section text-white">Вход для {roleLabel}</h1>
+        <p className="text-white/60 text-sm mt-2">
+          Email + пароль + одноразовый код TOTP (Google Authenticator / Яндекс.Ключ).
+        </p>
 
         <div className="mt-6 space-y-4">
           <label className="block">
-            <span className="text-sm font-medium">Email</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-white/60">Email</span>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full h-12 px-4 rounded-xl border border-ink-10 bg-white outline-none focus:border-primary"
+              className="mt-2 w-full h-12 px-4 rounded-2xl text-white bg-white/5 border border-white/10 focus:border-primary/60 outline-none"
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium">Пароль</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-white/60">Пароль</span>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full h-12 px-4 rounded-xl border border-ink-10 bg-white outline-none focus:border-primary"
+              className="mt-2 w-full h-12 px-4 rounded-2xl text-white bg-white/5 border border-white/10 focus:border-primary/60 outline-none"
             />
           </label>
           {mode === 'enroll' && qr && (
-            <div className="p-4 rounded-xl bg-surface-muted text-sm">
-              <p className="mb-2">Отсканируйте QR в приложении TOTP и введите код для подтверждения:</p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={qr} alt="TOTP QR" className="w-48 h-48 mx-auto rounded" />
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-sm">
+              <p className="mb-3 text-white/80">
+                Отсканируйте QR в приложении TOTP и введите код для подтверждения:
+              </p>
+              <Image
+                src={qr}
+                alt="QR-код для настройки TOTP"
+                width={192}
+                height={192}
+                unoptimized
+                className="w-48 h-48 mx-auto rounded-xl bg-white p-2"
+              />
             </div>
           )}
           {(mode === '2fa' || mode === 'enroll') && (
             <label className="block">
-              <span className="text-sm font-medium">Код из приложения</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-white/60">Код из приложения</span>
               <input
                 inputMode="numeric"
                 value={totp}
                 onChange={(e) => setTotp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                className="mt-1 w-full h-12 px-4 rounded-xl border border-ink-10 bg-white tracking-[0.5em] text-center text-xl font-mono outline-none focus:border-primary"
+                className="mt-2 w-full h-14 px-4 rounded-2xl text-white bg-white/5 border border-white/10 tracking-[0.5em] text-center text-2xl font-mono outline-none focus:border-primary/60"
               />
             </label>
           )}
           <button
-            className="btn-primary w-full"
+            type="button"
+            className="btn btn-primary w-full"
             disabled={loading}
             onClick={mode === 'enroll' ? confirmEnrollment : submit}
           >

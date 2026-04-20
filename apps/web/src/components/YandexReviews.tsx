@@ -1,25 +1,28 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Star, ArrowUpRight, Quote } from 'lucide-react';
+import type { PublicSettings } from '@05auto/shared';
 import { YandexMapsIcon } from './BrandIcons';
 import { HexIcon } from './HexIcon';
-import { readSetting, type SettingsMap } from '@/lib/settings';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function YandexReviews({ settings }: { settings: SettingsMap }) {
-  const url = readSetting<string>(
-    settings,
-    'reviews.yandex.url',
-    'https://yandex.ru/profile/130786711189?lang=ru',
-  );
-  const rating = Number(readSetting<number>(settings, 'reviews.yandex.rating', 4.6));
-  const count = Number(readSetting<number>(settings, 'reviews.yandex.count', 87));
+interface Props {
+  settings: Required<PublicSettings>;
+}
+
+export function YandexReviews({ settings }: Props) {
+  const url = settings['reviews.yandex.url'].value;
+  const rating = settings['reviews.yandex.rating'].value;
+  const count = settings['reviews.yandex.count'].value;
 
   return (
     <section className="section py-12 sm:py-20 relative">
       <div className="mb-6 sm:mb-10">
-        <span className="chip"><span className="dot" />Отзывы</span>
+        <span className="chip">
+          <span className="dot" />
+          Отзывы
+        </span>
         <h2 className="h-section mt-3 text-white">Что говорят клиенты</h2>
         <p className="text-white/65 mt-2 sm:mt-3 max-w-xl text-sm sm:text-base leading-relaxed">
           Все отзывы — прямо из Яндекс.Карт, без редактуры. Хорошие и плохие — без цензуры.
@@ -30,7 +33,6 @@ export function YandexReviews({ settings }: { settings: SettingsMap }) {
         className="grid gap-2.5 sm:gap-4"
         style={{ gridTemplateColumns: 'repeat(6, minmax(0, 1fr))' }}
       >
-        {/* Большая карточка: общий рейтинг + CTA */}
         <motion.a
           href={url}
           target="_blank"
@@ -84,7 +86,6 @@ export function YandexReviews({ settings }: { settings: SettingsMap }) {
           </div>
         </motion.a>
 
-        {/* Пример карточек — «живые» сниппеты для визуала. Реальные отзывы — по клику в Я.Картах */}
         <SnippetCard
           rating={5}
           text="Установили ГБО на Ладу за день, всё чётко. Расход упал в 2 раза, езжу уже полгода — ни одной проблемы."
@@ -122,8 +123,16 @@ export function YandexReviews({ settings }: { settings: SettingsMap }) {
 }
 
 function SnippetCard({
-  rating, text, name, delay,
-}: { rating: number; text: string; name: string; delay: number }) {
+  rating,
+  text,
+  name,
+  delay,
+}: {
+  rating: number;
+  text: string;
+  name: string;
+  delay: number;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}

@@ -1,8 +1,28 @@
-import { Body, Controller, Get, Module, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Module,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import type { Request } from 'express';
-import { IsOptional, IsString, Matches, Equals, Length } from 'class-validator';
+import {
+  Equals,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+  MaxLength,
+} from 'class-validator';
+import { CallbackStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -18,9 +38,17 @@ class CallbackDto {
   @Equals(true, { message: 'Требуется согласие на обработку номера телефона' })
   consent!: boolean;
 
-  // honeypot: скрытое поле
+  /** honeypot-поле для ботов */
   @IsOptional() @IsString() @Length(0, 0)
   company?: string;
+}
+
+class CallbackUpdateDto {
+  @IsOptional() @IsEnum(CallbackStatus)
+  status?: CallbackStatus;
+
+  @IsOptional() @IsString() @MaxLength(1000)
+  note?: string;
 }
 
 @ApiTags('callback')
@@ -31,9 +59,8 @@ class CallbackController {
   @Public()
   @Throttle({ default: { limit: 5, ttl: 60 * 60 * 1000 } })
   @Post()
-  async create(@Body() dto: CallbackDto, @Req() req: Request) {
+  async create(@Body() dto: CallbackDto, @Req() req: Request): Promise<{ ok: true }> {
     if (dto.company && dto.company.length > 0) {
-      // honeypot — скорее всего бот
       return { ok: true };
     }
     await this.prisma.callbackRequest.create({
@@ -51,8 +78,15 @@ class CallbackController {
   @Roles('DIRECTOR')
   @Get()
   list(@Query('status') status?: string) {
+    const where: Prisma.CallbackRequestWhereInput = {};
+    if (status !== undefined) {
+      if (!(Object.values(CallbackStatus) as string[]).includes(status)) {
+        throw new BadRequestException(`Неизвестный статус: ${status}`);
+      }
+      where.status = status as CallbackStatus;
+    }
     return this.prisma.callbackRequest.findMany({
-      where: status ? { status: status as any } : {},
+      where,
       orderBy: { createdAt: 'desc' },
       take: 200,
     });
@@ -60,10 +94,10 @@ class CallbackController {
 
   @Roles('DIRECTOR')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: { status?: string; note?: string }) {
+  update(@Param('id') id: string, @Body() body: CallbackUpdateDto) {
     return this.prisma.callbackRequest.update({
       where: { id },
-      data: { status: body.status as any, note: body.note },
+      data: { status: body.status, note: body.note },
     });
   }
 }

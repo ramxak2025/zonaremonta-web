@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Prisma, WorkOrderStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -22,6 +23,12 @@ interface WorkItemInput {
   name: string;
   qty: number;
   unitPrice: number;
+}
+
+interface UpdateWorkOrderBody {
+  status?: WorkOrderStatus;
+  comment?: string;
+  items?: WorkItemInput[];
 }
 
 @ApiTags('work-orders')
@@ -59,10 +66,10 @@ class WorkOrdersController {
 
   @Roles('MASTER', 'DIRECTOR')
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() body: { status?: string; comment?: string; items?: WorkItemInput[] },
-  ) {
+  async update(@Param('id') id: string, @Body() body: UpdateWorkOrderBody) {
+    if (body.status && !(Object.values(WorkOrderStatus) as string[]).includes(body.status)) {
+      throw new BadRequestException(`Неизвестный статус: ${body.status}`);
+    }
     const existing = await this.prisma.workOrder.findUnique({ where: { id } });
     if (!existing) throw new BadRequestException();
     return this.prisma.$transaction(async (tx) => {
@@ -109,7 +116,7 @@ class WorkOrdersController {
         });
       }
       if (body.status) {
-        const data: { status: any; closedAt?: Date } = { status: body.status };
+        const data: Prisma.WorkOrderUpdateInput = { status: body.status };
         if (body.status === 'DONE') data.closedAt = new Date();
         const updated = await tx.workOrder.update({ where: { id }, data });
         // авто-транзакция в кассу при закрытии

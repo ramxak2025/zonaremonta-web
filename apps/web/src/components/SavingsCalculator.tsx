@@ -1,35 +1,30 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { calculateSavings } from '@05auto/shared';
+import {
+  calculateSavings,
+  PETROL_KINDS,
+  type PetrolKey,
+  type PublicSettings,
+} from '@05auto/shared';
 import { HexIcon } from './HexIcon';
-import { FUEL_KINDS, readSetting, type SettingsMap } from '@/lib/settings';
 
-export function SavingsCalculator({ settings }: { settings: SettingsMap }) {
-  // Владелец задаёт цены — клиент только выбирает тип бензина и крутит пробег/расход
-  const fuelPrices = useMemo(
-    () =>
-      FUEL_KINDS.map((f) => ({
-        ...f,
-        price: readSetting<number>(settings, f.key, 0),
-      })).filter((f) => f.price > 0),
-    [settings],
-  );
-  const gasPrice = readSetting<number>(settings, 'fuel.lpg.price', 28);
-  const installPrice = readSetting<number>(settings, 'calc.defaultInstallPrice', 38000);
-  const overheadPct = readSetting<number>(settings, 'calc.gasOverheadPct', 12);
+interface Props {
+  settings: Required<PublicSettings>;
+}
 
-  const [fuelIdx, setFuelIdx] = useState(fuelPrices.findIndex((f) => f.key === 'fuel.ai95.price'));
-  useEffect(() => {
-    if (fuelIdx < 0 || fuelIdx >= fuelPrices.length) {
-      setFuelIdx(Math.max(0, fuelPrices.findIndex((f) => f.key === 'fuel.ai95.price')));
-    }
-  }, [fuelPrices, fuelIdx]);
+const DEFAULT_PETROL_KEY: PetrolKey = 'fuel.ai95.price';
 
+export function SavingsCalculator({ settings }: Props) {
+  const gasPrice = settings['fuel.lpg.price'].value;
+  const installPrice = settings['calc.defaultInstallPrice'].value;
+  const overheadPct = settings['calc.gasOverheadPct'].value;
+
+  const [fuelKey, setFuelKey] = useState<PetrolKey>(DEFAULT_PETROL_KEY);
   const [mileage, setMileage] = useState(2000);
   const [consumption, setConsumption] = useState(10);
 
-  const petrolPrice = fuelPrices[fuelIdx]?.price ?? 62;
+  const petrolPrice = settings[fuelKey].value;
 
   const result = useMemo(
     () =>
@@ -47,44 +42,45 @@ export function SavingsCalculator({ settings }: { settings: SettingsMap }) {
   return (
     <section id="calc" className="section py-12 sm:py-24 scroll-mt-24 relative">
       <div className="mb-6 sm:mb-10">
-        <span className="chip"><span className="dot" />Калькулятор</span>
+        <span className="chip">
+          <span className="dot" />
+          Калькулятор
+        </span>
         <h2 className="h-section mt-3 text-white">Сколько вы сэкономите?</h2>
         <p className="text-white/65 mt-2 sm:mt-3 max-w-xl text-sm sm:text-base leading-relaxed">
-          Выберите свой бензин, укажите пробег и расход. Цены топлива обновляются нами — они актуальны на сегодня.
+          Выберите свой бензин, укажите пробег и расход. Цены топлива обновляются нами —
+          они актуальны на сегодня.
         </p>
       </div>
 
       <div className="grid gap-2.5 sm:gap-4 lg:grid-cols-2">
-        {/* --- Форма --- */}
         <div className="liquid-glass p-5 sm:p-8 space-y-6 relative overflow-hidden">
-          <HexIcon size={220} filled={false} className="absolute -right-14 -bottom-14 text-white/[0.03]" />
+          <HexIcon
+            size={220}
+            filled={false}
+            className="absolute -right-14 -bottom-14 text-white/[0.03]"
+          />
 
-          {/* Выбор бензина */}
           <div className="relative">
             <div className="flex items-center justify-between mb-2.5">
               <span className="text-xs uppercase tracking-[0.2em] text-white/60">Ваш бензин</span>
-              <span className="chip !text-xs font-mono !py-1">
-                {petrolPrice} ₽/л
-              </span>
+              <span className="chip !text-xs font-mono !py-1">{petrolPrice} ₽/л</span>
             </div>
             <div className="grid grid-cols-4 gap-1.5 p-1 rounded-2xl bg-white/5 border border-white/10">
-              {fuelPrices.map((f, i) => {
-                const active = i === fuelIdx;
+              {PETROL_KINDS.map((f) => {
+                const active = f.key === fuelKey;
                 return (
                   <button
                     key={f.key}
                     type="button"
-                    onClick={() => setFuelIdx(i)}
+                    onClick={() => setFuelKey(f.key)}
                     className={`h-10 rounded-xl text-xs font-bold uppercase transition-all ${
-                      active
-                        ? 'text-white'
-                        : 'text-white/55 hover:text-white/80'
+                      active ? 'text-white' : 'text-white/55 hover:text-white/80'
                     }`}
                     style={
                       active
                         ? {
-                            background:
-                              'linear-gradient(180deg, #FF3E4F 0%, #E81224 100%)',
+                            background: 'linear-gradient(180deg, #FF3E4F 0%, #E81224 100%)',
                             boxShadow:
                               '0 1px 0 rgba(255,255,255,0.3) inset, 0 6px 14px -4px rgba(232,18,36,0.6)',
                           }
@@ -102,7 +98,7 @@ export function SavingsCalculator({ settings }: { settings: SettingsMap }) {
             label="Пробег в месяц"
             unit="км"
             value={mileage}
-            onChange={(e) => setMileage(Number(e.target.value))}
+            onChange={(v) => setMileage(v)}
             min={100}
             max={10000}
             step={100}
@@ -111,28 +107,36 @@ export function SavingsCalculator({ settings }: { settings: SettingsMap }) {
             label="Расход на 100 км"
             unit="л"
             value={consumption}
-            onChange={(e) => setConsumption(Number(e.target.value))}
+            onChange={(v) => setConsumption(v)}
             min={4}
             max={25}
             step={0.5}
           />
 
-          {/* Справочные цены газа + установки */}
           <div className="grid grid-cols-2 gap-2.5 relative">
             <InfoPill label="Цена газа (СУГ)" value={`${gasPrice} ₽/л`} />
             <InfoPill label="Установка ГБО" value={`${installPrice.toLocaleString('ru-RU')} ₽`} />
           </div>
         </div>
 
-        {/* --- Результат --- */}
         <div className="liquid-glass p-5 sm:p-8 relative overflow-hidden">
-          <HexIcon size={300} filled={false} className="absolute -right-20 -top-12 text-white/[0.04]" />
-          <span className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/20 blur-3xl" aria-hidden />
-          <span className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-secondary/15 blur-3xl" aria-hidden />
+          <HexIcon
+            size={300}
+            filled={false}
+            className="absolute -right-20 -top-12 text-white/[0.04]"
+          />
+          <span
+            className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary/20 blur-3xl"
+            aria-hidden
+          />
+          <span
+            className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-secondary/15 blur-3xl"
+            aria-hidden
+          />
           <div className="relative">
             <div className="grid grid-cols-2 gap-2.5 mb-4">
-              <Stat label="На бензине / мес" value={fmt(result.monthlyPetrolCost) + ' ₽'} />
-              <Stat label="На газе / мес" value={fmt(result.monthlyGasCost) + ' ₽'} />
+              <Stat label="На бензине / мес" value={`${fmt(result.monthlyPetrolCost)} ₽`} />
+              <Stat label="На газе / мес" value={`${fmt(result.monthlyGasCost)} ₽`} />
             </div>
             <motion.div
               key={result.monthlySavings}
@@ -166,7 +170,7 @@ export function SavingsCalculator({ settings }: { settings: SettingsMap }) {
               </div>
             </motion.div>
             <div className="grid grid-cols-2 gap-2.5">
-              <Stat label="В год" value={fmt(result.yearlySavings) + ' ₽'} accent />
+              <Stat label="В год" value={`${fmt(result.yearlySavings)} ₽`} accent />
               <Stat
                 label="Окупаемость"
                 value={result.paybackMonths > 0 ? `${result.paybackMonths} мес.` : '—'}
@@ -181,11 +185,21 @@ export function SavingsCalculator({ settings }: { settings: SettingsMap }) {
 }
 
 function Field({
-  label, unit, value, onChange, min, max, step,
+  label,
+  unit,
+  value,
+  onChange,
+  min,
+  max,
+  step,
 }: {
-  label: string; unit: string; value: number;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  min: number; max: number; step: number;
+  label: string;
+  unit: string;
+  value: number;
+  onChange: (v: number) => void;
+  min: number;
+  max: number;
+  step: number;
 }) {
   return (
     <label className="block relative">
@@ -195,7 +209,14 @@ function Field({
           {value.toLocaleString('ru-RU')} {unit}
         </span>
       </div>
-      <input type="range" value={value} onChange={onChange} min={min} max={max} step={step} />
+      <input
+        type="range"
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        min={min}
+        max={max}
+        step={step}
+      />
     </label>
   );
 }
@@ -223,7 +244,10 @@ function InfoPill({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="px-3 py-2.5 rounded-2xl"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+      style={{
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.08)',
+      }}
     >
       <div className="text-[9px] uppercase tracking-[0.2em] text-white/50">{label}</div>
       <div className="text-sm text-white font-medium mt-0.5">{value}</div>
@@ -231,6 +255,6 @@ function InfoPill({ label, value }: { label: string; value: string }) {
   );
 }
 
-function fmt(n: number) {
+function fmt(n: number): string {
   return n.toLocaleString('ru-RU');
 }

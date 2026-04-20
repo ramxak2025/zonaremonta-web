@@ -1,12 +1,30 @@
-import { Body, Controller, ForbiddenException, Get, Injectable, Logger, Module, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Injectable,
+  Logger,
+  Module,
+  Post,
+} from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { ApiTags } from '@nestjs/swagger';
+import { IsEnum, IsISO8601, IsOptional, IsString, IsUUID, Length } from 'class-validator';
+import { ReminderType } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { SmsService } from '../auth/sms/sms.service';
 import { SmsModule } from '../auth/sms/sms.module';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthUser } from '@05auto/shared';
+
+class ReminderDto {
+  @IsEnum(ReminderType) type!: ReminderType;
+  @IsString() @Length(1, 200) title!: string;
+  @IsISO8601() dueAt!: string;
+  @IsOptional() @IsUUID() vehicleId?: string;
+}
 
 @Injectable()
 class RemindersCron {
@@ -53,10 +71,7 @@ class RemindersController {
 
   @Roles('CLIENT')
   @Post()
-  create(
-    @CurrentUser() user: AuthUser,
-    @Body() body: { type: any; title: string; dueAt: string; vehicleId?: string },
-  ) {
+  create(@CurrentUser() user: AuthUser, @Body() body: ReminderDto) {
     if (!user.clientId) throw new ForbiddenException();
     return this.prisma.reminder.create({
       data: {
