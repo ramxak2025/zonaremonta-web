@@ -1,33 +1,17 @@
 'use client';
 import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  Clock,
-  Fuel,
-  ShieldCheck,
-  Gauge,
-  Wrench,
-  MapPin,
-  Flame,
-  CheckCircle2,
-} from 'lucide-react';
-import Link from 'next/link';
+import { ArrowRight, Clock, Fuel, ShieldCheck, Gauge, Wrench, MapPin } from 'lucide-react';
 import { HexIcon } from './HexIcon';
-import { SITE, getContactLinks } from '@/lib/site';
+import { getContactLinks } from '@/lib/site';
+import { readSetting, readSettingObj, type SettingsMap } from '@/lib/settings';
 import { PhoneFilledIcon, WhatsAppIcon, YandexMapsIcon, MaxIcon } from './BrandIcons';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 function Card({
-  className = '',
-  delay = 0,
-  children,
-  interactive = true,
+  className = '', delay = 0, children, interactive = true,
 }: {
-  className?: string;
-  delay?: number;
-  children: React.ReactNode;
-  interactive?: boolean;
+  className?: string; delay?: number; children: React.ReactNode; interactive?: boolean;
 }) {
   return (
     <motion.div
@@ -42,8 +26,25 @@ function Card({
   );
 }
 
-export function BentoHero() {
+export function BentoHero({ settings }: { settings: SettingsMap }) {
   const l = getContactLinks();
+
+  const badge = readSetting<string>(settings, 'hero.badge', 'ГБО в Махачкале · Гарантия 1 год');
+  const title = readSetting<string>(settings, 'hero.title', 'Переводим авто на газ с гарантией.');
+  const subtitle = readSetting<string>(
+    settings,
+    'hero.subtitle',
+    'Установка, ремонт и диагностика ГБО. Сертифицированные мастера, свой склад, гарантия 1 год.',
+  );
+  const ctaText = readSetting<string>(settings, 'hero.primaryCta', 'Позвонить сейчас');
+  const heroImage = readSetting<string>(settings, 'hero.imageUrl', '');
+  const address = readSetting<string>(settings, 'site.address', 'г. Махачкала');
+  const payback = readSettingObj<{ value: string; suffix?: string }>(
+    settings, 'hero.stats.payback', { value: '~8', suffix: 'мес' },
+  );
+  const savings = readSettingObj<{ value: string; suffix?: string }>(
+    settings, 'hero.stats.savings', { value: '55', suffix: '%' },
+  );
 
   return (
     <section className="relative overflow-hidden">
@@ -56,7 +57,6 @@ export function BentoHero() {
       <div className="absolute inset-0 hex-grid opacity-70 pointer-events-none" aria-hidden />
 
       <div className="section relative pt-5 sm:pt-10 pb-10 sm:pb-16">
-        {/* Маркетинговая плашка */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -65,11 +65,10 @@ export function BentoHero() {
         >
           <span className="chip">
             <span className="dot" />
-            ГБО в Махачкале · Гарантия 1 год
+            {badge}
           </span>
         </motion.div>
 
-        {/* BENTO GRID */}
         <div
           className="grid gap-2.5 sm:gap-4"
           style={{
@@ -82,6 +81,17 @@ export function BentoHero() {
             className="col-span-6 lg:col-span-4 row-span-3 lg:row-span-4 flex flex-col justify-between p-6 sm:p-10"
             delay={0.05}
           >
+            {heroImage ? (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, rgba(8,8,10,0.85), rgba(8,8,10,0.6)), url(${heroImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+                aria-hidden
+              />
+            ) : null}
             <HexIcon
               size={360}
               filled={false}
@@ -95,18 +105,18 @@ export function BentoHero() {
               <h1
                 className="font-display font-bold uppercase text-white mt-3 sm:mt-5 leading-[0.95]"
                 style={{
-                  fontSize: 'clamp(32px, 8.5vw, 80px)',
+                  fontSize: 'clamp(30px, 8vw, 72px)',
                   letterSpacing: '-0.025em',
                 }}
               >
-                Переводим<br />
-                <span className="text-brand-gradient">авто на газ</span>
-                <br />
-                <span className="text-white/85">с гарантией.</span>
+                {title.split('\n').map((line, i) => (
+                  <span key={i} className="block">
+                    {line}
+                  </span>
+                ))}
               </h1>
               <p className="mt-4 sm:mt-5 text-[13px] sm:text-base text-white/70 max-w-xl leading-relaxed">
-                Установка, ремонт и диагностика ГБО. Сертифицированные мастера, свой склад,
-                гарантия 1 год.
+                {subtitle}
               </p>
             </div>
 
@@ -116,18 +126,18 @@ export function BentoHero() {
                 className="btn btn-primary shine-hover !h-12 sm:!h-14 !text-[15px] sm:!text-base flex-1 sm:flex-none"
               >
                 <PhoneFilledIcon className="w-5 h-5" />
-                Позвонить сейчас
+                {ctaText}
                 <ArrowRight className="w-4 h-4" />
               </a>
               <a
                 href={l.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-glass !h-12 sm:!h-14 !text-[15px] sm:!text-base flex-1 sm:flex-none"
+                className="btn !h-12 sm:!h-14 !text-[15px] sm:!text-base flex-1 sm:flex-none text-white"
                 style={{
-                  background:
-                    'linear-gradient(180deg, rgba(37,211,102,0.25) 0%, rgba(37,211,102,0.1) 100%)',
-                  border: '1px solid rgba(37,211,102,0.4)',
+                  background: 'linear-gradient(180deg, rgba(37,211,102,0.3) 0%, rgba(37,211,102,0.1) 100%)',
+                  border: '1px solid rgba(37,211,102,0.45)',
+                  boxShadow: '0 1px 0 rgba(255,255,255,0.1) inset',
                 }}
               >
                 <WhatsAppIcon className="w-5 h-5" />
@@ -137,10 +147,7 @@ export function BentoHero() {
           </Card>
 
           {/* --- ОКУПАЕМОСТЬ --- */}
-          <Card
-            className="col-span-3 lg:col-span-2 row-span-2 flex flex-col justify-between p-4 sm:p-6"
-            delay={0.12}
-          >
+          <Card className="col-span-3 lg:col-span-2 row-span-2 flex flex-col justify-between p-4 sm:p-6" delay={0.12}>
             <div className="flex items-center justify-between">
               <span className="chip !py-0.5 !px-2 !text-[9px] !bg-primary/15 !border-primary/30 !text-white">
                 <Clock className="w-3 h-3" />
@@ -153,24 +160,20 @@ export function BentoHero() {
                 className="font-display leading-none tracking-tight"
                 style={{
                   fontSize: 'clamp(48px, 12vw, 88px)',
-                  backgroundImage:
-                    'linear-gradient(180deg, #FFFFFF 0%, rgba(255,62,79,0.9) 100%)',
+                  backgroundImage: 'linear-gradient(180deg, #FFFFFF 0%, rgba(255,62,79,0.9) 100%)',
                   WebkitBackgroundClip: 'text',
                   backgroundClip: 'text',
                   color: 'transparent',
                 }}
               >
-                ~8
+                {payback.value}
               </div>
-              <div className="text-white/60 text-[11px] sm:text-sm mt-1">месяцев</div>
+              <div className="text-white/60 text-[11px] sm:text-sm mt-1">{payback.suffix ?? 'мес'}</div>
             </div>
           </Card>
 
           {/* --- ЭКОНОМИЯ --- */}
-          <Card
-            className="col-span-3 lg:col-span-2 row-span-2 flex flex-col justify-between p-4 sm:p-6"
-            delay={0.18}
-          >
+          <Card className="col-span-3 lg:col-span-2 row-span-2 flex flex-col justify-between p-4 sm:p-6" delay={0.18}>
             <div className="flex items-center justify-between">
               <span className="chip !py-0.5 !px-2 !text-[9px] !bg-secondary/15 !border-secondary/30">
                 <Fuel className="w-3 h-3" />
@@ -184,19 +187,18 @@ export function BentoHero() {
                   className="font-display leading-none tracking-tight text-white"
                   style={{ fontSize: 'clamp(48px, 12vw, 88px)' }}
                 >
-                  55
+                  {savings.value}
                 </span>
-                <span className="font-display text-2xl sm:text-3xl text-white/70">%</span>
+                <span className="font-display text-2xl sm:text-3xl text-white/70">
+                  {savings.suffix ?? '%'}
+                </span>
               </div>
               <div className="text-white/60 text-[11px] sm:text-sm mt-1">на топливе</div>
             </div>
           </Card>
 
-          {/* --- PERKS --- скрыты на mobile для компактности */}
-          <Card
-            className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4"
-            delay={0.22}
-          >
+          {/* --- PERKS (desktop only) --- */}
+          <Card className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4" delay={0.22}>
             <span className="relative w-10 h-10 grid place-items-center flex-none">
               <HexIcon size={40} className="text-primary/40 absolute" />
               <ShieldCheck className="w-4 h-4 text-primary relative" strokeWidth={2.4} />
@@ -206,11 +208,7 @@ export function BentoHero() {
               <div className="text-white/50 text-xs">на все работы</div>
             </div>
           </Card>
-
-          <Card
-            className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4"
-            delay={0.26}
-          >
+          <Card className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4" delay={0.26}>
             <span className="relative w-10 h-10 grid place-items-center flex-none">
               <HexIcon size={40} className="text-secondary/40 absolute" />
               <Gauge className="w-4 h-4 text-secondary relative" strokeWidth={2.4} />
@@ -220,11 +218,7 @@ export function BentoHero() {
               <div className="text-white/50 text-xs">точная диагностика</div>
             </div>
           </Card>
-
-          <Card
-            className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4"
-            delay={0.3}
-          >
+          <Card className="hidden sm:flex col-span-2 row-span-1 items-center gap-3 p-4" delay={0.3}>
             <span className="relative w-10 h-10 grid place-items-center flex-none">
               <HexIcon size={40} className="text-primary/40 absolute" />
               <Wrench className="w-4 h-4 text-primary relative" strokeWidth={2.4} />
@@ -235,7 +229,7 @@ export function BentoHero() {
             </div>
           </Card>
 
-          {/* --- КАРТОЧКА «НАЙТИ НАС» (кликабельная карта) --- */}
+          {/* --- Адрес (Я.Карты) --- */}
           <motion.a
             href={l.mapsHref}
             target="_blank"
@@ -257,7 +251,8 @@ export function BentoHero() {
                 className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl grid place-items-center"
                 style={{
                   background: 'linear-gradient(135deg, #FFCC00 0%, #FF9500 100%)',
-                  boxShadow: '0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 24px -8px rgba(255,149,0,0.5)',
+                  boxShadow:
+                    '0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 24px -8px rgba(255,149,0,0.5)',
                 }}
               >
                 <YandexMapsIcon className="w-6 h-6 sm:w-7 sm:h-7 text-black" />
@@ -270,7 +265,7 @@ export function BentoHero() {
             <div className="relative mt-4">
               <div className="text-[10px] uppercase tracking-[0.25em] text-white/50">Мы находимся</div>
               <div className="font-display text-xl sm:text-2xl text-white mt-1 tracking-tight">
-                {SITE.address}
+                {address}
               </div>
               <div className="text-white/50 text-xs mt-1">
                 Нажмите → откроется Яндекс.Карты с маршрутом
@@ -278,7 +273,7 @@ export function BentoHero() {
             </div>
           </motion.a>
 
-          {/* --- КАРТОЧКА MAX --- */}
+          {/* --- Max --- */}
           <motion.a
             href={l.maxHref}
             target="_blank"
@@ -290,8 +285,7 @@ export function BentoHero() {
             whileTap={{ scale: 0.98 }}
             className="col-span-6 lg:col-span-3 row-span-2 relative overflow-hidden p-4 sm:p-6 flex flex-col justify-between group rounded-[28px]"
             style={{
-              background:
-                'linear-gradient(135deg, rgba(91,155,213,0.22) 0%, rgba(43,95,158,0.35) 100%)',
+              background: 'linear-gradient(135deg, rgba(91,155,213,0.22) 0%, rgba(43,95,158,0.35) 100%)',
               border: '1px solid rgba(91,155,213,0.35)',
               boxShadow: '0 1px 0 rgba(255,255,255,0.1) inset, 0 20px 50px -20px rgba(91,155,213,0.4)',
             }}
@@ -310,15 +304,11 @@ export function BentoHero() {
               <span className="chip !py-0.5 !px-2 !text-[9px]">Мессенджер</span>
             </div>
             <div className="relative mt-4">
-              <div className="text-[10px] uppercase tracking-[0.25em] text-white/50">
-                Напишите в MAX
-              </div>
+              <div className="text-[10px] uppercase tracking-[0.25em] text-white/50">Напишите в MAX</div>
               <div className="font-display text-xl sm:text-2xl text-white mt-1 tracking-tight">
                 Быстрый ответ от мастера
               </div>
-              <div className="text-white/60 text-xs mt-1">
-                Российский мессенджер от VK
-              </div>
+              <div className="text-white/60 text-xs mt-1">Российский мессенджер от VK</div>
             </div>
           </motion.a>
         </div>

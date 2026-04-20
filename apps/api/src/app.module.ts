@@ -17,6 +17,7 @@ import { FinanceModule } from './modules/finance/finance.module';
 import { RemindersModule } from './modules/reminders/reminders.module';
 import { ContentModule } from './modules/content/content.module';
 import { UploadsModule } from './modules/uploads/uploads.module';
+import { SettingsModule } from './modules/settings/settings.module';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 import { HealthController } from './health.controller';
 
@@ -38,6 +39,7 @@ import { HealthController } from './health.controller';
     RemindersModule,
     ContentModule,
     UploadsModule,
+    SettingsModule,
   ],
   controllers: [HealthController],
   providers: [

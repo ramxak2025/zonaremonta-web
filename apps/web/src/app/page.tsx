@@ -5,21 +5,25 @@ import { QuickContact } from '@/components/QuickContact';
 import { Services } from '@/components/Services';
 import { Process } from '@/components/Process';
 import { SavingsCalculator } from '@/components/SavingsCalculator';
+import { YandexReviews } from '@/components/YandexReviews';
 import { Faq } from '@/components/Faq';
 import { Contacts } from '@/components/Contacts';
+import { getPublicSettings } from '@/lib/settings';
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
-export default function Home() {
+export default async function Home() {
+  const settings = await getPublicSettings();
   return (
     <>
       <Header />
       <main>
-        <BentoHero />
+        <BentoHero settings={settings} />
         <QuickContact />
         <Services />
         <Process />
-        <SavingsCalculator />
+        <SavingsCalculator settings={settings} />
+        <YandexReviews settings={settings} />
         <Faq />
         <Contacts />
       </main>
