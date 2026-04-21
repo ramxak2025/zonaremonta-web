@@ -27,9 +27,7 @@ export function BentoHero({ settings }: Props) {
         <div className="mb-7 md:mb-10">
           <span className="chip">
             <span className="dot" />
-            Сертифицированный сервис ГБО
-            <span className="mx-1 opacity-50">·</span>
-            Махачкала
+            Сертифицированный сервис по ГБО в Махачкале
           </span>
         </div>
 
