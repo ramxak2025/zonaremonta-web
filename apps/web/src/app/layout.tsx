@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import { SITE } from '@/lib/site';
 import { Providers } from './providers';
 import { MobileTabBar } from '@/components/MobileTabBar';
+import { AnimatedBackground } from '@/components/AnimatedBackground';
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -73,12 +74,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ru" className={`${inter.variable} ${oswald.variable} dark`}>
       <body>
-        <Providers>
-          {children}
-          <MobileTabBar />
-          {/* Отступ под плавающую CTA-панель на mobile */}
-          <div className="md:hidden h-24" aria-hidden />
-        </Providers>
+        <AnimatedBackground />
+        <div className="relative z-10">
+          <Providers>
+            {children}
+            <MobileTabBar />
+            <div className="md:hidden h-24" aria-hidden />
+          </Providers>
+        </div>
       </body>
     </html>
   );

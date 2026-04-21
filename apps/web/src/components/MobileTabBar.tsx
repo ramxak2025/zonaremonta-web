@@ -36,26 +36,35 @@ export function MobileTabBar() {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 pointer-events-none pb-safe"
       aria-label="Навигация"
     >
-      <div className="mx-2.5 pointer-events-auto">
+      <div className="mx-3 pointer-events-auto">
+        {/*
+          iOS 26 Liquid Glass:
+          — низкий blur + высокая saturation, чтобы стекло было прозрачнее
+          — яркий top-edge highlight (0.5px свет сверху)
+          — мягкий bottom-edge dim
+          — НЕТ outline-border по всему контуру
+        */}
         <nav
-          className="grid grid-cols-5 p-1.5 relative overflow-hidden"
+          className="grid grid-cols-5 p-1.5 relative overflow-hidden isolate"
           style={{
-            background: 'rgba(20, 20, 30, 0.55)',
-            backdropFilter: 'blur(32px) saturate(2)',
-            WebkitBackdropFilter: 'blur(32px) saturate(2)',
-            borderRadius: 30,
+            background: 'rgba(255, 255, 255, 0.04)',
+            backdropFilter: 'blur(24px) saturate(1.8)',
+            WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+            borderRadius: 28,
             boxShadow:
-              '0 1px 0 rgba(255,255,255,0.14) inset, 0 -1px 0 rgba(255,255,255,0.04) inset, 0 20px 40px -12px rgba(0,0,0,0.6)',
+              '0 1px 0 rgba(255,255,255,0.22) inset,' +
+              '0 -0.5px 0 rgba(0,0,0,0.2) inset,' +
+              '0 18px 36px -12px rgba(0,0,0,0.5)',
           }}
         >
-          {/* мягкий внутренний блик */}
+          {/* Мягкий зеркальный блик сверху — как на iOS */}
           <span
             aria-hidden
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-x-0 top-0 h-[45%] pointer-events-none -z-10"
             style={{
               background:
-                'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 35%)',
-              borderRadius: 30,
+                'linear-gradient(180deg, rgba(255,255,255,0.11) 0%, transparent 100%)',
+              borderRadius: '28px 28px 0 0',
             }}
           />
           {TABS.map((t) => {
@@ -67,14 +76,14 @@ export function MobileTabBar() {
                 href={t.href}
                 onClick={haptic}
                 aria-current={active ? 'page' : undefined}
-                className="relative h-14 flex flex-col items-center justify-center gap-1 rounded-[22px] active:scale-[0.92] transition-transform z-10"
+                className="relative h-14 flex flex-col items-center justify-center gap-1 rounded-[20px] active:scale-[0.92] transition-transform"
                 style={
                   active
                     ? {
                         background:
-                          'linear-gradient(180deg, rgba(255,62,79,0.25) 0%, rgba(232,18,36,0.4) 100%)',
+                          'linear-gradient(180deg, rgba(255,62,79,0.28) 0%, rgba(232,18,36,0.44) 100%)',
                         boxShadow:
-                          '0 1px 0 rgba(255,255,255,0.2) inset, 0 8px 22px -6px rgba(232,18,36,0.55)',
+                          '0 1px 0 rgba(255,255,255,0.26) inset, 0 8px 22px -6px rgba(232,18,36,0.6)',
                       }
                     : undefined
                 }
@@ -82,12 +91,12 @@ export function MobileTabBar() {
                 <Icon
                   strokeWidth={active ? 2.4 : 1.9}
                   className={`w-[20px] h-[20px] transition-colors ${
-                    active ? 'text-white' : 'text-white/55'
+                    active ? 'text-white' : 'text-white/60'
                   }`}
                 />
                 <span
                   className={`text-[10px] font-semibold leading-none uppercase tracking-[0.04em] ${
-                    active ? 'text-white' : 'text-white/55'
+                    active ? 'text-white' : 'text-white/60'
                   }`}
                 >
                   {t.label}

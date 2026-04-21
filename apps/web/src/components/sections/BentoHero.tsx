@@ -47,41 +47,35 @@ export function BentoHero({ settings }: Props) {
             />
 
             <div className="relative stack-6">
-              <div className="inline-flex items-center gap-2.5 text-[10px] md:text-xs uppercase tracking-[0.28em] text-white/55 font-semibold">
+              <div className="inline-flex items-center gap-2.5 text-[11px] uppercase tracking-[0.24em] text-white/60 font-semibold">
                 <span className="accent-bar" />
-                Экономия с первого километра
+                Запись на установку открыта
               </div>
 
-              <h1
-                className="font-display font-bold uppercase text-white"
-                style={{
-                  fontSize: 'clamp(36px, 7.4vw, 80px)',
-                  lineHeight: 1.02,
-                  letterSpacing: '-0.03em',
-                  paddingBottom: '0.08em',
-                }}
-              >
-                Газ вместо бензина.
-                <br />
+              <h1 className="h-display text-white">
+                Заправляйтесь{' '}
                 <span
                   style={{
                     background:
-                      'linear-gradient(135deg, #FF3E4F 0%, #E81224 50%, #4A9FD9 140%)',
+                      'linear-gradient(135deg, #FF3E4F 0%, #E81224 55%, #4A9FD9 140%)',
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
                     color: 'transparent',
                   }}
                 >
-                  В два раза дешевле.
+                  в 2 раза дешевле
                 </span>
+                <br />
+                уже завтра
               </h1>
 
               <p
-                className="text-white/75 max-w-xl"
-                style={{ fontSize: 'clamp(15px, 1.5vw, 17px)', lineHeight: 1.65 }}
+                className="text-white/80 max-w-xl"
+                style={{ fontSize: 'clamp(15px, 1.55vw, 18px)', lineHeight: 1.6 }}
               >
-                Устанавливаем ГБО 4 и 4+ поколения. Под ключ за один день.
-                С регистрацией в ГИБДД и гарантией 1 год на работы.
+                Установим ГБО 4 или 4+ за один рабочий день. Сертифицированное
+                оборудование, регистрация в ГИБДД, гарантия 1 год. Первая диагностика —
+                бесплатно.
               </p>
             </div>
 
@@ -101,19 +95,18 @@ export function BentoHero({ settings }: Props) {
               />
             </div>
 
-            {/* Secondary CTA-links */}
-            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px]">
+            {/* CTA + secondary link */}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/calculator"
-                className="inline-flex items-center gap-1.5 text-white font-semibold hover:text-[#FF3E4F] transition-colors group"
+                className="btn btn-primary btn-lg"
               >
-                Рассчитать экономию
-                <ArrowUpRight className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                Записаться на установку
+                <ArrowUpRight className="w-4 h-4" />
               </Link>
-              <span className="text-white/20">·</span>
               <Link
                 href="/#services"
-                className="inline-flex items-center gap-1.5 text-white/70 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1.5 text-white/75 hover:text-white transition-colors text-[14px] font-medium"
               >
                 Подробно о 4 и 4+
               </Link>
