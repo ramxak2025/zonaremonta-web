@@ -51,8 +51,10 @@ export function BentoHero({ settings }: Props) {
               </div>
 
               <h1 className="h-display text-white">
-                Заправляйтесь{' '}
+                <span className="block sm:inline">Заправляйтесь</span>
+                <span className="hidden sm:inline"> </span>
                 <span
+                  className="block sm:inline"
                   style={{
                     background:
                       'linear-gradient(135deg, #FF3E4F 0%, #E81224 55%, #4A9FD9 140%)',
@@ -63,17 +65,15 @@ export function BentoHero({ settings }: Props) {
                 >
                   в 2 раза дешевле
                 </span>
-                <br />
-                уже завтра
+                <span className="block">уже завтра</span>
               </h1>
 
               <p
                 className="text-white/80 max-w-xl"
                 style={{ fontSize: 'clamp(15px, 1.55vw, 18px)', lineHeight: 1.6 }}
               >
-                Установим ГБО 4 или 4+ за один рабочий день. Сертифицированное
-                оборудование, регистрация в ГИБДД, гарантия 1 год. Первая диагностика —
-                бесплатно.
+                Установим за один рабочий день. Сертифицированное оборудование,
+                регистрация в ГИБДД, гарантия 1 год на работы. Первая диагностика — бесплатно.
               </p>
             </div>
 

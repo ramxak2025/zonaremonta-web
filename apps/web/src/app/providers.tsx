@@ -1,15 +1,8 @@
-'use client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
-
+/**
+ * Корневой Providers — пустой пока что.
+ * React Query, если понадобится, подключается в layout-ах админки / LK
+ * (не тратим ~40KB JS на публичных страницах).
+ */
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [client] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: { staleTime: 60_000, refetchOnWindowFocus: false, retry: 1 },
-        },
-      }),
-  );
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return <>{children}</>;
 }

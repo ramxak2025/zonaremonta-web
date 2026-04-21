@@ -63,7 +63,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0A0A0C',
+  themeColor: '#0F0F18',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -73,11 +73,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={`${inter.variable} ${oswald.variable} dark`}>
-      <body>
+      <body className="min-h-dvh">
         <AnimatedBackground />
-        <div className="relative z-10">
+        <div className="relative z-10 min-h-dvh flex flex-col">
           <Providers>
-            {children}
+            <div className="flex-1">{children}</div>
             <MobileTabBar />
             <div className="md:hidden h-24" aria-hidden />
           </Providers>

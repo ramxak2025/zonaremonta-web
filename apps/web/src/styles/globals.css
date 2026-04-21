@@ -38,19 +38,26 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
   color-scheme: dark;
+  background: #0F0F18;
+  min-height: 100%;
 }
 html, body {
-  background: var(--bg);
+  background: #0F0F18;
   color: var(--ink);
 }
 body {
   font-family: var(--font-inter);
   overflow-x: hidden;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  background: #0F0F18;
+  min-height: 100dvh;
+  min-height: 100vh;
 }
 
-/* ============ ЖИВОЙ ФОН: conic + orbs ============ */
+/* ============ ЖИВОЙ ФОН ============
+   Mobile: упрощённая версия — 1 пульсирующий orb поверх статичного градиента.
+   Desktop: conic-gradient с вращением через @property + 2 orbs поверх.
+   Цель: сохранить «живое» впечатление, но не трогать GPU на mobile. */
+
 @property --bg-angle {
   syntax: '<angle>';
   inherits: false;
@@ -64,34 +71,39 @@ body {
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(900px 700px at 50% 100%, rgba(255, 62, 79, 0.12), transparent 60%),
+    radial-gradient(900px 650px at 85% 0%, rgba(232, 18, 36, 0.28), transparent 55%),
+    radial-gradient(750px 650px at 0% 35%, rgba(96, 80, 220, 0.2), transparent 55%),
+    radial-gradient(700px 600px at 50% 110%, rgba(255, 62, 79, 0.14), transparent 55%),
     linear-gradient(180deg, #15151F 0%, #0F0F18 100%);
 }
 
-.live-bg::before {
-  content: '';
-  position: absolute;
-  inset: -30%;
-  background: conic-gradient(
-    from var(--bg-angle) at 65% 25%,
-    rgba(232, 18, 36, 0.55) 0deg,
-    rgba(96, 80, 220, 0.35) 90deg,
-    rgba(255, 62, 79, 0.45) 180deg,
-    rgba(74, 159, 217, 0.3) 270deg,
-    rgba(232, 18, 36, 0.55) 360deg
-  );
-  filter: blur(120px);
-  opacity: 0.9;
-  animation: spinHue 26s linear infinite;
-  will-change: --bg-angle, transform;
-  transform: translateZ(0);
+/* Conic hue-вращение ТОЛЬКО на desktop (тяжёлая GPU-операция) */
+@media (min-width: 768px) {
+  .live-bg::before {
+    content: '';
+    position: absolute;
+    inset: -25%;
+    background: conic-gradient(
+      from var(--bg-angle) at 65% 25%,
+      rgba(232, 18, 36, 0.45) 0deg,
+      rgba(96, 80, 220, 0.3) 90deg,
+      rgba(255, 62, 79, 0.4) 180deg,
+      rgba(74, 159, 217, 0.25) 270deg,
+      rgba(232, 18, 36, 0.45) 360deg
+    );
+    filter: blur(100px);
+    opacity: 0.85;
+    animation: spinHue 32s linear infinite;
+    will-change: --bg-angle;
+    transform: translateZ(0);
+  }
 }
 
 @keyframes spinHue {
   to { --bg-angle: 360deg; }
 }
 
-/* Orbs поверх — живая пульсация и плавание */
+/* Orbs — на mobile 1 шт, на desktop 2 шт */
 .live-bg-orb {
   position: absolute;
   border-radius: 50%;
@@ -100,47 +112,35 @@ body {
   transform: translateZ(0);
 }
 .live-bg-orb-1 {
-  width: 420px;
-  height: 420px;
-  top: -10%;
-  right: -10%;
-  background: radial-gradient(circle, rgba(232, 18, 36, 0.7) 0%, transparent 70%);
-  animation: pulseFloat1 12s ease-in-out infinite;
-}
-.live-bg-orb-2 {
   width: 360px;
   height: 360px;
-  bottom: -10%;
-  left: -10%;
-  background: radial-gradient(circle, rgba(96, 80, 220, 0.55) 0%, transparent 70%);
-  animation: pulseFloat2 16s ease-in-out infinite;
+  top: -8%;
+  right: -10%;
+  background: radial-gradient(circle, rgba(232, 18, 36, 0.65) 0%, transparent 70%);
+  animation: pulseFloat1 14s ease-in-out infinite;
 }
-.live-bg-orb-3 {
-  width: 280px;
-  height: 280px;
-  top: 40%;
-  left: 40%;
-  background: radial-gradient(circle, rgba(74, 159, 217, 0.35) 0%, transparent 70%);
-  animation: pulseFloat3 20s ease-in-out infinite;
+
+/* Второй orb — только desktop */
+@media (min-width: 768px) {
+  .live-bg-orb-2 {
+    width: 380px;
+    height: 380px;
+    bottom: -10%;
+    left: -8%;
+    background: radial-gradient(circle, rgba(96, 80, 220, 0.5) 0%, transparent 70%);
+    animation: pulseFloat2 18s ease-in-out infinite;
+    display: block;
+  }
 }
+.live-bg-orb-2 { display: none; }
 
 @keyframes pulseFloat1 {
-  0%, 100% { opacity: 0.45; transform: translate3d(0, 0, 0) scale(1); }
-  50%      { opacity: 0.95; transform: translate3d(-6%, 8%, 0) scale(1.25); }
+  0%, 100% { opacity: 0.4; transform: translate3d(0, 0, 0) scale(1); }
+  50%      { opacity: 0.85; transform: translate3d(-5%, 5%, 0) scale(1.15); }
 }
 @keyframes pulseFloat2 {
-  0%, 100% { opacity: 0.4; transform: translate3d(0, 0, 0) scale(0.95); }
-  50%      { opacity: 0.8; transform: translate3d(8%, -5%, 0) scale(1.2); }
-}
-@keyframes pulseFloat3 {
-  0%, 100% { opacity: 0.25; transform: translate3d(-50%, -50%, 0) scale(1); }
-  50%      { opacity: 0.6; transform: translate3d(-30%, -70%, 0) scale(1.3); }
-}
-
-/* На мобильных упрощаем — меньше орбов на экране */
-@media (max-width: 640px) {
-  .live-bg-orb-3 { display: none; }
-  .live-bg-orb-1, .live-bg-orb-2 { filter: blur(40px); }
+  0%, 100% { opacity: 0.35; transform: translate3d(0, 0, 0) scale(0.95); }
+  50%      { opacity: 0.75; transform: translate3d(6%, -4%, 0) scale(1.15); }
 }
 
 @media (prefers-reduced-motion: reduce) {

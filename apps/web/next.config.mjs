@@ -5,7 +5,7 @@ const nextConfig = {
   compress: true,
   output: 'standalone',
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react'],
   },
   images: {
     formats: ['image/avif', 'image/webp'],
