@@ -34,7 +34,7 @@ export function HowItWorks() {
           'linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.2))',
       }}
     >
-      <div className="max-w-3xl stack-5 mb-12 md:mb-16">
+      <div className="section-head">
         <span className="eyebrow">Как мы работаем</span>
         <h2 className="h-1 text-white">От звонка до заправки газом — один день</h2>
         <p className="lead">

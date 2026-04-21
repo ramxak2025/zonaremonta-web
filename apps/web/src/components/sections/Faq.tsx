@@ -36,7 +36,7 @@ const ITEMS: ReadonlyArray<{ q: string; a: string }> = [
 export function Faq() {
   return (
     <section className="section section-y">
-      <div className="max-w-3xl stack-5 mb-12 md:mb-16">
+      <div className="section-head">
         <span className="eyebrow">Вопросы и ответы</span>
         <h2 className="h-1 text-white">Отвечаем коротко и по делу</h2>
       </div>

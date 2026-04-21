@@ -53,7 +53,7 @@ export function CalculatorPro({ settings }: Props) {
 
   return (
     <section className="section py-10 md:py-20">
-      <div className="max-w-3xl stack-5 mb-10 md:mb-14">
+      <div className="section-head">
         <span className="eyebrow">Калькулятор экономии</span>
         <h1 className="h-1 text-white">Посчитайте свою выгоду за 30 секунд</h1>
         <p className="lead">

@@ -65,7 +65,7 @@ export function WhatWeInstall() {
   const l = getContactLinks();
   return (
     <section id="services" className="section section-y">
-      <div className="max-w-3xl stack-6 mb-12 md:mb-16">
+      <div className="section-head">
         <span className="eyebrow">Услуги</span>
         <h2 className="h-1 text-white">Два поколения ГБО — под любой двигатель</h2>
         <p className="lead">
