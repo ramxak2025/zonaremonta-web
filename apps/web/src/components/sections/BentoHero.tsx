@@ -114,7 +114,7 @@ export function BentoHero({ settings }: Props) {
           </article>
 
           {/* ── Окупаемость ── */}
-          <article className="liquid-glass col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[200px] lg:min-h-[230px] p-6 md:p-7">
+          <article className="card-strong col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[200px] lg:min-h-[230px] p-6 md:p-7">
             <span className="chip !py-1 !px-2.5 !text-[10px] self-start">
               <Clock className="w-3 h-3" />
               Окупаемость
@@ -138,7 +138,7 @@ export function BentoHero({ settings }: Props) {
           </article>
 
           {/* ── Экономия ── */}
-          <article className="liquid-glass col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[200px] lg:min-h-[230px] p-6 md:p-7">
+          <article className="card-strong col-span-3 lg:col-span-2 relative overflow-hidden flex flex-col justify-between min-h-[200px] lg:min-h-[230px] p-6 md:p-7">
             <span className="chip !py-1 !px-2.5 !text-[10px] self-start">
               <Fuel className="w-3 h-3" />
               Экономия
@@ -158,7 +158,7 @@ export function BentoHero({ settings }: Props) {
           </article>
 
           {/* ── Средний чек ── */}
-          <article className="liquid-glass col-span-6 lg:col-span-4 relative overflow-hidden p-7 md:p-9">
+          <article className="card-strong col-span-6 lg:col-span-4 relative overflow-hidden p-7 md:p-9">
             <HexIcon
               size={220}
               filled={false}
@@ -202,7 +202,7 @@ export function BentoHero({ settings }: Props) {
           <a
             href={l.phoneHref}
             aria-label={`Позвонить ${phone}`}
-            className="liquid-glass col-span-3 lg:col-span-1 relative overflow-hidden flex flex-col justify-between min-h-[160px] p-6 active:scale-[0.98] transition-transform group"
+            className="card-strong col-span-3 lg:col-span-1 relative overflow-hidden flex flex-col justify-between min-h-[160px] p-6 active:scale-[0.98] transition-transform group"
           >
             <span className="w-11 h-11 rounded-2xl grid place-items-center bg-primary/20 border border-primary/30 flex-none group-hover:bg-primary/30 transition-colors">
               <PhoneFilledIcon className="w-5 h-5 text-[#FF3E4F]" />
@@ -225,7 +225,7 @@ export function BentoHero({ settings }: Props) {
             href={l.mapsHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="liquid-glass col-span-3 lg:col-span-1 relative overflow-hidden flex flex-col justify-between min-h-[160px] p-6 active:scale-[0.98] transition-transform"
+            className="card-strong col-span-3 lg:col-span-1 relative overflow-hidden flex flex-col justify-between min-h-[160px] p-6 active:scale-[0.98] transition-transform"
           >
             <div className="flex items-center justify-between">
               <span className="w-11 h-11 rounded-2xl grid place-items-center bg-[#FFCC00]/15 border border-[#FFCC00]/30 flex-none">
@@ -247,7 +247,7 @@ export function BentoHero({ settings }: Props) {
           </a>
 
           {/* ── Гарантия ── */}
-          <article className="liquid-glass col-span-6 lg:col-span-2 relative overflow-hidden flex items-center gap-4 min-h-[96px] p-6">
+          <article className="card-strong col-span-6 lg:col-span-2 relative overflow-hidden flex items-center gap-4 min-h-[96px] p-6">
             <span className="w-12 h-12 rounded-2xl grid place-items-center bg-white/[0.05] border border-white/10 flex-none">
               <ShieldCheck className="w-5 h-5 text-[#22C55E]" strokeWidth={2.2} />
             </span>

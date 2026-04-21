@@ -76,23 +76,30 @@ export function WhatWeInstall() {
 
       <div className="grid md:grid-cols-2 gap-4">
         {TIERS.map((t) => (
-          <article key={t.code} className="card p-6 md:p-8 flex flex-col">
+          <article key={t.code} className="card p-6 md:p-8 flex flex-col gap-6">
             <div className="flex items-start justify-between gap-4">
-              <div>
+              <div className="stack-3">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-display text-[56px] md:text-[72px] leading-none text-gradient tracking-tight">
+                  <span
+                    className="font-display text-gradient tracking-tight"
+                    style={{
+                      fontSize: 'clamp(48px, 10vw, 72px)',
+                      lineHeight: 1,
+                      paddingBottom: '0.05em',
+                    }}
+                  >
                     {t.code}
                   </span>
                   {t.code === '4+' && (
                     <span className="text-white/40 text-xs uppercase tracking-widest">DI</span>
                   )}
                 </div>
-                <h3 className="h-2 text-white mt-3">{t.title}</h3>
-                <p className="text-white/60 text-sm mt-1">{t.subtitle}</p>
+                <h3 className="h-3 text-white">{t.title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{t.subtitle}</p>
               </div>
               {t.badge && (
                 <span
-                  className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
+                  className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex-none"
                   style={{
                     background:
                       'linear-gradient(135deg, rgba(255,62,79,0.2), rgba(232,18,36,0.15))',
@@ -105,14 +112,16 @@ export function WhatWeInstall() {
               )}
             </div>
 
-            <p className="text-white/70 text-sm mt-5 leading-relaxed">{t.forWho}</p>
+            <p className="text-white/70 text-sm leading-relaxed">{t.forWho}</p>
 
-            <div className="mt-4 text-[11px] uppercase tracking-[0.2em] text-white/40">
-              Оборудование
+            <div className="stack-2">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-semibold">
+                Оборудование
+              </div>
+              <p className="text-sm text-white/80">{t.brands}</p>
             </div>
-            <p className="text-sm text-white/80 mt-1">{t.brands}</p>
 
-            <ul className="mt-6 space-y-2.5">
+            <ul className="space-y-2.5">
               {t.features.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-[14px] text-white/80">
                   <Check className="w-4 h-4 text-[#22C55E] mt-0.5 flex-none" strokeWidth={2.5} />
@@ -121,15 +130,22 @@ export function WhatWeInstall() {
               ))}
             </ul>
 
-            <div className="mt-auto pt-8 flex items-end justify-between gap-4">
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+            <div className="mt-auto pt-6 flex items-end justify-between gap-4">
+              <div className="stack-2">
+                <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold">
                   Под ключ от
                 </div>
-                <div className="font-display text-[40px] md:text-[48px] leading-none text-white tracking-tight mt-1">
+                <div
+                  className="font-display text-white tracking-tight"
+                  style={{
+                    fontSize: 'clamp(32px, 6vw, 44px)',
+                    lineHeight: 1,
+                    paddingBottom: '0.05em',
+                  }}
+                >
                   {t.priceFrom.toLocaleString('ru-RU')} ₽
                 </div>
-                <div className="text-xs text-white/50 mt-1">~ {t.durationHrs} часов работы</div>
+                <div className="text-xs text-white/50">~ {t.durationHrs} часов работы</div>
               </div>
               <a
                 href={l.phoneHref}
