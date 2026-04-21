@@ -11,8 +11,8 @@
 :root {
   --font-inter: 'Inter', system-ui, sans-serif;
   --font-oswald: 'Oswald', 'Inter', system-ui, sans-serif;
-  --bg: #131318;
-  --bg-elev: #1A1A22;
+  --bg: #11111C;
+  --bg-elev: #1A1A26;
   --surface: rgba(255, 255, 255, 0.055);
   --surface-border: rgba(255, 255, 255, 0.09);
   --surface-border-strong: rgba(255, 255, 255, 0.14);
@@ -48,10 +48,10 @@ body {
   overflow-x: hidden;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   background:
-    radial-gradient(1400px 900px at 100% -10%, rgba(232, 18, 36, 0.38), transparent 55%),
-    radial-gradient(1100px 900px at -10% 25%, rgba(74, 159, 217, 0.22), transparent 55%),
-    radial-gradient(1000px 800px at 50% 115%, rgba(255, 62, 79, 0.15), transparent 55%),
-    var(--bg);
+    radial-gradient(1400px 900px at 100% -8%, rgba(232, 18, 36, 0.42), transparent 55%),
+    radial-gradient(1100px 900px at -10% 30%, rgba(96, 80, 220, 0.22), transparent 55%),
+    radial-gradient(900px 700px at 50% 110%, rgba(255, 62, 79, 0.18), transparent 55%),
+    linear-gradient(180deg, #151520 0%, #0F0F18 100%);
   background-attachment: fixed;
 }
 
@@ -73,43 +73,49 @@ body {
 .h-display {
   font-family: var(--font-oswald);
   font-weight: 700;
-  font-size: clamp(40px, 7.5vw, 88px);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  font-size: clamp(36px, 7.5vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
+  padding-bottom: 0.08em;
 }
 .h-1 {
   font-family: var(--font-oswald);
   font-weight: 700;
-  font-size: clamp(32px, 5vw, 56px);
-  line-height: 1.0;
+  font-size: clamp(28px, 4.8vw, 52px);
+  line-height: 1.08;
   letter-spacing: -0.025em;
   text-transform: uppercase;
+  padding-bottom: 0.08em;
 }
 .h-2 {
   font-family: var(--font-oswald);
   font-weight: 600;
-  font-size: clamp(24px, 3.5vw, 40px);
-  line-height: 1.1;
+  font-size: clamp(22px, 3vw, 36px);
+  line-height: 1.12;
   letter-spacing: -0.02em;
+  padding-bottom: 0.06em;
 }
 .h-3 {
   font-family: var(--font-oswald);
   font-weight: 600;
-  font-size: clamp(18px, 2.2vw, 24px);
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.2;
   letter-spacing: -0.01em;
 }
 .eyebrow {
-  font-size: 12px;
-  font-weight: 600;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--primary-2);
+  padding-bottom: 2px;
 }
 .lead {
-  font-size: clamp(16px, 1.6vw, 19px);
-  line-height: 1.55;
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.6;
   color: var(--ink-80);
 }
 
@@ -187,6 +193,17 @@ body {
   }
 
   .pill { border-radius: 999px; }
+
+  /* ============ VERTICAL RHYTHM (stack) ============
+     Используем owl-selector для унифицированного вертикального ритма.
+     Исключает наложения заголовков и параграфов. */
+  .stack-2 > * + * { margin-top: 0.5rem; }
+  .stack-3 > * + * { margin-top: 0.75rem; }
+  .stack-4 > * + * { margin-top: 1rem; }
+  .stack-5 > * + * { margin-top: 1.25rem; }
+  .stack-6 > * + * { margin-top: 1.5rem; }
+  .stack-8 > * + * { margin-top: 2rem; }
+  .stack-10 > * + * { margin-top: 2.5rem; }
 
   /* Кнопки */
   .btn {
@@ -266,15 +283,21 @@ body {
   }
 }
 
-/* Плавные появления секций при скролле */
+/* Плавные появления секций при скролле (управляется Reveal компонентом) */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
 }
 .reveal.in {
   opacity: 1;
   transform: translateY(0);
+  filter: blur(0);
 }
 
 /* Safe area */

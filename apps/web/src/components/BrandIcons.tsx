@@ -49,3 +49,29 @@ export function PhoneFilledIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+/** Официальный Яндекс-логотип (красный круг с белой «Я»). */
+export function YandexLogoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 32 32" {...props}>
+      <circle cx="16" cy="16" r="16" fill="#FC3F1D" />
+      <path
+        d="M14.58 9.5h1.82v13h-2.42v-4.8h-.6l-2.46 4.8H8.3l2.84-5.28c-1.58-.64-2.52-1.88-2.52-3.86 0-2.72 1.68-3.86 3.96-3.86zm1.82 1.76h-.74c-1.06 0-1.98.52-1.98 2.08 0 1.52.78 2.06 1.98 2.06h.74v-4.14z"
+        fill="#fff"
+      />
+    </svg>
+  );
+}
+
+/** Официальный логотип 2ГИС (зелёный квадрат с «2»). */
+export function TwoGisLogoIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 32 32" {...props}>
+      <rect width="32" height="32" rx="8" fill="#19AA1E" />
+      <path
+        d="M10 12.5c0-2.2 1.85-4 4.5-4 2.7 0 4.5 1.78 4.5 3.97 0 1.48-.8 2.63-2.45 4.18l-3.2 3.03H20V22H9v-1.9l5.2-4.95c1.1-1.05 1.55-1.73 1.55-2.58 0-1-.75-1.77-2.02-1.77-1.2 0-2.05.73-2.05 2.02H10z"
+        fill="#fff"
+      />
+    </svg>
+  );
+}

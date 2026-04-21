@@ -38,17 +38,26 @@ export function MobileTabBar() {
     >
       <div className="mx-2.5 pointer-events-auto">
         <nav
-          className="grid grid-cols-5 gap-0.5 p-1.5"
+          className="grid grid-cols-5 p-1.5 relative overflow-hidden"
           style={{
-            background: 'rgba(19, 19, 24, 0.85)',
-            backdropFilter: 'blur(24px) saturate(1.5)',
-            WebkitBackdropFilter: 'blur(24px) saturate(1.5)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: 28,
+            background: 'rgba(20, 20, 30, 0.55)',
+            backdropFilter: 'blur(32px) saturate(2)',
+            WebkitBackdropFilter: 'blur(32px) saturate(2)',
+            borderRadius: 30,
             boxShadow:
-              '0 1px 0 rgba(255,255,255,0.08) inset, 0 14px 40px -12px rgba(0,0,0,0.55)',
+              '0 1px 0 rgba(255,255,255,0.14) inset, 0 -1px 0 rgba(255,255,255,0.04) inset, 0 20px 40px -12px rgba(0,0,0,0.6)',
           }}
         >
+          {/* мягкий внутренний блик */}
+          <span
+            aria-hidden
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 35%)',
+              borderRadius: 30,
+            }}
+          />
           {TABS.map((t) => {
             const active = t.isActive(pathname);
             const Icon = t.icon;
@@ -58,15 +67,14 @@ export function MobileTabBar() {
                 href={t.href}
                 onClick={haptic}
                 aria-current={active ? 'page' : undefined}
-                className="relative h-14 flex flex-col items-center justify-center gap-1 rounded-[20px] overflow-hidden active:scale-[0.92] transition-transform"
+                className="relative h-14 flex flex-col items-center justify-center gap-1 rounded-[22px] active:scale-[0.92] transition-transform z-10"
                 style={
                   active
                     ? {
                         background:
-                          'linear-gradient(180deg, rgba(255,62,79,0.22) 0%, rgba(232,18,36,0.35) 100%)',
-                        border: '1px solid rgba(232,18,36,0.45)',
+                          'linear-gradient(180deg, rgba(255,62,79,0.25) 0%, rgba(232,18,36,0.4) 100%)',
                         boxShadow:
-                          '0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 20px -6px rgba(232,18,36,0.5)',
+                          '0 1px 0 rgba(255,255,255,0.2) inset, 0 8px 22px -6px rgba(232,18,36,0.55)',
                       }
                     : undefined
                 }

@@ -52,18 +52,13 @@ export function CalculatorPro({ settings }: Props) {
   const hasInput = mileageNum > 0 && consumptionNum > 0;
 
   return (
-    <section className="section py-8 md:py-16">
-      <div className="max-w-3xl mb-8 md:mb-12">
-        <span className="chip">
-          <span className="dot" />
-          Калькулятор экономии
-        </span>
-        <h1 className="h-1 mt-4 text-white">
-          Посчитайте свою выгоду за 30 секунд
-        </h1>
-        <p className="lead mt-4">
-          Введите ваш пробег и расход — мы покажем, сколько денег вернётся в ваш карман
-          каждый месяц. Цены топлива обновляем вручную по АЗС Махачкалы.
+    <section className="section py-10 md:py-20">
+      <div className="max-w-3xl stack-5 mb-10 md:mb-14">
+        <span className="eyebrow">Калькулятор экономии</span>
+        <h1 className="h-1 text-white">Посчитайте свою выгоду за 30 секунд</h1>
+        <p className="lead">
+          Введите пробег, расход и стоимость установки — покажем, сколько денег
+          вернётся в ваш карман каждый месяц. Цены топлива актуальны по АЗС Махачкалы.
         </p>
       </div>
 

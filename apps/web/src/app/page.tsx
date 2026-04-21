@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { Reveal } from '@/components/Reveal';
 import { BentoHero } from '@/components/sections/BentoHero';
 import { TrustBar } from '@/components/sections/TrustBar';
 import { WhatWeInstall } from '@/components/sections/WhatWeInstall';
@@ -20,12 +21,12 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: 'Установка ГБО 4 и 4+ в Махачкале — Зона Ремонта',
   description:
-    'Установка, ремонт и диагностика ГБО 4-го поколения и 4+ для прямого впрыска (GDI, FSI, TSI). Работаем с китайскими авто. Гарантия 1 год, регистрация в ГИБДД.',
+    'Установка ГБО 4-го поколения и 4+ для прямого впрыска (TSI, GDI, FSI). Гарантия 1 год, регистрация в ГИБДД, под ключ за 1 день. Рейтинг 4.9 Яндекс · 5.0 2ГИС.',
   alternates: { canonical: `${SITE.siteUrl}/` },
   openGraph: {
-    title: 'ГБО 4 и 4+ в Махачкале — установка за 1 день',
+    title: 'Газ вместо бензина. В два раза дешевле.',
     description:
-      'Только современные системы: 4-е поколение для инжекторов и 4+ для прямого впрыска (TSI, GDI, FSI). Рейтинг Яндекс 4.9 · 2GIS 5.0.',
+      'Сертифицированный сервис ГБО в Махачкале. Только 4 и 4+ поколение. Под ключ за один день.',
     url: SITE.siteUrl,
     siteName: SITE.name,
     locale: 'ru_RU',
@@ -41,15 +42,15 @@ export default async function Home() {
       <Header />
       <main>
         <BentoHero settings={settings} />
-        <TrustBar settings={settings} />
-        <WhatWeInstall />
-        <ChineseCars />
-        <CalculatorPro settings={settings} />
-        <WhyUs />
-        <HowItWorks />
-        <Reviews settings={settings} />
-        <Faq />
-        <FinalCta settings={settings} />
+        <Reveal><TrustBar settings={settings} /></Reveal>
+        <Reveal><WhatWeInstall /></Reveal>
+        <Reveal><ChineseCars /></Reveal>
+        <Reveal><CalculatorPro settings={settings} /></Reveal>
+        <Reveal><WhyUs /></Reveal>
+        <Reveal><HowItWorks /></Reveal>
+        <Reveal><Reviews settings={settings} /></Reveal>
+        <Reveal><Faq /></Reveal>
+        <Reveal><FinalCta settings={settings} /></Reveal>
       </main>
       <Footer />
     </>

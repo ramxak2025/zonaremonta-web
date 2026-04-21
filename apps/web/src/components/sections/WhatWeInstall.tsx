@@ -65,12 +65,12 @@ export function WhatWeInstall() {
   const l = getContactLinks();
   return (
     <section id="services" className="section section-y">
-      <div className="max-w-3xl mb-10 md:mb-14">
-        <span className="eyebrow">Что мы устанавливаем</span>
-        <h2 className="h-1 mt-4 text-white">Только 4-е и 4+. Потому что знаем их идеально.</h2>
-        <p className="lead mt-5">
-          Два направления вместо десяти — это когда каждый мастер видел вашу модель
-          сотни раз, на складе всегда есть оригинальные комплектующие, а ошибаться негде.
+      <div className="max-w-3xl stack-6 mb-12 md:mb-16">
+        <span className="eyebrow">Услуги</span>
+        <h2 className="h-1 text-white">Два поколения ГБО — под любой двигатель</h2>
+        <p className="lead">
+          4-е поколение для обычных инжекторов и 4+ для прямого впрыска.
+          Это всё, что нужно современному автомобилю.
         </p>
       </div>
 
