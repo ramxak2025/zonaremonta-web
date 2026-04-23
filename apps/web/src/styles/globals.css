@@ -133,8 +133,12 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
 }
 
 /* ============ TYPOGRAPHY ============ */
-/* Все заголовки: block-level + явный box-sizing + сброс margin.
-   Отступы ДО/ПОСЛЕ задаются родителем (.section-head / .stack-*). */
+/* Oswald Uppercase — капителы занимают почти всю em-box, поэтому line-height
+   должен быть ЯВНО больше 1.2, иначе строки накладываются и цепляют соседние
+   блоки. Значения ниже проверены для multi-line заголовков.
+   padding-block даёт запас над капсами и под базовой линией на случай, если
+   родитель использует gap=0 (margin-collapse при этом не мешает — heading
+   block-level). */
 
 h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
@@ -149,42 +153,43 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 }
 .h-display {
   font-weight: 700;
-  font-size: clamp(32px, 6.5vw, 72px);
-  line-height: 1.1;
+  font-size: clamp(30px, 6vw, 68px);
+  line-height: 1.18;
   letter-spacing: -0.025em;
   text-transform: uppercase;
-  padding: 0.08em 0;
+  padding-block: 0.14em;
 }
 .h-1 {
   font-weight: 700;
-  font-size: clamp(24px, 3.8vw, 40px);
-  line-height: 1.2;
+  font-size: clamp(24px, 3.6vw, 38px);
+  line-height: 1.25;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  padding: 0.06em 0;
+  padding-block: 0.12em;
 }
 .h-2 {
   font-weight: 600;
   font-size: clamp(20px, 2.6vw, 28px);
-  line-height: 1.3;
+  line-height: 1.35;
   letter-spacing: -0.015em;
-  padding: 0.04em 0;
+  padding-block: 0.1em;
 }
 .h-3 {
   font-weight: 600;
   font-size: clamp(16px, 1.6vw, 20px);
-  line-height: 1.4;
+  line-height: 1.45;
   letter-spacing: -0.01em;
-  padding: 0.02em 0;
+  padding-block: 0.08em;
 }
 .eyebrow {
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--primary-2);
+  padding-block: 0.1em;
 }
 .lead {
   display: block;
@@ -194,20 +199,34 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   max-width: 65ch;
 }
 
-/* Большие цифры (не заголовки — счётчики метрик) */
+/* Большие цифры (счётчики метрик, цены). line-height > 1 обязательно —
+   иначе Oswald верхние палочки цифр выходят за контент-бокс и налезают
+   на текст выше. */
 .stat-number, .num {
   font-family: var(--font-oswald);
   display: inline-block;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.1;
   letter-spacing: -0.02em;
-  padding-block: 0.06em;
+  padding-block: 0.08em;
 }
 .stat-number {
   font-size: clamp(40px, 6vw, 64px);
 }
-/* .num — универсальная утилита для крупных чисел (цена, счётчики внутри карточек).
-   Размер задаётся inline style; line-height и паддинг гарантированы. */
+
+/* ============ FALLBACK ОТСТУПЫ ============
+   Универсальные sibling-правила на случай, если конкретный контейнер
+   забыл задать gap / stack. :where() даёт 0 specificity — Tailwind
+   утилиты (mt-*) легко переопределяют. */
+:where(.h-display, .h-1, .h-2, .h-3) + :where(p, .lead, ul, ol) {
+  margin-top: var(--space-4);
+}
+:where(.eyebrow) + :where(.h-display, .h-1, .h-2, .h-3) {
+  margin-top: var(--space-3);
+}
+:where(p, .lead) + :where(.h-display, .h-1, .h-2, .h-3) {
+  margin-top: var(--space-5);
+}
 
 /* ============ СЕТКА И ОТСТУПЫ ============ */
 @layer components {
