@@ -133,12 +133,9 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
 }
 
 /* ============ TYPOGRAPHY ============ */
-/* Oswald Uppercase — капителы занимают почти всю em-box, поэтому line-height
-   должен быть ЯВНО больше 1.2, иначе строки накладываются и цепляют соседние
-   блоки. Значения ниже проверены для multi-line заголовков.
-   padding-block даёт запас над капсами и под базовой линией на случай, если
-   родитель использует gap=0 (margin-collapse при этом не мешает — heading
-   block-level). */
+/* BULLETPROOF: margin-bottom ВШИТ в сам heading, работает независимо от
+   родителя (flex/grid/block/card). :not(:last-child) чтобы не было
+   паразитного отступа внизу карточки. */
 
 h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
@@ -181,6 +178,14 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   letter-spacing: -0.01em;
   padding-block: 0.08em;
 }
+
+/* ВШИТЫЙ margin-bottom. Работает ВЕЗДЕ — в section-head, внутри карточек,
+   в списках, в форме. Никакой зависимости от родительского gap/stack. */
+.h-display:not(:last-child) { margin-bottom: 0.5em; }
+.h-1:not(:last-child)       { margin-bottom: 0.55em; }
+.h-2:not(:last-child)       { margin-bottom: 0.5em; }
+.h-3:not(:last-child)       { margin-bottom: 0.45em; }
+
 .eyebrow {
   display: inline-block;
   font-size: 11px;
@@ -191,6 +196,8 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   color: var(--primary-2);
   padding-block: 0.1em;
 }
+.eyebrow:not(:last-child) { margin-bottom: 14px; }
+
 .lead {
   display: block;
   font-size: clamp(14px, 1.4vw, 17px);
@@ -199,9 +206,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   max-width: 65ch;
 }
 
-/* Большие цифры (счётчики метрик, цены). line-height > 1 обязательно —
-   иначе Oswald верхние палочки цифр выходят за контент-бокс и налезают
-   на текст выше. */
+/* Большие цифры — крупные, line-height > 1 обязательно */
 .stat-number, .num {
   font-family: var(--font-oswald);
   display: inline-block;
@@ -212,20 +217,6 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 }
 .stat-number {
   font-size: clamp(40px, 6vw, 64px);
-}
-
-/* ============ FALLBACK ОТСТУПЫ ============
-   Универсальные sibling-правила на случай, если конкретный контейнер
-   забыл задать gap / stack. :where() даёт 0 specificity — Tailwind
-   утилиты (mt-*) легко переопределяют. */
-:where(.h-display, .h-1, .h-2, .h-3) + :where(p, .lead, ul, ol) {
-  margin-top: var(--space-4);
-}
-:where(.eyebrow) + :where(.h-display, .h-1, .h-2, .h-3) {
-  margin-top: var(--space-3);
-}
-:where(p, .lead) + :where(.h-display, .h-1, .h-2, .h-3) {
-  margin-top: var(--space-5);
 }
 
 /* ============ СЕТКА И ОТСТУПЫ ============ */
@@ -250,23 +241,15 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   @media (min-width: 768px) { .section-y { padding-top: var(--space-8); padding-bottom: var(--space-8); } }
   @media (min-width: 1024px) { .section-y { padding-top: var(--space-9); padding-bottom: var(--space-9); } }
 
-  /* Шапка секции — eyebrow / heading / lead.
-     Owl-selector вместо flex gap — гарантированно даёт правильные отступы
-     даже если какой-то браузер отрендерит flex-gap неточно. */
+  /* Шапка секции — просто контейнер. Отступы между eyebrow/heading/lead
+     даются вшитым margin-bottom самих элементов. */
   .section-head {
     display: block;
     max-width: 48rem;
     margin-bottom: var(--space-6);
   }
-  .section-head > .eyebrow + * { margin-top: var(--space-3); }
-  .section-head > :is(.h-display, .h-1, .h-2, .h-3) + .lead,
-  .section-head > :is(.h-display, .h-1, .h-2, .h-3) + p { margin-top: var(--space-4); }
-  .section-head > * + :is(.h-display, .h-1, .h-2, .h-3) { margin-top: var(--space-3); }
-
   @media (min-width: 768px) {
     .section-head { margin-bottom: var(--space-7); }
-    .section-head > :is(.h-display, .h-1, .h-2, .h-3) + .lead,
-    .section-head > :is(.h-display, .h-1, .h-2, .h-3) + p { margin-top: var(--space-5); }
   }
 
   /* Карточки — строго 3 размера radius */

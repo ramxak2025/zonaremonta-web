@@ -1,201 +1,161 @@
-'use client';
-import { useMemo, useState } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Search, Package, Gauge, Fuel, Wrench, Cpu, CircleDot, ArrowRight } from 'lucide-react';
+import { ArrowRight, Gauge, Fuel, Wrench, Cpu, Package, CircleDot, Wrench as WrenchIcon, Truck, Clock } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { HexIcon } from '@/components/HexIcon';
-import { getContactLinks } from '@/lib/site';
-import { WhatsAppIcon } from '@/components/BrandIcons';
+import { SITE, getContactLinks } from '@/lib/site';
+import { PRODUCT_CATEGORIES, PRODUCTS } from '@/data/products';
 
-interface Category {
-  slug: string;
-  name: string;
-  description: string;
-  icon: typeof Package;
-  tags: readonly string[];
-}
+export const metadata: Metadata = {
+  title: 'Каталог комплектующих ГБО — самовывоз и установка на месте',
+  description:
+    'Магазин ГБО в Махачкале: редукторы, форсунки, ЭБУ, баллоны, мультиклапаны. Самовывоз со склада + установка на месте со скидкой на работу.',
+  alternates: { canonical: `${SITE.siteUrl}/catalog` },
+};
 
-const CATEGORIES: readonly Category[] = [
-  {
-    slug: 'reducers',
-    name: 'Редукторы',
-    description: 'Испарители газа Lovato, BRC, Tomasetto, OMVL',
-    icon: Gauge,
-    tags: ['Lovato', 'BRC', 'Tomasetto', 'OMVL'],
-  },
-  {
-    slug: 'injectors',
-    name: 'Форсунки',
-    description: 'Газовые форсунки 3/4 Ом для всех поколений ГБО',
-    icon: Fuel,
-    tags: ['Hana H2000', 'Valtek', 'Barracuda', 'Rail IG1/IG5'],
-  },
-  {
-    slug: 'ecu',
-    name: 'Электронные блоки (ЭБУ)',
-    description: 'Блоки управления 4-го поколения и 4+ для прямого впрыска',
-    icon: Cpu,
-    tags: ['Digitronic DGI', 'Lovato Smart', 'Prins VSI-DI'],
-  },
-  {
-    slug: 'cylinders',
-    name: 'Баллоны',
-    description: 'Тороидальные, цилиндрические — металл и композит',
-    icon: CircleDot,
-    tags: ['Атикер', 'Европолис', 'Stako'],
-  },
-  {
-    slug: 'kits',
-    name: 'Комплекты ГБО',
-    description: 'Готовые комплекты под ваш двигатель: на 4 / 6 / 8 цилиндров и на прямой впрыск',
-    icon: Package,
-    tags: ['4-цилиндровый', '6-цилиндровый', 'Direct Injection'],
-  },
-  {
-    slug: 'fittings',
-    name: 'Фитинги и арматура',
-    description: 'Тройники, переходники, шланги, хомуты, электроклапаны',
-    icon: Wrench,
-    tags: ['Omega', 'Мультиклапаны', 'ВЗУ'],
-  },
-];
+const ICON_MAP = {
+  reducers: Gauge,
+  injectors: Fuel,
+  ecu: Cpu,
+  cylinders: CircleDot,
+  kits: Package,
+  fittings: Wrench,
+} as const;
 
 export default function CatalogPage() {
-  const [query, setQuery] = useState('');
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return CATEGORIES;
-    return CATEGORIES.filter((c) => {
-      const haystack = [c.name, c.description, ...c.tags].join(' ').toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [query]);
-
   const l = getContactLinks();
 
   return (
     <>
       <Header />
-      <main className="section pt-4 pb-12 md:pt-10 md:pb-20">
-        <div className="max-w-3xl">
-          <span className="chip"><span className="dot" />Каталог</span>
-          <h1 className="h-1 mt-4 text-white">Комплектующие для ГБО</h1>
-          <p className="lead mt-4">
-            Склад в Махачкале. Оригинальные компоненты для установки 4-го поколения и 4+
-            на прямой впрыск. Каталог пополняется — сейчас можно уточнить наличие по телефону
-            или через WhatsApp.
-          </p>
-        </div>
-
-        {/* Поиск */}
-        <div
-          className="mt-8 md:mt-10 flex items-center gap-3 h-14 pl-5 pr-2 rounded-full"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-          }}
-        >
-          <Search className="w-5 h-5 text-white/55 flex-none" strokeWidth={2} />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Поиск по артикулу, бренду, категории..."
-            className="flex-1 h-full bg-transparent text-white placeholder:text-white/35 outline-none text-[15px]"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery('')}
-              className="btn btn-ghost !h-10 !px-3 !text-[12px] flex-none"
-            >
-              Очистить
-            </button>
-          )}
-        </div>
-
-        {/* Категории */}
-        {filtered.length === 0 ? (
-          <div className="mt-10 liquid-glass p-10 text-center relative overflow-hidden">
-            <HexIcon size={200} filled={false} className="absolute -right-10 -top-10 text-white/[0.04]" />
-            <div className="relative">
-              <div className="text-white/70">Ничего не нашли по запросу «{query}».</div>
-              <a
-                href={l.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-primary mt-6"
-              >
-                <WhatsAppIcon className="w-4 h-4" />
-                Написать — уточнить наличие
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 mt-8 md:mt-10">
-            {filtered.map((c) => (
-              <Link
-                key={c.slug}
-                href={`/catalog/${c.slug}`}
-                className="card p-6 relative overflow-hidden group hover:-translate-y-1 active:scale-[0.98] transition-transform"
-              >
-                <HexIcon size={180} filled={false} className="absolute -right-8 -bottom-8 text-white/[0.04] group-hover:text-primary/30 transition-colors" />
-                <div className="flex items-center justify-between relative">
-                  <span className="w-11 h-11 rounded-xl grid place-items-center bg-primary/15 border border-primary/25 flex-none">
-                    <c.icon className="w-5 h-5 text-[#FF3E4F]" strokeWidth={2.2} />
-                  </span>
-                  <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-                </div>
-                <h3 className="h-3 text-white mt-5">{c.name}</h3>
-                <p className="text-sm text-white/60 mt-1.5 leading-relaxed">{c.description}</p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {c.tags.slice(0, 3).map((t) => (
-                    <span
-                      key={t}
-                      className="px-2 py-1 rounded-full text-[10px] font-semibold text-white/65"
-                      style={{
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* Empty state notice */}
-        <div
-          className="mt-10 p-5 md:p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center gap-4"
-          style={{
-            background: 'rgba(74,159,217,0.08)',
-            border: '1px solid rgba(74,159,217,0.2)',
-          }}
-        >
-          <div className="flex-1">
-            <div className="text-white font-semibold">Каталог товаров в разработке</div>
-            <p className="text-sm text-white/65 mt-1 max-w-2xl">
-              Сейчас мы подбираем запчасти под заказ — в наличии всегда есть базовые редукторы, форсунки,
-              баллоны. Позвоните или напишите в WhatsApp, уточним наличие за 5 минут.
+      <main>
+        {/* HERO магазина */}
+        <section className="section pt-6 pb-8 md:pt-10 md:pb-12">
+          <div className="max-w-3xl">
+            <span className="chip"><span className="dot" />Магазин</span>
+            <h1 className="h-1 text-white mt-4">Комплектующие ГБО со своего склада</h1>
+            <p className="lead">
+              Редукторы, форсунки, ЭБУ, баллоны и расходники.
+              Самовывоз в Махачкале. По желанию — установим прямо на месте со скидкой на работу.
             </p>
           </div>
-          <a
-            href={l.whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary flex-none"
+
+          {/* ФИШКА */}
+          <div
+            className="mt-6 md:mt-8 card p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(232,18,36,0.08) 0%, rgba(255,255,255,0.03) 100%)',
+              border: '1px solid rgba(232,18,36,0.25)',
+            }}
           >
-            <WhatsAppIcon className="w-4 h-4" />
-            Уточнить в WhatsApp
-          </a>
-        </div>
+            <span
+              className="w-12 h-12 rounded-xl grid place-items-center flex-shrink-0"
+              style={{
+                background: 'rgba(232, 18, 36, 0.15)',
+                border: '1px solid rgba(232, 18, 36, 0.3)',
+              }}
+            >
+              <WrenchIcon className="w-6 h-6 text-[#FF3E4F]" strokeWidth={2.2} />
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-white text-[15px] md:text-[16px] text-break">
+                Купили деталь — поставим за час, со скидкой 25–30% на работу
+              </div>
+              <p className="text-[13px] text-white/65 leading-relaxed mt-1 text-break">
+                На каждом товаре цена установки «под ключ». Если покупаете у нас — работа дешевле,
+                потому что мы уверены в оригинальной детали и гарантируем результат.
+              </p>
+            </div>
+            <Link
+              href="/#contact"
+              className="btn btn-ghost btn-sm flex-shrink-0"
+            >
+              Условия
+            </Link>
+          </div>
+
+          {/* Преимущества склада */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+            {[
+              { icon: Truck, title: 'Самовывоз в день обращения', text: 'Склад в Махачкале, работаем с 9 до 20' },
+              { icon: Clock, title: 'Установка от 1 часа', text: 'Легкие детали — мультиклапаны, фильтры' },
+              { icon: WrenchIcon, title: 'Гарантия при установке', text: '1 год при покупке + установке у нас' },
+            ].map(({ icon: Icon, title, text }) => (
+              <div key={title} className="card p-5 flex gap-4 items-start">
+                <span className="w-10 h-10 rounded-lg grid place-items-center bg-white/[0.04] border border-white/10 flex-shrink-0">
+                  <Icon className="w-5 h-5 text-white/70" strokeWidth={2} />
+                </span>
+                <div className="min-w-0">
+                  <div className="font-semibold text-white text-[14px] text-break">{title}</div>
+                  <div className="text-[12px] text-white/55 text-break mt-0.5">{text}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Категории */}
+        <section className="section pb-12 md:pb-20">
+          <div className="section-head">
+            <span className="eyebrow">Каталог</span>
+            <h2 className="h-1 text-white">Категории товаров</h2>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {PRODUCT_CATEGORIES.map((c) => {
+              const Icon = ICON_MAP[c.iconKey];
+              const count = PRODUCTS.filter((p) => p.category === c.slug).length;
+              return (
+                <Link
+                  key={c.slug}
+                  href={`/catalog/${c.slug}`}
+                  className="card p-6 flex flex-col gap-4 group hover:-translate-y-1 active:scale-[0.98] transition-transform"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="w-11 h-11 rounded-xl grid place-items-center bg-primary/15 border border-primary/25 flex-shrink-0">
+                      <Icon className="w-5 h-5 text-[#FF3E4F]" strokeWidth={2.2} />
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                  <div>
+                    <h3 className="h-3 text-white">{c.name}</h3>
+                    <p className="text-[13px] text-white/60 text-break leading-relaxed">
+                      {c.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between pt-3 border-t border-white/5">
+                    <div className="flex flex-wrap gap-1.5">
+                      {c.tags.slice(0, 2).map((t) => (
+                        <span
+                          key={t}
+                          className="px-2 py-0.5 rounded-full text-[10px] font-semibold text-white/65"
+                          style={{
+                            background: 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-[11px] text-white/40 font-semibold">
+                      {count} товар{count === 1 ? '' : count < 5 ? 'а' : 'ов'}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <p className="text-[12px] text-white/45 mt-8 max-w-prose">
+            Каталог дополняется. Если нужной позиции нет — уточните в{' '}
+            <a href={l.whatsappHref} target="_blank" rel="noopener noreferrer" className="text-white underline">
+              WhatsApp
+            </a>
+            , привезём под заказ за 1–3 дня.
+          </p>
+        </section>
       </main>
       <Footer />
     </>

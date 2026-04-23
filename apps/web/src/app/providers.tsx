@@ -1,8 +1,9 @@
+import { CartProvider } from '@/lib/cart';
+
 /**
- * Корневой Providers — пустой пока что.
- * React Query, если понадобится, подключается в layout-ах админки / LK
- * (не тратим ~40KB JS на публичных страницах).
+ * Корневой Providers. Только корзина — она нужна везде (Header показывает
+ * количество). React Query подключается в layout-ах админки / ЛК.
  */
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <CartProvider>{children}</CartProvider>;
 }

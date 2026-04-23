@@ -1,22 +1,16 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Wrench, Calculator, Package, UserCircle2, type LucideIcon } from 'lucide-react';
+import { Home, Wrench, Calculator, ShoppingBag, UserCircle2, type LucideIcon } from 'lucide-react';
+import { useCart } from '@/lib/cart';
 
 interface Tab {
   href: string;
   label: string;
   icon: LucideIcon;
   isActive: (pathname: string) => boolean;
+  badge?: number;
 }
-
-const TABS: readonly Tab[] = [
-  { href: '/', label: 'Главная', icon: Home, isActive: (p) => p === '/' },
-  { href: '/services', label: 'Услуги', icon: Wrench, isActive: (p) => p.startsWith('/services') },
-  { href: '/calculator', label: 'Расчёт', icon: Calculator, isActive: (p) => p.startsWith('/calculator') },
-  { href: '/catalog', label: 'Каталог', icon: Package, isActive: (p) => p.startsWith('/catalog') },
-  { href: '/lk', label: 'Кабинет', icon: UserCircle2, isActive: (p) => p.startsWith('/lk') },
-];
 
 function haptic(): void {
   if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
@@ -30,6 +24,21 @@ function haptic(): void {
 
 export function MobileTabBar() {
   const pathname = usePathname() ?? '/';
+  const { count } = useCart();
+
+  const TABS: readonly Tab[] = [
+    { href: '/', label: 'Главная', icon: Home, isActive: (p) => p === '/' },
+    { href: '/services', label: 'Услуги', icon: Wrench, isActive: (p) => p.startsWith('/services') },
+    { href: '/calculator', label: 'Расчёт', icon: Calculator, isActive: (p) => p.startsWith('/calculator') },
+    {
+      href: count > 0 ? '/cart' : '/catalog',
+      label: count > 0 ? 'Корзина' : 'Магазин',
+      icon: ShoppingBag,
+      isActive: (p) => p.startsWith('/catalog') || p.startsWith('/cart'),
+      badge: count,
+    },
+    { href: '/lk', label: 'Кабинет', icon: UserCircle2, isActive: (p) => p.startsWith('/lk') },
+  ];
 
   return (
     <div
@@ -88,12 +97,19 @@ export function MobileTabBar() {
                     : undefined
                 }
               >
-                <Icon
-                  strokeWidth={active ? 2.4 : 1.9}
-                  className={`w-[20px] h-[20px] transition-colors ${
-                    active ? 'text-white' : 'text-white/60'
-                  }`}
-                />
+                <div className="relative">
+                  <Icon
+                    strokeWidth={active ? 2.4 : 1.9}
+                    className={`w-[20px] h-[20px] transition-colors ${
+                      active ? 'text-white' : 'text-white/60'
+                    }`}
+                  />
+                  {t.badge && t.badge > 0 ? (
+                    <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 rounded-full bg-[#FF3E4F] text-white text-[9px] font-bold grid place-items-center leading-none">
+                      {t.badge}
+                    </span>
+                  ) : null}
+                </div>
                 <span
                   className={`text-[10px] font-semibold leading-none uppercase tracking-[0.04em] ${
                     active ? 'text-white' : 'text-white/60'
