@@ -25,21 +25,23 @@ export function Reviews({ settings }: Props) {
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_1fr_1.2fr] gap-3 md:gap-4">
-        <RatingCard
-          url={yUrl}
-          rating={yRating}
-          count={yCount}
-          source="Яндекс"
-          logo={<YandexLogoIcon className="w-10 h-10" />}
-        />
-        <RatingCard
-          url={gUrl}
-          rating={gRating}
-          count={gCount}
-          source="2ГИС"
-          logo={<TwoGisLogoIcon className="w-10 h-10" />}
-        />
+      <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
+          <RatingCard
+            url={yUrl}
+            rating={yRating}
+            count={yCount}
+            source="Яндекс"
+            logo={<YandexLogoIcon className="w-9 h-9" />}
+          />
+          <RatingCard
+            url={gUrl}
+            rating={gRating}
+            count={gCount}
+            source="2ГИС"
+            logo={<TwoGisLogoIcon className="w-9 h-9" />}
+          />
+        </div>
 
         <div className="grid gap-3">
           <Review
@@ -74,52 +76,45 @@ function RatingCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="relative overflow-hidden rounded-[28px] p-6 md:p-7 flex flex-col justify-between min-h-[220px] group transition-transform hover:-translate-y-1"
-      style={{
-        background: 'rgba(255,255,255,0.04)',
-        backdropFilter: 'blur(24px) saturate(1.6)',
-        WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.08) inset',
-      }}
+      className="card p-5 md:p-6 flex flex-col justify-between min-h-[180px] md:min-h-[200px] gap-4 group hover:bg-white/[0.06] transition-colors"
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           {logo}
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/55">
+          <div className="min-w-0">
+            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
               Рейтинг
             </div>
-            <div className="font-semibold text-white text-[15px] mt-0.5">{source}</div>
+            <div className="font-semibold text-white text-[14px] mt-0.5 clamp-1">{source}</div>
           </div>
         </div>
-        <ArrowUpRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:rotate-12 transition-all" />
+        <ArrowUpRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:rotate-12 transition-all flex-shrink-0" />
       </div>
 
-      <div className="stack-3">
+      <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-2">
-          <div
-            className="font-display leading-none tracking-tight text-white"
-            style={{ fontSize: 'clamp(56px, 9vw, 76px)' }}
+          <span
+            className="font-display text-white leading-none"
+            style={{ fontSize: 'clamp(40px, 6vw, 56px)', paddingBottom: '0.04em' }}
           >
             {rating.toFixed(1)}
-          </div>
-          <span className="text-[13px] text-white/40">/ 5</span>
+          </span>
+          <span className="text-[12px] text-white/40">/ 5</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex gap-0.5">
             {[1, 2, 3, 4, 5].map((i) => (
               <Star
                 key={i}
-                width={14}
-                height={14}
-                strokeWidth={1.2}
+                width={12}
+                height={12}
+                strokeWidth={1.4}
                 fill={i <= Math.floor(rating) ? '#FFCC00' : 'none'}
                 className={i <= Math.floor(rating) ? 'text-[#FFCC00]' : 'text-white/25'}
               />
             ))}
           </div>
-          <span className="text-[12px] text-white/60">{count} отзывов</span>
+          <span className="text-[11px] text-white/55">{count} отзывов</span>
         </div>
       </div>
     </a>
@@ -130,9 +125,9 @@ function Review({
   rating, name, car, text,
 }: { rating: number; name: string; car: string; text: string }) {
   return (
-    <article className="card p-5 md:p-6 stack-3">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-0.5">
+    <article className="card p-5 flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex gap-0.5 flex-shrink-0">
           {[1, 2, 3, 4, 5].map((i) => (
             <Star
               key={i}
@@ -144,10 +139,10 @@ function Review({
             />
           ))}
         </div>
-        <span className="text-xs text-white/45">{car}</span>
+        <span className="text-[12px] text-white/45 clamp-1 min-w-0">{car}</span>
       </div>
-      <p className="text-[14px] text-white/80 leading-relaxed">{text}</p>
-      <div className="text-xs text-white/45">— {name}</div>
+      <p className="text-[14px] text-white/80 leading-relaxed text-break">{text}</p>
+      <div className="text-[12px] text-white/45">— {name}</div>
     </article>
   );
 }

@@ -20,71 +20,66 @@ export function TrustBar({ settings }: Props) {
   const gUrl = settings['reviews.twogis.url'].value;
 
   return (
-    <section
-      className="border-y border-white/[0.05]"
-      style={{
-        background:
-          'linear-gradient(180deg, rgba(255,255,255,0.015) 0%, rgba(0,0,0,0.25) 100%)',
-      }}
-    >
-      <div className="section py-10 md:py-14">
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-8 items-center">
+    <section className="border-y border-white/[0.05] bg-black/20">
+      <div className="section py-8 md:py-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-6 md:gap-x-6 items-center">
+          {/* Яндекс */}
           <a
             href={yUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 flex items-center gap-4 group"
+            className="flex items-center gap-3 group min-w-0"
           >
-            <div className="flex-none transition-transform group-hover:scale-105">
-              <YandexLogoIcon className="w-12 h-12" />
+            <div className="flex-shrink-0 transition-transform group-hover:scale-105">
+              <YandexLogoIcon className="w-10 h-10 md:w-12 md:h-12" />
             </div>
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5">
-                <span className="font-display text-[30px] text-white leading-none">
+                <span className="font-display text-[24px] md:text-[28px] text-white leading-none">
                   {yRating.toFixed(1)}
                 </span>
                 <span className="text-[11px] text-white/40">/ 5</span>
               </div>
-              <div className="text-[12px] text-white/60 mt-1.5">
+              <div className="text-[12px] text-white/60 mt-1 clamp-1">
                 Яндекс · {yCount} отзывов
               </div>
             </div>
           </a>
 
+          {/* 2ГИС */}
           <a
             href={gUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-1 flex items-center gap-4 group"
+            className="flex items-center gap-3 group min-w-0"
           >
-            <div className="flex-none transition-transform group-hover:scale-105">
-              <TwoGisLogoIcon className="w-12 h-12" />
+            <div className="flex-shrink-0 transition-transform group-hover:scale-105">
+              <TwoGisLogoIcon className="w-10 h-10 md:w-12 md:h-12" />
             </div>
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5">
-                <span className="font-display text-[30px] text-white leading-none">
+                <span className="font-display text-[24px] md:text-[28px] text-white leading-none">
                   {gRating.toFixed(1)}
                 </span>
                 <span className="text-[11px] text-white/40">/ 5</span>
               </div>
-              <div className="text-[12px] text-white/60 mt-1.5">
+              <div className="text-[12px] text-white/60 mt-1 clamp-1">
                 2ГИС · {gCount} отзывов
               </div>
             </div>
           </a>
 
           {STATS.map((s) => (
-            <div key={s.label} className="col-span-2 lg:col-span-1 flex items-center gap-4">
+            <div key={s.label} className="flex items-center gap-3 min-w-0">
               <div
-                className="w-1 h-12 rounded-full flex-none"
-                style={{
-                  background:
-                    'linear-gradient(180deg, #FF3E4F, rgba(232,18,36,0.12))',
-                }}
+                className="w-1 h-10 md:h-12 rounded-full flex-shrink-0"
+                style={{ background: 'linear-gradient(180deg, #FF3E4F, rgba(232,18,36,0.12))' }}
               />
-              <div>
-                <div className="font-display text-[30px] text-white leading-none">{s.num}</div>
-                <div className="text-[12px] text-white/60 mt-1.5">{s.label}</div>
+              <div className="min-w-0">
+                <div className="font-display text-[24px] md:text-[28px] text-white leading-none">
+                  {s.num}
+                </div>
+                <div className="text-[12px] text-white/60 mt-1">{s.label}</div>
               </div>
             </div>
           ))}

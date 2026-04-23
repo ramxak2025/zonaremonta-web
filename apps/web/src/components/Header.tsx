@@ -27,57 +27,55 @@ export function Header() {
 
   return (
     <>
-      {/* ============ DESKTOP ============ */}
-      <header className="hidden md:block sticky top-0 z-40 pt-3">
+      {/* ============ DESKTOP (lg+) ============ */}
+      <header className="hidden lg:block sticky top-0 z-40 pt-3">
         <div className="section">
           <div
-            className="h-16 pl-5 pr-2 flex items-center justify-between transition-all duration-300"
+            className="h-16 px-5 pr-2 flex items-center gap-4 transition-all duration-300 pill"
             style={{
               background: scrolled ? 'rgba(19, 19, 30, 0.78)' : 'rgba(255, 255, 255, 0.04)',
-              backdropFilter: 'blur(24px) saturate(1.8)',
-              WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+              backdropFilter: 'blur(20px) saturate(1.6)',
+              WebkitBackdropFilter: 'blur(20px) saturate(1.6)',
               border: `1px solid ${scrolled ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
-              borderRadius: 999,
               boxShadow:
-                '0 1px 0 rgba(255,255,255,0.14) inset, 0 12px 30px -12px rgba(0,0,0,0.4)',
+                '0 1px 0 rgba(255,255,255,0.12) inset, 0 12px 30px -12px rgba(0,0,0,0.4)',
             }}
           >
-            <Link href="/" aria-label="Зона Ремонта — на главную" className="flex-none">
+            <Link href="/" aria-label="Зона Ремонта" className="flex-shrink-0">
               <Logo size="sm" />
             </Link>
 
-            <nav className="flex items-center gap-0.5 mx-4">
+            <nav className="flex items-center gap-1 flex-1 justify-center">
               {NAV.map((n) => (
                 <Link
                   key={n.href}
                   href={n.href}
-                  className="px-3.5 py-2 rounded-full text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                  className="px-3 py-2 rounded-full text-[13px] font-medium text-white/70 hover:text-white hover:bg-white/5 transition-colors"
                 >
                   {n.label}
                 </Link>
               ))}
             </nav>
 
-            {/* USP-группа: график + телефон */}
-            <div className="flex items-center gap-3 flex-none">
-              <div className="hidden lg:flex items-center gap-1.5 text-[12px] text-white/55">
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="hidden xl:flex items-center gap-1.5 text-[12px] text-white/55 whitespace-nowrap">
                 <Clock className="w-3.5 h-3.5" />
-                <span className="whitespace-nowrap">Пн–Сб · 9:00–20:00</span>
+                Пн–Сб · 9:00–20:00
               </div>
               <div className="flex flex-col items-end leading-none">
-                <span className="text-[10px] uppercase tracking-[0.15em] text-white/45 font-semibold">
+                <span className="text-[10px] uppercase tracking-[0.14em] text-white/45 font-semibold">
                   Перезвоним за 15 минут
                 </span>
                 <a
                   href={`tel:${phoneDigits}`}
-                  className="font-display font-bold text-white text-[18px] tracking-tight mt-0.5 hover:text-[#FF3E4F] transition-colors whitespace-nowrap"
+                  className="font-display font-bold text-white text-[17px] tracking-tight mt-1 hover:text-[#FF3E4F] transition-colors whitespace-nowrap"
                 >
                   {SITE.phone}
                 </a>
               </div>
               <a
                 href={`tel:${phoneDigits}`}
-                className="btn btn-primary !h-11 !w-11 !p-0 !rounded-full"
+                className="btn btn-primary btn-sm !w-11 !px-0 !rounded-full"
                 aria-label="Позвонить"
               >
                 <PhoneFilledIcon className="w-5 h-5" />
@@ -87,28 +85,27 @@ export function Header() {
         </div>
       </header>
 
-      {/* ============ MOBILE ============ */}
-      <header className="md:hidden sticky top-0 z-40 pt-safe">
+      {/* ============ MOBILE (<lg) ============ */}
+      <header className="lg:hidden sticky top-0 z-40 pt-safe">
         <div className="px-3">
           <div
-            className="h-14 pl-4 pr-1.5 flex items-center justify-between transition-all duration-300"
+            className="h-14 pl-4 pr-1.5 flex items-center justify-between gap-3 transition-all duration-300 pill"
             style={{
               background: scrolled ? 'rgba(19, 19, 30, 0.82)' : 'rgba(255, 255, 255, 0.04)',
-              backdropFilter: 'blur(20px) saturate(1.6)',
-              WebkitBackdropFilter: 'blur(20px) saturate(1.6)',
+              backdropFilter: 'blur(16px) saturate(1.5)',
+              WebkitBackdropFilter: 'blur(16px) saturate(1.5)',
               border: `1px solid ${scrolled ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.08)'}`,
-              borderRadius: 999,
               boxShadow:
                 '0 1px 0 rgba(255,255,255,0.12) inset, 0 10px 28px -12px rgba(0,0,0,0.55)',
             }}
           >
-            <Link href="/" aria-label="Зона Ремонта — на главную">
+            <Link href="/" aria-label="Зона Ремонта" className="flex-shrink-0">
               <Logo size="xs" />
             </Link>
             <a
               href={`tel:${phoneDigits}`}
               aria-label="Позвонить"
-              className="h-11 px-4 rounded-full text-white text-[12px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 active:scale-95 transition-transform"
+              className="flex items-center gap-1.5 h-11 px-4 rounded-full text-white text-[12px] font-bold uppercase tracking-wider active:scale-95 transition-transform flex-shrink-0"
               style={{
                 background: 'linear-gradient(180deg, #FF3E4F 0%, #E81224 100%)',
                 boxShadow:
@@ -119,15 +116,6 @@ export function Header() {
               <PhoneFilledIcon className="w-4 h-4" />
               Звонок
             </a>
-          </div>
-
-          {/* USP-подпись под шапкой на mobile */}
-          <div className="mt-1.5 px-4 flex items-center justify-between text-[10px] text-white/45 font-semibold uppercase tracking-[0.12em]">
-            <span className="inline-flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              Пн–Сб · 9:00–20:00
-            </span>
-            <span>Перезвоним за 15 мин</span>
           </div>
         </div>
       </header>

@@ -10,8 +10,7 @@ interface Tier {
   brands: string;
   priceFrom: number;
   durationHrs: number;
-  features: string[];
-  notForWho?: string;
+  features: readonly string[];
   badge?: string;
 }
 
@@ -21,16 +20,16 @@ const TIERS: readonly Tier[] = [
     title: 'ГБО 4-е поколение',
     subtitle: 'Инжекторный распределённый впрыск',
     forWho:
-      'Современные бензиновые авто с обычным инжектором: большинство машин 2005+ года выпуска.',
+      'Современные бензиновые авто с обычным инжектором — большинство машин 2005+ года выпуска.',
     brands: 'Lovato · BRC · Digitronic · KME · Alpha',
     priceFrom: 38000,
     durationHrs: 6,
     features: [
-      'Электронный блок управления газом (ЭБУ)',
+      'Электронный блок управления (ЭБУ)',
       'Форсунки по числу цилиндров',
       'Редуктор с электроклапаном',
-      'Баллон на выбор (тороидальный или цилиндр)',
-      'Настройка и калибровка карт расхода',
+      'Баллон на выбор',
+      'Настройка карт расхода',
       'Регистрация в ГИБДД',
     ],
   },
@@ -39,16 +38,16 @@ const TIERS: readonly Tier[] = [
     title: 'ГБО 4+ поколение',
     subtitle: 'Непосредственный впрыск (GDI / FSI / TSI / DI)',
     forWho:
-      'Авто с прямым впрыском топлива в камеру сгорания: VW TSI, Mercedes CGI, Toyota D-4S, Mazda SkyActiv, Kia GDI и пр.',
+      'Авто с прямым впрыском топлива в камеру сгорания: VW TSI, Mercedes CGI, Toyota D-4S, Mazda SkyActiv, Kia GDI и др.',
     brands: 'Prins VSI-DI · BRC Sequent DI · Landi Renzo Direct',
     priceFrom: 95000,
     durationHrs: 8,
     features: [
-      'Работа с прямым впрыском без замены форсунок',
-      'Защита бензиновых форсунок от закоксовывания',
-      'Адаптивная система впрыска газа',
+      'Работа с прямым впрыском',
+      'Защита бензиновых форсунок',
+      'Адаптивная система впрыска',
       'Поддержка высоких степеней сжатия',
-      'Сохранение динамики и ресурса двигателя',
+      'Сохранение ресурса двигателя',
       'Регистрация в ГИБДД',
     ],
     badge: 'Топовое оборудование',
@@ -56,10 +55,10 @@ const TIERS: readonly Tier[] = [
 ];
 
 const NOT_INSTALLING = [
-  { title: 'ГБО 2-го поколения', reason: 'устарело, не регистрируется в ГИБДД' },
-  { title: 'На карбюраторные авто', reason: 'невыгодно экономически' },
-  { title: 'Метан (КПГ)', reason: 'не работаем — только пропан-бутан (СУГ)' },
-];
+  { title: 'ГБО 2-го поколения', reason: 'не регистрируется в ГИБДД' },
+  { title: 'Карбюратор', reason: 'невыгодно' },
+  { title: 'Метан (КПГ)', reason: 'работаем только с пропан-бутаном' },
+] as const;
 
 export function WhatWeInstall() {
   const l = getContactLinks();
@@ -74,37 +73,31 @@ export function WhatWeInstall() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      {/* Две карточки — стек на mobile, 2 колонки на tablet+ */}
+      <div className="grid md:grid-cols-2 gap-3 md:gap-4">
         {TIERS.map((t) => (
           <article key={t.code} className="card p-6 md:p-8 flex flex-col gap-6">
+            {/* Шапка карточки */}
             <div className="flex items-start justify-between gap-4">
-              <div className="stack-3">
-                <div className="flex items-baseline gap-2">
-                  <span
-                    className="font-display text-gradient tracking-tight"
-                    style={{
-                      fontSize: 'clamp(48px, 10vw, 72px)',
-                      lineHeight: 1,
-                      paddingBottom: '0.05em',
-                    }}
-                  >
-                    {t.code}
-                  </span>
-                  {t.code === '4+' && (
-                    <span className="text-white/40 text-xs uppercase tracking-widest">DI</span>
-                  )}
+              <div className="flex flex-col gap-3 min-w-0">
+                <span
+                  className="font-display font-bold leading-none text-gradient"
+                  style={{ fontSize: 'clamp(44px, 8vw, 64px)', paddingBottom: '0.04em' }}
+                >
+                  {t.code}
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  <h3 className="h-2 text-white">{t.title}</h3>
+                  <p className="text-[13px] text-white/60 leading-relaxed">{t.subtitle}</p>
                 </div>
-                <h3 className="h-3 text-white">{t.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{t.subtitle}</p>
               </div>
               {t.badge && (
                 <span
-                  className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex-none"
+                  className="flex-shrink-0 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
                   style={{
-                    background:
-                      'linear-gradient(135deg, rgba(255,62,79,0.2), rgba(232,18,36,0.15))',
+                    background: 'rgba(232, 18, 36, 0.15)',
                     color: '#FF3E4F',
-                    border: '1px solid rgba(232,18,36,0.35)',
+                    border: '1px solid rgba(232, 18, 36, 0.3)',
                   }}
                 >
                   {t.badge}
@@ -112,46 +105,38 @@ export function WhatWeInstall() {
               )}
             </div>
 
-            <p className="text-white/70 text-sm leading-relaxed">{t.forWho}</p>
+            <p className="text-[14px] text-white/70 leading-relaxed text-break">{t.forWho}</p>
 
-            <div className="stack-2">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-semibold">
+            <div className="flex flex-col gap-2">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
                 Оборудование
               </div>
-              <p className="text-sm text-white/80">{t.brands}</p>
+              <p className="text-[14px] text-white/80 text-break">{t.brands}</p>
             </div>
 
-            <ul className="space-y-2.5">
+            <ul className="flex flex-col gap-2">
               {t.features.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-[14px] text-white/80">
-                  <Check className="w-4 h-4 text-[#22C55E] mt-0.5 flex-none" strokeWidth={2.5} />
+                  <Check className="w-4 h-4 text-[#22C55E] mt-0.5 flex-shrink-0" strokeWidth={2.4} />
                   <span>{f}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-auto pt-6 flex items-end justify-between gap-4">
-              <div className="stack-2">
-                <div className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-semibold">
+            <div className="mt-auto pt-6 border-t border-white/5 flex items-end justify-between gap-4">
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
                   Под ключ от
                 </div>
                 <div
-                  className="font-display text-white tracking-tight"
-                  style={{
-                    fontSize: 'clamp(32px, 6vw, 44px)',
-                    lineHeight: 1,
-                    paddingBottom: '0.05em',
-                  }}
+                  className="font-display text-white leading-none tracking-tight"
+                  style={{ fontSize: 'clamp(28px, 5vw, 40px)', paddingBottom: '0.04em' }}
                 >
                   {t.priceFrom.toLocaleString('ru-RU')} ₽
                 </div>
-                <div className="text-xs text-white/50">~ {t.durationHrs} часов работы</div>
+                <div className="text-[12px] text-white/50">~ {t.durationHrs} часов работы</div>
               </div>
-              <a
-                href={l.phoneHref}
-                className="btn btn-primary"
-                aria-label={`Позвонить и записаться на ${t.title}`}
-              >
+              <a href={l.phoneHref} className="btn btn-primary btn-sm flex-shrink-0">
                 Записаться
                 <ArrowUpRight className="w-4 h-4" />
               </a>
@@ -160,38 +145,33 @@ export function WhatWeInstall() {
         ))}
       </div>
 
-      {/* Что НЕ делаем — честность повышает доверие */}
-      <div className="mt-6 card p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <span className="w-10 h-10 rounded-full bg-white/5 grid place-items-center flex-none">
+      {/* Что НЕ делаем */}
+      <div className="mt-4 card p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <span className="w-10 h-10 rounded-lg grid place-items-center bg-white/5 flex-shrink-0">
             <X className="w-5 h-5 text-white/60" />
           </span>
           <div className="font-semibold text-white">Чем мы не занимаемся</div>
         </div>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/60">
+        <div className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-white/60">
           {NOT_INSTALLING.map((n) => (
-            <span key={n.title}>
-              <span className="text-white/80">{n.title}</span> — {n.reason}
+            <span key={n.title} className="text-break">
+              <span className="text-white/85">{n.title}</span> — {n.reason}
             </span>
           ))}
         </div>
       </div>
 
-      <p className="text-xs text-white/45 mt-4">
-        Цена «под ключ» включает оборудование, установку, настройку, паспорт ГБО и помощь с регистрацией
-        в ГИБДД. Точная цифра — после бесплатной диагностики двигателя на стенде.
+      <p className="text-[12px] text-white/45 mt-5 max-w-prose">
+        Цена «под ключ» включает оборудование, установку, настройку, паспорт ГБО и помощь
+        с регистрацией в ГИБДД. Точная цифра — после бесплатной диагностики.
       </p>
 
-      <div className="mt-10 flex flex-wrap gap-3">
+      <div className="mt-8 flex flex-wrap gap-3">
         <Link href="/calculator" className="btn btn-primary btn-lg">
           Рассчитать экономию под моё авто
         </Link>
-        <a
-          href={l.whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn-ghost btn-lg"
-        >
+        <a href={l.whatsappHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-lg">
           Проконсультироваться в WhatsApp
         </a>
       </div>
