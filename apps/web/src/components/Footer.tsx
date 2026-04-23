@@ -9,8 +9,8 @@ export function Footer() {
         <div className="md:col-span-2">
           <Logo size="sm" />
           <p className="mt-5 text-sm text-white/55 max-w-sm leading-relaxed">
-            Специализированный автосервис ГБО в Махачкале. Только 4-е поколение и 4+ для прямого
-            впрыска. Гарантия 1 год.
+            Автосервис ГБО в Махачкале. Ставим на распределённый, прямой и комбинированный впрыск.
+            Оборудование Lovato, BRC, Prins, OMVL. Гарантия 1 год.
           </p>
         </div>
         <nav>

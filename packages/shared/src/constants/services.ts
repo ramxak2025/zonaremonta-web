@@ -1,27 +1,45 @@
 export const DEFAULT_SERVICES = [
   {
-    slug: 'gbo-install-2gen',
-    name: 'Установка ГБО 2-го поколения',
-    category: 'install',
-    basePrice: 22000,
-    durationMin: 240,
-    description: 'Инжекторные карбюраторные авто, базовый комплект.',
-  },
-  {
-    slug: 'gbo-install-4gen',
-    name: 'Установка ГБО 4-го поколения',
+    slug: 'gbo-4cyl',
+    name: 'ГБО на 4 цилиндра',
     category: 'install',
     basePrice: 38000,
-    durationMin: 360,
-    description: 'Электронные форсунки, ЭБУ, наиболее популярный вариант.',
+    durationMin: 300,
+    description: 'Распределённый впрыск (MPI). Базовый комплект Lovato/BRC/Digitronic.',
   },
   {
-    slug: 'gbo-install-6gen',
-    name: 'Установка ГБО 6-го поколения',
+    slug: 'gbo-6cyl',
+    name: 'ГБО на 6 цилиндров',
+    category: 'install',
+    basePrice: 48000,
+    durationMin: 360,
+    description: 'Для V6/L6 моторов. 6 форсунок, усиленный редуктор.',
+  },
+  {
+    slug: 'gbo-8cyl',
+    name: 'ГБО на 8 цилиндров (V8)',
+    category: 'install',
+    basePrice: 65000,
+    durationMin: 480,
+    description: 'V8 для крупных внедорожников и пикапов. Два редуктора, 8 форсунок.',
+  },
+  {
+    slug: 'gbo-direct-injection',
+    name: 'ГБО на прямой впрыск',
     category: 'install',
     basePrice: 95000,
     durationMin: 480,
-    description: 'Прямой впрыск газа, современные двигатели.',
+    description:
+      'GDI / FSI / TSI / D-4S. Оборудование Prins VSI-DI, OMVL DREAM — защита форсунок и сохранение ресурса.',
+  },
+  {
+    slug: 'gbo-combined',
+    name: 'ГБО на комбинированный впрыск',
+    category: 'install',
+    basePrice: 110000,
+    durationMin: 540,
+    description:
+      'Двойной впрыск (прямой + распределённый): Toyota D-4S, Volvo VEA, Audi TFSI. Prins и OMVL.',
   },
   {
     slug: 'gbo-diagnostic',
@@ -37,7 +55,7 @@ export const DEFAULT_SERVICES = [
     category: 'repair',
     basePrice: 3000,
     durationMin: 120,
-    description: 'Замена редуктора/форсунок/клапанов, ремонт проводки.',
+    description: 'Замена редуктора / форсунок / клапанов, ремонт проводки.',
   },
   {
     slug: 'gbo-recheck',
@@ -45,15 +63,15 @@ export const DEFAULT_SERVICES = [
     category: 'inspection',
     basePrice: 2500,
     durationMin: 90,
-    description: 'Обязательная поверка баллона: композитный — раз в 2 года, металлический — раз в 5 лет.',
+    description: 'Композитный — раз в 2 года, металлический — раз в 5 лет.',
   },
   {
     slug: 'gbo-tune',
-    name: 'Настройка и калибровка ГБО',
+    name: 'Настройка ГБО',
     category: 'tune',
     basePrice: 2000,
     durationMin: 90,
-    description: 'Прошивка ЭБУ, калибровка карт, устранение провалов и детонации.',
+    description: 'Прошивка ЭБУ, калибровка карт, устранение провалов.',
   },
 ] as const;
 

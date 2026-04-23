@@ -195,15 +195,19 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
 }
 
 /* Большие цифры (не заголовки — счётчики метрик) */
-.stat-number {
+.stat-number, .num {
   font-family: var(--font-oswald);
-  display: block;
+  display: inline-block;
   font-weight: 700;
-  font-size: clamp(40px, 6vw, 64px);
   line-height: 1;
   letter-spacing: -0.02em;
-  padding-block: 0.04em;
+  padding-block: 0.06em;
 }
+.stat-number {
+  font-size: clamp(40px, 6vw, 64px);
+}
+/* .num — универсальная утилита для крупных чисел (цена, счётчики внутри карточек).
+   Размер задаётся inline style; line-height и паддинг гарантированы. */
 
 /* ============ СЕТКА И ОТСТУПЫ ============ */
 @layer components {

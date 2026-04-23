@@ -96,7 +96,7 @@ export function BentoHero({ settings }: Props) {
             hint="на топливе"
           />
 
-          {/* ── СРЕДНИЙ ЧЕК ── */}
+          {/* ── ЧТО ВКЛЮЧАЕТ ЦЕНА ── */}
           <article className="col-span-2 md:col-span-6 lg:col-span-4 card-strong relative overflow-hidden p-6 md:p-7 flex flex-col gap-5">
             <HexIcon
               size={180}
@@ -107,13 +107,13 @@ export function BentoHero({ settings }: Props) {
             <div className="relative flex items-center gap-4">
               <div className="w-11 h-11 grid place-items-center relative flex-shrink-0">
                 <HexIcon size={44} className="text-[#FF3E4F] absolute" />
-                <span className="relative text-white font-display font-bold text-[11px]">4+</span>
+                <CheckCircle2 className="w-5 h-5 text-white relative" strokeWidth={2.4} />
               </div>
               <div className="min-w-0">
                 <div className="text-[11px] uppercase tracking-[0.18em] text-white/55 font-semibold">
                   Под ключ от
                 </div>
-                <div className="font-display text-[28px] md:text-[32px] text-white leading-none mt-1">
+                <div className="num text-white mt-1" style={{ fontSize: 'clamp(28px, 4vw, 32px)' }}>
                   38 000 ₽
                 </div>
               </div>
@@ -121,7 +121,7 @@ export function BentoHero({ settings }: Props) {
 
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 relative">
               {[
-                'Оборудование Lovato / BRC',
+                'Оборудование Lovato · BRC · Prins · OMVL',
                 'Диагностика на стенде',
                 'Настройка ЭБУ и карт',
                 'Регистрация в ГИБДД',

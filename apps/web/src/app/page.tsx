@@ -5,7 +5,6 @@ import { Reveal } from '@/components/Reveal';
 import { BentoHero } from '@/components/sections/BentoHero';
 import { TrustBar } from '@/components/sections/TrustBar';
 import { WhatWeInstall } from '@/components/sections/WhatWeInstall';
-import { ChineseCars } from '@/components/sections/ChineseCars';
 import { CalculatorPro } from '@/components/sections/CalculatorPro';
 import { WhyUs } from '@/components/sections/WhyUs';
 import { HowItWorks } from '@/components/sections/HowItWorks';
@@ -19,14 +18,14 @@ import { SITE } from '@/lib/site';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Установка ГБО 4 и 4+ в Махачкале — Зона Ремонта',
+  title: 'Установка ГБО в Махачкале — Зона Ремонта',
   description:
-    'Установка ГБО 4-го поколения и 4+ для прямого впрыска (TSI, GDI, FSI). Гарантия 1 год, регистрация в ГИБДД, под ключ за 1 день. Рейтинг 4.9 Яндекс · 5.0 2ГИС.',
+    'Ставим на 4 / 6 / 8 цилиндров и на прямой впрыск (GDI, FSI, TSI, D-4S). Оборудование Prins и OMVL. Гарантия 1 год, регистрация в ГИБДД. Рейтинг 4.9 Яндекс · 5.0 2ГИС.',
   alternates: { canonical: `${SITE.siteUrl}/` },
   openGraph: {
     title: 'Газ вместо бензина. В два раза дешевле.',
     description:
-      'Сертифицированный сервис ГБО в Махачкале. Только 4 и 4+ поколение. Под ключ за один день.',
+      'Комплекты ГБО на распределённый, прямой и комбинированный впрыск. Lovato · BRC · Prins · OMVL.',
     url: SITE.siteUrl,
     siteName: SITE.name,
     locale: 'ru_RU',
@@ -44,7 +43,6 @@ export default async function Home() {
         <BentoHero settings={settings} />
         <Reveal><TrustBar settings={settings} /></Reveal>
         <Reveal><WhatWeInstall /></Reveal>
-        <Reveal><ChineseCars /></Reveal>
         <Reveal><CalculatorPro settings={settings} /></Reveal>
         <Reveal><WhyUs /></Reveal>
         <Reveal><HowItWorks /></Reveal>

@@ -6,8 +6,8 @@ interface Props {
 }
 
 /**
- * JSON-LD для поисковиков и AI-движков (ChatGPT Search, Perplexity, Google SGE).
- * AutoRepair + LocalBusiness + Offer + AggregateRating + разметка услуг.
+ * JSON-LD для Google + AI-поисковиков (ChatGPT Search, Perplexity, Google SGE).
+ * AutoRepair + AggregateRating + OfferCatalog со всеми комплектами.
  */
 export function StructuredData({ settings }: Props) {
   const phone = settings['site.phone'].value;
@@ -17,6 +17,24 @@ export function StructuredData({ settings }: Props) {
   const count = settings['reviews.yandex.count'].value;
   const yandexUrl = settings['reviews.yandex.url'].value;
 
+  const offer = (name: string, description: string, price: number) => ({
+    '@type': 'Offer',
+    itemOffered: {
+      '@type': 'Service',
+      name,
+      description,
+      areaServed: { '@type': 'City', name: 'Махачкала' },
+    },
+    price: String(price),
+    priceCurrency: 'RUB',
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      price,
+      priceCurrency: 'RUB',
+      minPrice: price,
+    },
+  });
+
   const business = {
     '@context': 'https://schema.org',
     '@type': 'AutoRepair',
@@ -24,7 +42,7 @@ export function StructuredData({ settings }: Props) {
     name: SITE.name,
     alternateName: '05auto',
     description:
-      'Специализированный автосервис в Махачкале: установка ГБО 4-го поколения и ГБО 4+ для двигателей с непосредственным впрыском (GDI, FSI, TSI, D-4S, SkyActiv). Ремонт, диагностика, регистрация в ГИБДД.',
+      'Автосервис в Махачкале: установка ГБО на 4, 6, 8 цилиндров, на прямой и комбинированный впрыск (GDI, FSI, TSI, D-4S). Оборудование Lovato, BRC, Digitronic, Prins, OMVL. Ремонт, диагностика, регистрация в ГИБДД.',
     url: SITE.siteUrl,
     telephone: phone,
     priceRange: '₽₽',
@@ -56,46 +74,33 @@ export function StructuredData({ settings }: Props) {
     },
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
-      name: 'Услуги по установке ГБО',
+      name: 'Установка ГБО',
       itemListElement: [
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Установка ГБО 4-го поколения',
-            description:
-              'Электронная система впрыска газа для инжекторных двигателей. Комплект Lovato/BRC/Digitronic, настройка ЭБУ, регистрация в ГИБДД.',
-            serviceType: 'ГБО 4-го поколения',
-            areaServed: { '@type': 'City', name: 'Махачкала' },
-          },
-          price: '38000',
-          priceCurrency: 'RUB',
-          priceSpecification: {
-            '@type': 'PriceSpecification',
-            price: 38000,
-            priceCurrency: 'RUB',
-            minPrice: 38000,
-          },
-        },
-        {
-          '@type': 'Offer',
-          itemOffered: {
-            '@type': 'Service',
-            name: 'Установка ГБО 4+ (прямой впрыск)',
-            description:
-              'Система для двигателей с непосредственным впрыском: TSI, FSI, GDI, D-4S, SkyActiv. Сохраняет ресурс бензиновых форсунок.',
-            serviceType: 'ГБО 4+ Direct Injection',
-            areaServed: { '@type': 'City', name: 'Махачкала' },
-          },
-          price: '95000',
-          priceCurrency: 'RUB',
-          priceSpecification: {
-            '@type': 'PriceSpecification',
-            price: 95000,
-            priceCurrency: 'RUB',
-            minPrice: 95000,
-          },
-        },
+        offer(
+          'ГБО на 4 цилиндра',
+          'Распределённый впрыск (MPI). Комплект Lovato / BRC / Digitronic, регистрация в ГИБДД.',
+          38000,
+        ),
+        offer(
+          'ГБО на 6 цилиндров',
+          'Для V6 и L6 моторов. Усиленный редуктор, 6 форсунок.',
+          48000,
+        ),
+        offer(
+          'ГБО на 8 цилиндров (V8)',
+          'Для крупных внедорожников и пикапов. Два редуктора, 8 форсунок.',
+          65000,
+        ),
+        offer(
+          'ГБО на прямой впрыск (GDI/FSI/TSI)',
+          'Оборудование Prins VSI-DI и OMVL DREAM для современных турбомоторов.',
+          95000,
+        ),
+        offer(
+          'ГБО на комбинированный впрыск (D-4S)',
+          'Для двигателей с двойным впрыском: Toyota D-4S, Volvo VEA, Audi TFSI. Prins и OMVL.',
+          110000,
+        ),
       ],
     },
     areaServed: [
@@ -103,14 +108,18 @@ export function StructuredData({ settings }: Props) {
       { '@type': 'AdministrativeArea', name: 'Республика Дагестан' },
     ],
     knowsAbout: [
-      'установка ГБО 4 поколения',
-      'ГБО 4+ для прямого впрыска',
-      'газобаллонное оборудование',
-      'пропан-бутан СУГ',
+      'установка ГБО',
+      'ГБО на 4 цилиндра',
+      'ГБО на 6 цилиндров',
+      'ГБО на V8',
+      'ГБО на прямой впрыск',
+      'ГБО на комбинированный впрыск',
+      'Prins VSI-DI',
+      'OMVL DREAM',
       'Lovato',
       'BRC',
       'Digitronic',
-      'Prins VSI-DI',
+      'пропан-бутан СУГ',
       'регистрация ГБО в ГИБДД',
       'диагностика ГБО',
     ],
@@ -134,9 +143,14 @@ export function StructuredData({ settings }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
       />
-      {/* Подсказки для AI (ChatGPT / Perplexity / Google SGE) — упоминаем ключевые факты */}
-      <meta name="summary" content={`Автосервис ГБО в Махачкале. Только 4-е поколение и 4+ для прямого впрыска (TSI, GDI, FSI, D-4S). Гарантия 1 год. Телефон ${phone}. ${hours}. Рейтинг Яндекс ${rating}/5 (${count} отзывов).`} />
-      <meta name="keywords" content="ГБО Махачкала, установка ГБО 4 поколения, ГБО 4+, ГБО на прямой впрыск, ГБО TSI, ГБО FSI, ГБО GDI, газ на авто Махачкала, пропан на авто, 05auto" />
+      <meta
+        name="summary"
+        content={`Автосервис ГБО в Махачкале. Комплекты на 4/6/8 цилиндров, на прямой и комбинированный впрыск (Prins, OMVL). Гарантия 1 год. Телефон ${phone}. ${hours}. Рейтинг Яндекс ${rating}/5 (${count} отзывов).`}
+      />
+      <meta
+        name="keywords"
+        content="ГБО Махачкала, установка ГБО, ГБО на 4 цилиндра, ГБО на V8, ГБО на прямой впрыск, ГБО Prins, ГБО OMVL, ГБО GDI, ГБО TSI, ГБО D-4S, пропан на авто, 05auto"
+      />
     </>
   );
 }

@@ -48,7 +48,7 @@ const CATEGORIES: readonly Category[] = [
   {
     slug: 'kits',
     name: 'Комплекты ГБО',
-    description: 'Готовые комплекты под ваш двигатель: 4 и 4+ поколения',
+    description: 'Готовые комплекты под ваш двигатель: на 4 / 6 / 8 цилиндров и на прямой впрыск',
     icon: Package,
     tags: ['4-цилиндровый', '6-цилиндровый', 'Direct Injection'],
   },
