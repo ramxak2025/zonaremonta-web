@@ -1,4 +1,4 @@
-import { ShieldCheck, Gauge, Package, FileCheck2, Wrench, Clock } from 'lucide-react';
+import { ShieldCheck, Gauge, Package, Fuel, Wrench, Clock } from 'lucide-react';
 
 const REASONS = [
   {
@@ -17,9 +17,9 @@ const REASONS = [
     text: 'Оригинальные редукторы, форсунки и баллоны всегда в наличии в Махачкале.',
   },
   {
-    icon: FileCheck2,
-    title: 'Регистрация в ГИБДД',
-    text: 'Декларация, паспорт ГБО, сопровождение при осмотре. Берём бюрократию на себя.',
+    icon: Fuel,
+    title: 'Настройка под двигатель',
+    text: 'Карты расхода калибруются индивидуально. Авто едет без провалов на газе и на бензине.',
   },
   {
     icon: Wrench,

@@ -42,7 +42,7 @@ export function StructuredData({ settings }: Props) {
     name: SITE.name,
     alternateName: '05auto',
     description:
-      'Автосервис в Махачкале: установка ГБО на 4, 6, 8 цилиндров, на прямой и комбинированный впрыск (GDI, FSI, TSI, D-4S). Оборудование Lovato, BRC, Digitronic, Prins, OMVL. Ремонт, диагностика, регистрация в ГИБДД.',
+      'Автосервис в Махачкале: установка ГБО на 4, 6, 8 цилиндров, на прямой и комбинированный впрыск (GDI, FSI, TSI, D-4S). Оборудование Lovato, BRC, Digitronic, Prins, OMVL. Гарантия 1 год на работы.',
     url: SITE.siteUrl,
     telephone: phone,
     priceRange: '₽₽',
@@ -78,7 +78,7 @@ export function StructuredData({ settings }: Props) {
       itemListElement: [
         offer(
           'ГБО на 4 цилиндра',
-          'Распределённый впрыск (MPI). Комплект Lovato / BRC / Digitronic, регистрация в ГИБДД.',
+          'Распределённый впрыск (MPI). Комплект Lovato / BRC / Digitronic. Гарантия 1 год на работы.',
           38000,
         ),
         offer(
@@ -120,7 +120,6 @@ export function StructuredData({ settings }: Props) {
       'BRC',
       'Digitronic',
       'пропан-бутан СУГ',
-      'регистрация ГБО в ГИБДД',
       'диагностика ГБО',
     ],
   };

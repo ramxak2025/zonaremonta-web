@@ -13,7 +13,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: 'Услуги и цены на установку ГБО',
   description:
-    'Установка ГБО на 4, 6 и 8 цилиндров, на прямой и комбинированный впрыск. Оборудование Lovato, BRC, Prins, OMVL. Под ключ с регистрацией в ГИБДД.',
+    'Установка ГБО на 4, 6 и 8 цилиндров, на прямой и комбинированный впрыск. Оборудование Lovato, BRC, Prins, OMVL. Под ключ: оборудование, установка, настройка ЭБУ.',
   alternates: { canonical: `${SITE.siteUrl}/services` },
 };
 

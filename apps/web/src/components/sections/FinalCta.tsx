@@ -51,12 +51,12 @@ export function FinalCta({ settings }: Props) {
                   color: 'transparent',
                 }}
               >
-                начните с бесплатной диагностики
+                за один рабочий день
               </span>
             </h2>
             <p className="lead">
               Приехали утром — уехали на газе вечером. Покажем комплект под двигатель,
-              посчитаем точную цену и экономию. Консультация бесплатная.
+              посчитаем точную цену и экономию.
             </p>
             <div className="flex flex-col gap-1.5 text-[14px] text-white/70 pt-2">
               <div className="text-break">
@@ -95,8 +95,8 @@ export function FinalCta({ settings }: Props) {
       </div>
 
       <p className="sr-only">
-        {SITE.name} — автосервис в Махачкале, устанавливает ГБО 4 и 4+ для прямого впрыска
-        (GDI, FSI, TSI, D-4S, SkyActiv).
+        {SITE.name} — автосервис в Махачкале. Устанавливаем ГБО на 4, 6 и 8 цилиндров,
+        на прямой и комбинированный впрыск (GDI, FSI, TSI, D-4S). Prins и OMVL.
       </p>
     </section>
   );

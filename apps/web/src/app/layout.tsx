@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: '%s — Зона Ремонта',
   },
   description:
-    'Специализированный автосервис ГБО в Махачкале. Ставим на 4, 6, 8 цилиндров, на прямой и комбинированный впрыск. Оборудование Lovato, BRC, Prins, OMVL. Гарантия 1 год.',
+    'Автосервис ГБО в Махачкале. Ставим на 4, 6, 8 цилиндров, на прямой и комбинированный впрыск. Оборудование Lovato, BRC, Prins, OMVL. Гарантия 1 год на работы.',
   keywords: [
     'ГБО Махачкала',
     'установка ГБО',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     title: 'Установка ГБО в Махачкале — Зона Ремонта',
     description:
-      'Комплекты на 4/6/8 цилиндров и на прямой/комбинированный впрыск (Prins, OMVL). Гарантия 1 год, регистрация в ГИБДД.',
+      'Комплекты на 4/6/8 цилиндров и на прямой/комбинированный впрыск (Prins, OMVL). Гарантия 1 год на работы.',
   },
   twitter: { card: 'summary_large_image', title: SITE.name, description: SITE.description },
   icons: { icon: '/favicon.svg' },

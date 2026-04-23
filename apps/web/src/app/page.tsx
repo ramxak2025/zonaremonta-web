@@ -20,7 +20,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: 'Установка ГБО в Махачкале — Зона Ремонта',
   description:
-    'Ставим на 4 / 6 / 8 цилиндров и на прямой впрыск (GDI, FSI, TSI, D-4S). Оборудование Prins и OMVL. Гарантия 1 год, регистрация в ГИБДД. Рейтинг 4.9 Яндекс · 5.0 2ГИС.',
+    'Ставим на 4 / 6 / 8 цилиндров и на прямой впрыск (GDI, FSI, TSI, D-4S). Оборудование Prins и OMVL. Гарантия 1 год. Рейтинг 4.9 Яндекс · 5.0 2ГИС.',
   alternates: { canonical: `${SITE.siteUrl}/` },
   openGraph: {
     title: 'Газ вместо бензина. В два раза дешевле.',
