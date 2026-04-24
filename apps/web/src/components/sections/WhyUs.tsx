@@ -43,14 +43,8 @@ export function WhyUs() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {REASONS.map((r) => (
-          <article key={r.title} className="card p-6 flex flex-col gap-4">
-            <span
-              className="w-11 h-11 rounded-lg grid place-items-center flex-shrink-0"
-              style={{
-                background: 'linear-gradient(135deg, rgba(232,18,36,0.2), rgba(232,18,36,0.05))',
-                border: '1px solid rgba(232,18,36,0.25)',
-              }}
-            >
+          <article key={r.title} className="card flex flex-col gap-4">
+            <span className="icon-tile icon-tile-primary">
               <r.icon className="w-5 h-5 text-[#FF3E4F]" strokeWidth={2.2} />
             </span>
             <h3 className="h-3 text-white">{r.title}</h3>

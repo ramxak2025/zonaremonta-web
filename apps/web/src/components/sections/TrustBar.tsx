@@ -35,9 +35,7 @@ export function TrustBar({ settings }: Props) {
             </div>
             <div className="min-w-0">
               <div className="flex items-baseline gap-1.5">
-                <span className="font-display text-[24px] md:text-[28px] text-white leading-none">
-                  {yRating.toFixed(1)}
-                </span>
+                <span className="num-lg text-white">{yRating.toFixed(1)}</span>
                 <span className="text-[11px] text-white/40">/ 5</span>
               </div>
               <div className="text-[12px] text-white/60 mt-1 clamp-1">
@@ -76,9 +74,7 @@ export function TrustBar({ settings }: Props) {
                 style={{ background: 'linear-gradient(180deg, #FF3E4F, rgba(232,18,36,0.12))' }}
               />
               <div className="min-w-0">
-                <div className="font-display text-[24px] md:text-[28px] text-white leading-none">
-                  {s.num}
-                </div>
+                <div className="num-lg text-white">{s.num}</div>
                 <div className="text-[12px] text-white/60 mt-1">{s.label}</div>
               </div>
             </div>

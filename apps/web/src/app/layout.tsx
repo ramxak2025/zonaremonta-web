@@ -76,11 +76,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru" className={`${inter.variable} ${oswald.variable} dark`}>
       <body className="min-h-dvh">
         <AnimatedBackground />
-        <div className="relative z-10 min-h-dvh flex flex-col">
+        <div className="relative z-10 min-h-dvh flex flex-col pb-safe-tabbar">
           <Providers>
             <div className="flex-1">{children}</div>
             <MobileTabBar />
-            <div className="md:hidden h-24" aria-hidden />
           </Providers>
         </div>
       </body>

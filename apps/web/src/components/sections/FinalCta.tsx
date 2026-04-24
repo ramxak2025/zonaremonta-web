@@ -28,7 +28,7 @@ export function FinalCta({ settings }: Props) {
 
   return (
     <section id="contact" className="section section-y">
-      <div className="card p-6 md:p-10 lg:p-12 relative overflow-hidden">
+      <div className="card-lg relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"

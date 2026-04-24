@@ -48,13 +48,13 @@ export function Reviews({ settings }: Props) {
             rating={5}
             name="Магомед А."
             car="Lada Granta"
-            text="Поставил ГБО 4-го — расход упал в два раза. Езжу уже полгода, ни одного нарекания."
+            text="Поставил ГБО — расход упал в два раза. Езжу уже полгода, ни одного нарекания."
           />
           <Review
             rating={5}
             name="Руслан К."
             car="Haval Jolion 1.5T"
-            text="Сделали 4+ на китайца с прямым впрыском. Мощность сохранилась, экономия заметна."
+            text="Сделали на китайца с прямым впрыском (Prins). Мощность сохранилась, экономия заметна."
           />
           <Review
             rating={4}
@@ -76,16 +76,14 @@ function RatingCard({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="card p-5 md:p-6 flex flex-col justify-between min-h-[180px] md:min-h-[200px] gap-4 group hover:bg-white/[0.06] transition-colors"
+      className="card flex flex-col justify-between min-h-[180px] md:min-h-[200px] gap-4 group hover:bg-white/[0.06] transition-colors"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
           {logo}
           <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
-              Рейтинг
-            </div>
-            <div className="font-semibold text-white text-[14px] mt-0.5 clamp-1">{source}</div>
+            <div className="eyebrow eyebrow-mute">Рейтинг</div>
+            <div className="font-semibold text-white text-[14px] mt-1 clamp-1">{source}</div>
           </div>
         </div>
         <ArrowUpRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:rotate-12 transition-all flex-shrink-0" />
@@ -93,12 +91,7 @@ function RatingCard({
 
       <div className="flex flex-col gap-2">
         <div className="flex items-baseline gap-2">
-          <span
-            className="font-display text-white leading-none"
-            style={{ fontSize: 'clamp(40px, 6vw, 56px)', paddingBottom: '0.04em' }}
-          >
-            {rating.toFixed(1)}
-          </span>
+          <span className="num-xl text-white">{rating.toFixed(1)}</span>
           <span className="text-[12px] text-white/40">/ 5</span>
         </div>
         <div className="flex items-center gap-2">
@@ -125,7 +118,7 @@ function Review({
   rating, name, car, text,
 }: { rating: number; name: string; car: string; text: string }) {
   return (
-    <article className="card p-5 flex flex-col gap-3">
+    <article className="card flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <div className="flex gap-0.5 flex-shrink-0">
           {[1, 2, 3, 4, 5].map((i) => (

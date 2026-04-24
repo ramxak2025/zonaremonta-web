@@ -30,10 +30,10 @@ export default function CatalogPage() {
       <Header />
       <main>
         {/* HERO магазина */}
-        <section className="section pt-6 pb-8 md:pt-10 md:pb-12">
-          <div className="max-w-3xl">
+        <section className="section pt-6 pb-6 md:pt-10 md:pb-10">
+          <div className="section-head">
             <span className="chip"><span className="dot" />Магазин</span>
-            <h1 className="h-1 text-white mt-4">Комплектующие ГБО со своего склада</h1>
+            <h1 className="h-1 text-white">Комплектующие ГБО со своего склада</h1>
             <p className="lead">
               Редукторы, форсунки, ЭБУ, баллоны и расходники.
               Самовывоз в Махачкале. По желанию — установим прямо на месте со скидкой на работу.
@@ -42,20 +42,14 @@ export default function CatalogPage() {
 
           {/* ФИШКА */}
           <div
-            className="mt-6 md:mt-8 card p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5"
+            className="card flex flex-col md:flex-row md:items-center gap-5"
             style={{
               background:
                 'linear-gradient(180deg, rgba(232,18,36,0.08) 0%, rgba(255,255,255,0.03) 100%)',
-              border: '1px solid rgba(232,18,36,0.25)',
+              borderColor: 'rgba(232,18,36,0.25)',
             }}
           >
-            <span
-              className="w-12 h-12 rounded-xl grid place-items-center flex-shrink-0"
-              style={{
-                background: 'rgba(232, 18, 36, 0.15)',
-                border: '1px solid rgba(232, 18, 36, 0.3)',
-              }}
-            >
+            <span className="icon-tile icon-tile-primary w-12 h-12">
               <WrenchIcon className="w-6 h-6 text-[#FF3E4F]" strokeWidth={2.2} />
             </span>
             <div className="flex-1 min-w-0">
@@ -67,23 +61,20 @@ export default function CatalogPage() {
                 потому что мы уверены в оригинальной детали и гарантируем результат.
               </p>
             </div>
-            <Link
-              href="/#contact"
-              className="btn btn-ghost btn-sm flex-shrink-0"
-            >
+            <Link href="/#contact" className="btn btn-ghost btn-sm flex-shrink-0">
               Условия
             </Link>
           </div>
 
           {/* Преимущества склада */}
-          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+          <div className="mt-4 md:mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
             {[
               { icon: Truck, title: 'Самовывоз в день обращения', text: 'Склад в Махачкале, работаем с 9 до 20' },
               { icon: Clock, title: 'Установка от 1 часа', text: 'Легкие детали — мультиклапаны, фильтры' },
               { icon: WrenchIcon, title: 'Гарантия при установке', text: '1 год при покупке + установке у нас' },
             ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="card p-5 flex gap-4 items-start">
-                <span className="w-10 h-10 rounded-lg grid place-items-center bg-white/[0.04] border border-white/10 flex-shrink-0">
+              <div key={title} className="card flex gap-4 items-start">
+                <span className="icon-tile">
                   <Icon className="w-5 h-5 text-white/70" strokeWidth={2} />
                 </span>
                 <div className="min-w-0">
@@ -96,7 +87,7 @@ export default function CatalogPage() {
         </section>
 
         {/* Категории */}
-        <section className="section pb-12 md:pb-20">
+        <section className="section pb-12 md:pb-16">
           <div className="section-head">
             <span className="eyebrow">Каталог</span>
             <h2 className="h-1 text-white">Категории товаров</h2>
@@ -110,10 +101,10 @@ export default function CatalogPage() {
                 <Link
                   key={c.slug}
                   href={`/catalog/${c.slug}`}
-                  className="card p-6 flex flex-col gap-4 group hover:-translate-y-1 active:scale-[0.98] transition-transform"
+                  className="card flex flex-col gap-4 group hover:-translate-y-1 active:scale-[0.98] transition-transform"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="w-11 h-11 rounded-xl grid place-items-center bg-primary/15 border border-primary/25 flex-shrink-0">
+                    <span className="icon-tile icon-tile-primary">
                       <Icon className="w-5 h-5 text-[#FF3E4F]" strokeWidth={2.2} />
                     </span>
                     <ArrowRight className="w-4 h-4 text-white/30 group-hover:text-white group-hover:translate-x-0.5 transition-all" />

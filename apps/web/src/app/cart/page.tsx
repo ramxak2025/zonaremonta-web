@@ -33,7 +33,7 @@ export default function CartPage() {
   return (
     <>
       <Header />
-      <main className="section pt-4 pb-12 md:pt-8 md:pb-20">
+      <main className="section pt-5 pb-12 md:pt-8 md:pb-20">
         <Link
           href="/catalog"
           className="inline-flex items-center gap-1.5 text-[13px] text-white/60 hover:text-white transition-colors"
@@ -42,20 +42,20 @@ export default function CartPage() {
           Продолжить покупки
         </Link>
 
-        <div className="mt-5 max-w-3xl">
+        <div className="section-head mt-5">
           <span className="eyebrow">Корзина</span>
           <h1 className="h-1 text-white">Ваш заказ</h1>
         </div>
 
         {rows.length === 0 ? (
-          <div className="mt-8 card p-10 text-center">
+          <div className="card-lg text-center">
             <p className="text-white/70 text-[15px]">В корзине пока пусто.</p>
             <Link href="/catalog" className="btn btn-primary btn-sm mt-5 inline-flex">
               Перейти в каталог
             </Link>
           </div>
         ) : (
-          <div className="mt-8 grid lg:grid-cols-[1fr_380px] gap-5 md:gap-6">
+          <div className="grid lg:grid-cols-[1fr_360px] gap-5 md:gap-6">
             {/* Список позиций */}
             <div className="flex flex-col gap-3">
               {rows.map(({ it, p }) => {
@@ -64,14 +64,14 @@ export default function CartPage() {
                 return (
                   <article
                     key={it.productId}
-                    className="card p-4 md:p-5 flex gap-4 items-start"
+                    className="card flex gap-4 items-start"
                   >
                     <div className="flex-1 min-w-0 flex flex-col gap-3">
                       <div>
-                        <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
+                        <div className="eyebrow eyebrow-mute">
                           {p.brand} · {p.article}
                         </div>
-                        <h3 className="h-3 text-white mt-1 text-break">{p.name}</h3>
+                        <h3 className="h-3 text-white mt-2 text-break">{p.name}</h3>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-3">
@@ -144,7 +144,7 @@ export default function CartPage() {
                     </div>
 
                     <div className="flex flex-col items-end gap-0 flex-shrink-0">
-                      <div className="num text-white" style={{ fontSize: '20px' }}>
+                      <div className="num text-white">
                         {(p.price * it.qty).toLocaleString('ru-RU')} ₽
                       </div>
                       {it.qty > 1 && (
@@ -160,7 +160,7 @@ export default function CartPage() {
 
             {/* Правая колонка: итоги + оформление */}
             <aside className="flex flex-col gap-4">
-              <div className="card-strong p-5 md:p-6 flex flex-col gap-4 lg:sticky lg:top-24">
+              <div className="card-strong-lg flex flex-col gap-4 lg:sticky lg:top-24">
                 <div className="flex flex-col gap-2.5">
                   <div className="flex justify-between text-[14px]">
                     <span className="text-white/60">Товары ({cart.count})</span>
@@ -189,10 +189,8 @@ export default function CartPage() {
                 </div>
 
                 <div className="pt-4 border-t border-white/10 flex items-end justify-between">
-                  <span className="text-[12px] uppercase tracking-[0.18em] text-white/55 font-semibold">
-                    Итого
-                  </span>
-                  <span className="num text-white" style={{ fontSize: 'clamp(24px, 3vw, 30px)' }}>
+                  <span className="eyebrow eyebrow-mute">Итого</span>
+                  <span className="num-lg text-white">
                     {cart.total.toLocaleString('ru-RU')} ₽
                   </span>
                 </div>
@@ -214,8 +212,7 @@ export default function CartPage() {
                     href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="btn btn-primary btn-lg w-full"
-                    style={{ background: 'linear-gradient(180deg, #25D366, #128C7E)' }}
+                    className="btn btn-whatsapp btn-lg w-full"
                   >
                     <WhatsAppIcon className="w-5 h-5" />
                     Оформить в WhatsApp

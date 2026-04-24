@@ -52,19 +52,19 @@ export function CalculatorPro({ settings }: Props) {
   const hasInput = mileageNum > 0 && consumptionNum > 0;
 
   return (
-    <section className="section py-10 md:py-20">
+    <section className="section section-y">
       <div className="section-head">
         <span className="eyebrow">Калькулятор экономии</span>
-        <h1 className="h-1 text-white">Посчитайте свою выгоду за 30 секунд</h1>
+        <h2 className="h-1 text-white">Посчитайте свою выгоду за 30 секунд</h2>
         <p className="lead">
           Введите пробег, расход и стоимость установки — покажем, сколько денег
           вернётся в ваш карман каждый месяц. Цены топлива актуальны по АЗС Махачкалы.
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
+      <div className="grid gap-4 lg:grid-cols-2">
         {/* ИНПУТЫ */}
-        <div className="liquid-glass p-6 md:p-8 space-y-7">
+        <div className="liquid-glass flex flex-col gap-7">
           {/* Бензин */}
           <div>
             <label className="flex items-center justify-between mb-3">
@@ -145,7 +145,7 @@ export function CalculatorPro({ settings }: Props) {
             min={0}
             max={1000000}
             step="500"
-            hint="4-е поколение — от 38 000 ₽, 4+ (прямой впрыск) — от 95 000 ₽."
+            hint="MPI (4/6/8 цил.) — от 38 000 ₽, прямой и комбинированный впрыск — от 95 000 ₽."
           />
 
           {/* Справка */}
@@ -163,44 +163,45 @@ export function CalculatorPro({ settings }: Props) {
 
         {/* РЕЗУЛЬТАТ + ПРОДАЮЩИЙ ТЕКСТ */}
         <div
-          className="p-6 md:p-10 relative overflow-hidden rounded-[28px]"
+          className="card-strong-lg relative overflow-hidden"
           style={{
             background:
               'linear-gradient(180deg, rgba(19,19,24,0.8) 0%, rgba(11,11,14,0.95) 100%)',
-            border: '1px solid rgba(255,255,255,0.1)',
             boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset, 0 30px 70px -30px rgba(0,0,0,0.6)',
           }}
         >
           <div
             aria-hidden
-            className="absolute -top-32 -right-32 w-80 h-80 rounded-full blur-3xl"
-            style={{ background: 'rgba(232,18,36,0.3)' }}
+            className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl pointer-events-none"
+            style={{ background: 'rgba(232,18,36,0.28)' }}
           />
           <div
             aria-hidden
-            className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full blur-3xl"
-            style={{ background: 'rgba(74,159,217,0.2)' }}
+            className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full blur-3xl pointer-events-none"
+            style={{ background: 'rgba(74,159,217,0.18)' }}
           />
 
-          <div className="relative">
-            <div className="text-[11px] font-bold uppercase tracking-[0.25em] text-white/55">
-              Ваша экономия в месяц
-            </div>
-            <div
-              key={result.monthlySavings}
-              className="font-display leading-none tracking-tight mt-3 animate-result"
-              style={{
-                fontSize: 'clamp(56px, 12vw, 96px)',
-                background: 'linear-gradient(135deg, #FFFFFF 0%, #FF3E4F 80%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              {fmt(result.monthlySavings)} ₽
+          <div className="relative flex flex-col gap-6">
+            <div>
+              <div className="eyebrow eyebrow-mute">Ваша экономия в месяц</div>
+              <div
+                key={result.monthlySavings}
+                className="font-display tracking-tight animate-result mt-3"
+                style={{
+                  fontSize: 'clamp(44px, 10vw, 84px)',
+                  lineHeight: 1.05,
+                  paddingBottom: '0.05em',
+                  background: 'linear-gradient(135deg, #FFFFFF 0%, #FF3E4F 80%)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  color: 'transparent',
+                }}
+              >
+                {fmt(result.monthlySavings)} ₽
+              </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <ResultCard label="В год вы сэкономите" value={`${fmt(result.yearlySavings)} ₽`} highlight />
               <ResultCard
                 label="Окупится за"
@@ -209,14 +210,14 @@ export function CalculatorPro({ settings }: Props) {
               />
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3 pt-6 border-t border-white/5">
+            <div className="grid grid-cols-2 gap-3 pt-5 border-t border-white/5">
               <ResultCard label="Сейчас тратите" value={`${fmt(result.monthlyPetrolCost)} ₽`} muted />
               <ResultCard label="Будете тратить" value={`${fmt(result.monthlyGasCost)} ₽`} muted />
             </div>
 
             {/* Продающий текст */}
             {hasInput && (
-              <div className="mt-8 p-5 rounded-2xl bg-white/[0.03] border border-white/10">
+              <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
                 <p className="text-[14px] md:text-[15px] text-white/85 leading-relaxed">
                   За <span className="font-bold text-white">{result.paybackMonths > 0 ? `${result.paybackMonths} месяцев` : 'один сезон'}</span>{' '}
                   установка ГБО окупится, а дальше{' '}
@@ -231,7 +232,7 @@ export function CalculatorPro({ settings }: Props) {
             )}
 
             {/* CTA */}
-            <div className="mt-7 flex flex-col sm:flex-row gap-2.5">
+            <div className="flex flex-col sm:flex-row gap-2.5">
               <a href={l.phoneHref} className="btn btn-primary btn-lg flex-1">
                 <PhoneFilledIcon className="w-5 h-5" />
                 Записаться на установку
@@ -241,17 +242,13 @@ export function CalculatorPro({ settings }: Props) {
                 href={l.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-lg text-white flex-1"
-                style={{
-                  background: 'linear-gradient(180deg, #25D366 0%, #128C7E 100%)',
-                  boxShadow: '0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 22px -6px rgba(37,211,102,0.5)',
-                }}
+                className="btn btn-whatsapp btn-lg flex-1"
               >
                 <WhatsAppIcon className="w-5 h-5" />
                 Уточнить детали
               </a>
             </div>
-            <p className="text-[11px] text-white/40 mt-4">
+            <p className="text-[11px] text-white/40">
               Расчёт ориентировочный. Точные цифры — после диагностики двигателя на стенде.
             </p>
           </div>
@@ -321,14 +318,10 @@ function ResultCard({
         border: `1px solid ${highlight ? 'rgba(232,18,36,0.3)' : 'rgba(255,255,255,0.08)'}`,
       }}
     >
-      <div className="text-[10px] uppercase tracking-widest text-white/45">{label}</div>
+      <div className="eyebrow eyebrow-mute text-[10px]">{label}</div>
       <div
-        className={`font-display mt-1.5 tracking-tight ${
-          highlight
-            ? 'text-2xl md:text-3xl text-[#FF3E4F]'
-            : muted
-              ? 'text-base md:text-lg text-white/65'
-              : 'text-2xl text-white'
+        className={`num-lg mt-2 ${
+          highlight ? 'text-[#FF3E4F]' : muted ? 'text-white/70' : 'text-white'
         }`}
       >
         {value}

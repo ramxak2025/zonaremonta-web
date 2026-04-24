@@ -41,7 +41,7 @@ export default async function CategoryPage(
   return (
     <>
       <Header />
-      <main className="section pt-4 pb-12 md:pt-8 md:pb-20">
+      <main className="section pt-5 pb-12 md:pt-8 md:pb-20">
         <Link
           href="/catalog"
           className="inline-flex items-center gap-1.5 text-[13px] text-white/60 hover:text-white transition-colors"
@@ -50,18 +50,18 @@ export default async function CategoryPage(
           Все категории
         </Link>
 
-        <div className="mt-5 max-w-3xl">
+        <div className="section-head mt-5">
           <span className="eyebrow">Каталог</span>
           <h1 className="h-1 text-white">{c.name}</h1>
           <p className="lead">{c.description}</p>
         </div>
 
         {products.length === 0 ? (
-          <div className="mt-8 card p-8 text-center text-white/60">
+          <div className="card-lg text-center text-white/60">
             В этой категории пока нет товаров. Загляните позже.
           </div>
         ) : (
-          <div className="mt-8 md:mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {products.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
@@ -69,10 +69,10 @@ export default async function CategoryPage(
         )}
 
         <div
-          className="mt-10 card p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4"
+          className="mt-10 card flex flex-col md:flex-row md:items-center gap-4"
           style={{
             background: 'rgba(74,159,217,0.06)',
-            border: '1px solid rgba(74,159,217,0.2)',
+            borderColor: 'rgba(74,159,217,0.2)',
           }}
         >
           <div className="flex-1">

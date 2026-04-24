@@ -31,7 +31,7 @@ export function ProductCard({ product }: Props) {
   const savingsPct = Math.round((savings / fullLabor) * 100);
 
   return (
-    <article className="card p-5 md:p-6 flex flex-col gap-4 relative overflow-hidden">
+    <article className="card flex flex-col gap-4 relative overflow-hidden">
       {product.badge && (
         <span
           className="absolute top-4 right-4 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
@@ -48,7 +48,7 @@ export function ProductCard({ product }: Props) {
       )}
 
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
+        <div className="eyebrow eyebrow-mute">
           <span>{product.brand}</span>
           <span className="text-white/20">·</span>
           <span>{product.article}</span>
@@ -104,11 +104,9 @@ export function ProductCard({ product }: Props) {
       </label>
 
       <div className="mt-auto pt-4 border-t border-white/5 flex items-end justify-between gap-3">
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
-            Цена
-          </div>
-          <div className="num text-white" style={{ fontSize: 'clamp(20px, 2.8vw, 26px)' }}>
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="eyebrow eyebrow-mute">Цена</div>
+          <div className="num-lg text-white">
             {product.price.toLocaleString('ru-RU')} ₽
           </div>
           <div className="text-[11px] text-white/45">

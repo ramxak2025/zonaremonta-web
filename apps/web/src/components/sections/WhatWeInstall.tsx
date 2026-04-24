@@ -133,7 +133,7 @@ export function WhatWeInstall() {
         {KITS.map((k) => (
           <article
             key={k.id}
-            className="card p-6 md:p-7 flex flex-col gap-5"
+            className="card flex flex-col gap-5"
             style={
               k.featured
                 ? {
@@ -147,25 +147,15 @@ export function WhatWeInstall() {
             <div className="flex items-start justify-between gap-3">
               <div className="flex flex-col gap-3 min-w-0">
                 {k.cylinders ? (
-                  <span
-                    className="num text-gradient"
-                    style={{ fontSize: 'clamp(48px, 9vw, 68px)' }}
-                  >
-                    {k.cylinders}
-                  </span>
+                  <span className="num-2xl text-gradient">{k.cylinders}</span>
                 ) : (
-                  <span
-                    className="num text-gradient"
-                    style={{ fontSize: 'clamp(20px, 2.4vw, 28px)', letterSpacing: '-0.01em' }}
-                  >
+                  <span className="num-lg text-gradient">
                     {k.id === 'gdi' ? 'DI' : 'DUAL'}
                   </span>
                 )}
                 <div className="flex flex-col gap-1.5 min-w-0">
                   <h3 className="h-3 text-white text-break">{k.title}</h3>
-                  <p className="text-[12px] text-white/55 font-semibold uppercase tracking-[0.1em] text-break">
-                    {k.type}
-                  </p>
+                  <p className="eyebrow eyebrow-mute text-break">{k.type}</p>
                 </div>
               </div>
               {k.featured && (
@@ -184,10 +174,8 @@ export function WhatWeInstall() {
 
             <p className="text-[13px] text-white/70 leading-relaxed text-break">{k.forWho}</p>
 
-            <div className="flex flex-col gap-1.5">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
-                Оборудование
-              </div>
+            <div className="flex flex-col gap-2">
+              <div className="eyebrow eyebrow-mute">Оборудование</div>
               <p className="text-[13px] text-white/85 text-break">{k.brands}</p>
             </div>
 
@@ -201,11 +189,9 @@ export function WhatWeInstall() {
             </ul>
 
             <div className="mt-auto pt-4 border-t border-white/5 flex items-end justify-between gap-3">
-              <div className="flex flex-col gap-1 min-w-0">
-                <div className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold">
-                  Под ключ от
-                </div>
-                <div className="num text-white" style={{ fontSize: 'clamp(22px, 3.2vw, 28px)' }}>
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <div className="eyebrow eyebrow-mute">Под ключ от</div>
+                <div className="num-lg text-white">
                   {k.priceFrom.toLocaleString('ru-RU')} ₽
                 </div>
                 <div className="text-[11px] text-white/50">~ {k.durationHrs} ч работы</div>
@@ -220,9 +206,9 @@ export function WhatWeInstall() {
       </div>
 
       {/* Что НЕ делаем */}
-      <div className="mt-5 card p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
+      <div className="mt-5 card flex flex-col md:flex-row md:items-center gap-4">
         <div className="flex items-center gap-3 flex-shrink-0">
-          <span className="w-10 h-10 rounded-lg grid place-items-center bg-white/5 flex-shrink-0">
+          <span className="icon-tile">
             <X className="w-5 h-5 text-white/60" />
           </span>
           <div className="font-semibold text-white">Чем мы не занимаемся</div>

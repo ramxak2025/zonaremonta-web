@@ -3,22 +3,29 @@
 @tailwind utilities;
 
 /* =================================================================
-   ДИЗАЙН-СИСТЕМА (8pt base)
-   Spacing: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128
-   Radius:  sm 8, md 12, lg 16, xl 24, 2xl 32
-   Typography: fluid через clamp(), line-height 1.1–1.6
-   Breakpoints: 320 / 640 / 768 / 1024 / 1280 / 1440
+   ДИЗАЙН-СИСТЕМА «Зона Ремонта» (v3 — реальная)
+   Принципы:
+   — Одно место правды: все размеры/отступы/цвета в CSS vars.
+   — Typography БЕЗ em-margin-bottom на headings — отступы ТОЛЬКО
+     через gap/margin на родителе. Так не бывает коллизии gap + margin.
+   — Все карточки используют var(--card-p), все секции — section-y.
+   — .eyebrow, .num-*, .card, .btn, .chip — ЕДИНСТВЕННЫЕ классы
+     для этих ролей. Ручных inline-копий в компонентах быть не должно.
    ================================================================= */
 
 :root {
+  /* Fonts */
   --font-inter: 'Inter', system-ui, sans-serif;
   --font-oswald: 'Oswald', 'Inter', system-ui, sans-serif;
 
+  /* Brand colors */
   --bg: #0A0A10;
   --bg-elev: #14141A;
+  --bg-elev-2: #1A1A22;
   --surface: rgba(255, 255, 255, 0.045);
-  --surface-border: rgba(255, 255, 255, 0.08);
-  --surface-border-strong: rgba(255, 255, 255, 0.12);
+  --surface-hover: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.12);
 
   --ink: #FFFFFF;
   --ink-80: rgba(255, 255, 255, 0.8);
@@ -28,37 +35,63 @@
   --primary: #E81224;
   --primary-2: #FF3E4F;
   --primary-dark: #B40E1C;
-  --secondary: #4A9FD9;
+  --accent: #FFCC00;
   --success: #22C55E;
-  --warning: #FFCC00;
 
-  /* Spacing scale (8pt) */
+  /* Spacing scale (4pt base) — единственный источник */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
-  --space-9: 96px;
-  --space-10: 128px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
 
   /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-2xl: 32px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 10px 30px -10px rgba(0,0,0,0.45);
+  --shadow-lg: 0 24px 50px -18px rgba(0,0,0,0.55);
+  --shadow-glow: 0 0 40px -8px rgba(232,18,36,0.45);
+
+  /* Adaptive paddings */
+  --section-px: 16px;
+  --section-py: 48px;
+  --card-p: 20px;
+  --card-p-lg: 24px;
 
   /* Containers */
   --container-max: 1280px;
   --container-wide: 1440px;
 }
 
-* {
-  box-sizing: border-box;
+@media (min-width: 640px) {
+  :root { --section-px: 20px; --card-p: 22px; --card-p-lg: 28px; }
 }
+@media (min-width: 768px) {
+  :root { --section-px: 24px; --section-py: 64px; --card-p: 24px; --card-p-lg: 32px; }
+}
+@media (min-width: 1024px) {
+  :root { --section-px: 32px; --section-py: 96px; }
+}
+@media (min-width: 1440px) {
+  :root { --section-px: 48px; }
+}
+
+* { box-sizing: border-box; }
 
 html {
   scroll-behavior: smooth;
@@ -70,32 +103,30 @@ html {
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
+
 html, body {
   background: var(--bg);
   color: var(--ink);
   min-height: 100%;
+  /* Горизонтальный overflow: блокируем ТОЛЬКО на уровне body, корневая причина
+     (декоративные absolute-блюры за -right-X) устранена на местах. */
+  overflow-x: clip;
 }
 
 body {
   font-family: var(--font-inter);
   font-size: 15px;
   line-height: 1.55;
-  overflow-x: hidden;
   min-height: 100dvh;
   min-height: 100vh;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-
-  /* Защита от вылезания длинного текста (адреса, email, VIN) */
   word-wrap: break-word;
   overflow-wrap: break-word;
-  -webkit-hyphens: auto;
-  hyphens: auto;
 }
 
-/* Фото, видео, SVG не должны ломать лейаут */
 img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
 
-/* ============ ФОН ============ */
+/* ============ ЖИВОЙ ФОН ============ */
 .live-bg {
   position: fixed;
   inset: 0;
@@ -127,15 +158,16 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
   0%, 100% { opacity: 0.45; transform: translate3d(0, 0, 0) scale(1); }
   50%      { opacity: 0.85; transform: translate3d(-3%, 4%, 0) scale(1.1); }
 }
-.live-bg-orb { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .live-bg::after { animation: none !important; }
 }
 
-/* ============ TYPOGRAPHY ============ */
-/* BULLETPROOF: margin-bottom ВШИТ в сам heading, работает независимо от
-   родителя (flex/grid/block/card). :not(:last-child) чтобы не было
-   паразитного отступа внизу карточки. */
+/* ============ TYPOGRAPHY ============
+   КЛЮЧЕВОЕ РЕШЕНИЕ:
+   НЕ используем margin-bottom на heading-классах (это ломается во
+   flex+gap). Используем ТОЛЬКО gap/margin на родителе.
+   Классы .eyebrow/.h-1/.h-2/.h-3 — ТОЛЬКО размер, вес, line-height,
+   никаких вшитых margin. */
 
 h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
@@ -147,56 +179,57 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   display: block;
   margin: 0;
   box-sizing: border-box;
+  text-wrap: balance;
 }
+
+/* Padding-TOP оставляем (дышат акценты Ё/Й), padding-bottom = 0:
+   нижний bearing уже даётся line-height, дополнительный padding-bottom
+   раньше создавал паразитный отступ под заголовком. */
 .h-display {
   font-weight: 700;
-  font-size: clamp(30px, 6vw, 68px);
-  line-height: 1.18;
+  font-size: clamp(30px, 5.6vw, 64px);
+  line-height: 1.1;
   letter-spacing: -0.025em;
   text-transform: uppercase;
-  padding-block: 0.14em;
+  padding-top: 0.12em;
 }
 .h-1 {
   font-weight: 700;
-  font-size: clamp(24px, 3.6vw, 38px);
-  line-height: 1.25;
+  font-size: clamp(24px, 3.2vw, 36px);
+  line-height: 1.18;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  padding-block: 0.12em;
+  padding-top: 0.1em;
 }
 .h-2 {
   font-weight: 600;
-  font-size: clamp(20px, 2.6vw, 28px);
-  line-height: 1.35;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.3;
   letter-spacing: -0.015em;
-  padding-block: 0.1em;
+  padding-top: 0.08em;
 }
 .h-3 {
   font-weight: 600;
-  font-size: clamp(16px, 1.6vw, 20px);
-  line-height: 1.45;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.4;
   letter-spacing: -0.01em;
-  padding-block: 0.08em;
 }
-
-/* ВШИТЫЙ margin-bottom. Работает ВЕЗДЕ — в section-head, внутри карточек,
-   в списках, в форме. Никакой зависимости от родительского gap/stack. */
-.h-display:not(:last-child) { margin-bottom: 0.5em; }
-.h-1:not(:last-child)       { margin-bottom: 0.55em; }
-.h-2:not(:last-child)       { margin-bottom: 0.5em; }
-.h-3:not(:last-child)       { margin-bottom: 0.45em; }
 
 .eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-inter);
   font-size: 11px;
   font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.18em;
+  line-height: 1;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--primary-2);
-  padding-block: 0.1em;
 }
-.eyebrow:not(:last-child) { margin-bottom: 14px; }
+.eyebrow-mute {
+  color: rgba(255,255,255,0.55);
+}
 
 .lead {
   display: block;
@@ -204,74 +237,58 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   line-height: 1.6;
   color: var(--ink-80);
   max-width: 65ch;
+  text-wrap: pretty;
 }
 
-/* Большие цифры — крупные, line-height > 1 обязательно */
-.stat-number, .num {
+/* Цифры / счётчики — фиксированная шкала, inline-fontSize БОЛЬШЕ НЕ НУЖЕН */
+.num, .num-sm, .num-lg, .num-xl, .num-2xl {
   font-family: var(--font-oswald);
   display: inline-block;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: -0.02em;
-  padding-block: 0.08em;
 }
-.stat-number {
-  font-size: clamp(40px, 6vw, 64px);
-}
+.num-sm  { font-size: clamp(16px, 1.8vw, 20px); }
+.num     { font-size: clamp(20px, 2.4vw, 26px); }
+.num-lg  { font-size: clamp(26px, 3.2vw, 34px); }
+.num-xl  { font-size: clamp(34px, 4.8vw, 52px); }
+.num-2xl { font-size: clamp(44px, 7vw, 72px); }
 
-/* ============ СЕТКА И ОТСТУПЫ ============ */
+/* ============ КОМПОНЕНТЫ ============ */
 @layer components {
-  /* Контейнер с единой горизонтальной сеткой.
-     Прогрессивные отступы: 16px → 24px → 32px → 48px. */
+  /* КОНТЕЙНЕР */
   .section {
     width: 100%;
     margin-inline: auto;
     max-width: var(--container-max);
-    padding-inline: var(--space-4);
+    padding-inline: var(--section-px);
   }
-  @media (min-width: 640px) { .section { padding-inline: var(--space-5); } }
-  @media (min-width: 1024px) { .section { padding-inline: var(--space-6); } }
-  @media (min-width: 1440px) { .section { max-width: var(--container-wide); padding-inline: var(--space-7); } }
+  @media (min-width: 1440px) {
+    .section { max-width: var(--container-wide); }
+  }
 
-  /* Единый вертикальный ритм секций: 48 / 64 / 96 */
+  /* ВЕРТИКАЛЬНЫЙ РИТМ СЕКЦИЙ */
   .section-y {
-    padding-top: var(--space-7);
-    padding-bottom: var(--space-7);
+    padding-top: var(--section-py);
+    padding-bottom: var(--section-py);
   }
-  @media (min-width: 768px) { .section-y { padding-top: var(--space-8); padding-bottom: var(--space-8); } }
-  @media (min-width: 1024px) { .section-y { padding-top: var(--space-9); padding-bottom: var(--space-9); } }
 
-  /* Шапка секции — просто контейнер. Отступы между eyebrow/heading/lead
-     даются вшитым margin-bottom самих элементов. */
+  /* SECTION HEAD — eyebrow + h + lead.
+     Единый паттерн: используем gap через flex-column.
+     Никаких вшитых em-margin в heading-классах. */
   .section-head {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
     max-width: 48rem;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-7);
   }
+  .section-head .lead { margin-top: var(--space-1); }
   @media (min-width: 768px) {
-    .section-head { margin-bottom: var(--space-7); }
+    .section-head { margin-bottom: var(--space-8); }
   }
 
-  /* Карточки — строго 3 размера radius */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--surface-border);
-    border-radius: var(--radius-xl);
-  }
-  .card-strong {
-    background: var(--bg-elev);
-    border: 1px solid var(--surface-border-strong);
-    border-radius: var(--radius-xl);
-  }
-  .glass {
-    background: rgba(255, 255, 255, 0.045);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
-    border: 1px solid var(--surface-border);
-    border-radius: var(--radius-xl);
-  }
-
-  /* ВЕРТИКАЛЬНЫЙ РИТМ внутри блоков */
+  /* STACK утилиты — для вертикального ритма где не flex */
   .stack-2 > * + * { margin-top: var(--space-2); }
   .stack-3 > * + * { margin-top: var(--space-3); }
   .stack-4 > * + * { margin-top: var(--space-4); }
@@ -279,7 +296,46 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   .stack-6 > * + * { margin-top: var(--space-6); }
   .stack-7 > * + * { margin-top: var(--space-7); }
 
-  /* Кнопки — единая высота 40 / 48 / 56 */
+  /* КАРТОЧКИ — единый padding через var, 3 варианта */
+  .card {
+    padding: var(--card-p);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+  }
+  .card-lg {
+    padding: var(--card-p-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+  }
+  .card-strong {
+    padding: var(--card-p);
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+  }
+  .card-strong-lg {
+    padding: var(--card-p-lg);
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+  }
+
+  /* LIQUID GLASS — настоящее стекло для форм и выделенных блоков */
+  .liquid-glass {
+    padding: var(--card-p-lg);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      var(--shadow-md);
+  }
+
+  /* КНОПКИ — единая высота 40/48/56 */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -293,11 +349,11 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     font-size: 15px;
     line-height: 1;
     letter-spacing: -0.01em;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
-    transition: transform 0.15s ease, filter 0.15s ease;
+    transition: transform 0.15s ease, filter 0.15s ease, background 0.15s ease;
   }
   .btn:active { transform: scale(0.97); }
   .btn-sm { height: 40px; min-height: 40px; padding: 0 var(--space-4); font-size: 13px; }
@@ -307,7 +363,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     color: white;
     background: linear-gradient(180deg, #FF3E4F 0%, #E81224 60%, #B40E1C 100%);
     box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.25) inset,
+      0 1px 0 rgba(255,255,255,0.25) inset,
       0 8px 22px -6px rgba(232, 18, 36, 0.5);
   }
   .btn-primary:hover { filter: brightness(1.08); }
@@ -319,7 +375,14 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   }
   .btn-ghost:hover { background: rgba(255, 255, 255, 0.1); }
 
-  /* Chip */
+  .btn-whatsapp {
+    color: white;
+    background: linear-gradient(180deg, #25D366 0%, #128C7E 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.25) inset, 0 8px 22px -6px rgba(37,211,102,0.4);
+  }
+  .btn-whatsapp:hover { filter: brightness(1.08); }
+
+  /* CHIP — мелкий статус-лейбл */
   .chip {
     display: inline-flex;
     align-items: center;
@@ -330,7 +393,7 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
     line-height: 1;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     color: var(--ink-80);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -339,60 +402,87 @@ h1, h2, h3, h4, h5, h6, p { margin: 0; }
   .chip .dot {
     width: 6px;
     height: 6px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--primary);
     box-shadow: 0 0 8px rgba(232, 18, 36, 0.8);
     flex-shrink: 0;
   }
 
+  /* ICON-BUTTON квадратный — для иконок в карточках (единый размер) */
+  .icon-tile {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .icon-tile-primary {
+    background: linear-gradient(135deg, rgba(232,18,36,0.22), rgba(232,18,36,0.05));
+    border-color: rgba(232, 18, 36, 0.3);
+  }
+
   .accent-bar {
     display: inline-block;
-    width: 32px;
+    width: 28px;
     height: 2px;
     background: var(--primary);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     flex-shrink: 0;
   }
 
-  .pill { border-radius: 999px; }
+  .pill { border-radius: var(--radius-pill); }
 
   .text-gradient {
     background: linear-gradient(135deg, #FF3E4F 0%, #E81224 60%, #4A9FD9 140%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    /* padding-bottom гасит обрезание descender у Oswald (цифры, запятые) */
+    padding-bottom: 0.02em;
   }
 }
 
-/* ============ ПОВЕДЕНИЕ ТЕКСТА ============ */
-/* Длинные слова (адреса, VIN, ссылки) — не ломают блок */
+/* ============ ТЕКСТ-УТИЛИТЫ ============ */
 .text-break { word-break: break-word; overflow-wrap: break-word; }
-
-/* Многострочное усечение */
 .clamp-1 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; }
 .clamp-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 
-/* Reveal */
+/* ============ REVEAL АНИМАЦИЯ ============ */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  filter: blur(4px);
+  transform: translateY(18px);
   transition:
-    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform, filter;
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
 .reveal.in {
   opacity: 1;
   transform: translateY(0);
-  filter: blur(0);
+}
+
+/* Calculator result pulse */
+@keyframes resultPulse {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-result {
+  animation: resultPulse 0.4s ease-out both;
 }
 
 /* Safe area для iPhone */
 .pt-safe { padding-top: calc(env(safe-area-inset-top) + var(--space-3)); }
 .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + var(--space-2)); }
+.pb-safe-tabbar {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
+}
+@media (min-width: 768px) {
+  .pb-safe-tabbar { padding-bottom: 0; }
+}
 
 /* Range slider */
 input[type='range'] {
@@ -405,7 +495,7 @@ input[type='range'] {
 }
 input[type='range']::-webkit-slider-runnable-track {
   height: 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.1);
 }
 input[type='range']::-webkit-slider-thumb {
@@ -414,20 +504,20 @@ input[type='range']::-webkit-slider-thumb {
   width: 22px;
   height: 22px;
   margin-top: -8px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: linear-gradient(180deg, #FF3E4F, #E81224);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 4px 10px -2px rgba(232, 18, 36, 0.6);
   border: 2px solid rgba(0, 0, 0, 0.6);
 }
 input[type='range']::-moz-range-track {
   height: 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.1);
 }
 input[type='range']::-moz-range-thumb {
   width: 22px;
   height: 22px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: linear-gradient(180deg, #FF3E4F, #E81224);
   border: 2px solid rgba(0, 0, 0, 0.6);
 }
@@ -437,7 +527,7 @@ input[type='range']::-moz-range-thumb {
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -19,24 +19,21 @@ export function HowItWorks() {
 
         <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {STEPS.map((s) => (
-            <li key={s.n} className="card p-6 flex flex-col gap-4">
-              <div className="flex items-baseline justify-between gap-2">
+            <li key={s.n} className="card flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-2">
                 <span
-                  className="font-display leading-none tracking-tight"
+                  className="num-xl"
                   style={{
-                    fontSize: '44px',
-                    paddingBottom: '0.04em',
                     background: 'linear-gradient(135deg, #FF3E4F, rgba(232,18,36,0.3))',
                     WebkitBackgroundClip: 'text',
                     backgroundClip: 'text',
                     color: 'transparent',
+                    paddingBottom: '0.05em',
                   }}
                 >
                   {s.n}
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.18em] text-white/40 font-semibold flex-shrink-0">
-                  {s.time}
-                </span>
+                <span className="eyebrow eyebrow-mute mt-1 flex-shrink-0">{s.time}</span>
               </div>
               <h3 className="h-3 text-white">{s.title}</h3>
               <p className="text-[14px] text-white/65 leading-relaxed text-break">{s.text}</p>

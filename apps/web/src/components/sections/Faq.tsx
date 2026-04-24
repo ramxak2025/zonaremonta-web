@@ -21,7 +21,7 @@ export function Faq() {
         <h2 className="h-1 text-white">Отвечаем коротко и по делу</h2>
       </div>
 
-      <div className="card-strong overflow-hidden divide-y divide-white/[0.06] max-w-prose">
+      <div className="overflow-hidden divide-y divide-white/[0.06] max-w-prose rounded-3xl border border-white/[0.12]" style={{ background: 'var(--bg-elev)' }}>
         {ITEMS.map((it, i) => (
           <FaqRow key={it.q} q={it.q} a={it.a} defaultOpen={i === 0} />
         ))}
