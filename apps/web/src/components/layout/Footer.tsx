@@ -23,9 +23,10 @@ export function Footer() {
               Навигация
             </div>
             <ul className="flex flex-col gap-2.5 text-[14px] text-white/75">
-              <li><Link href="/services" className="hover:text-white">Услуги</Link></li>
+              <li><Link href="/install" className="hover:text-white">Установка ГБО</Link></li>
+              <li><Link href="/repair" className="hover:text-white">Диагностика и ремонт</Link></li>
+              <li><Link href="/works" className="hover:text-white">Наши работы</Link></li>
               <li><Link href="/calculator" className="hover:text-white">Калькулятор</Link></li>
-              <li><Link href="/catalog" className="hover:text-white">Магазин</Link></li>
               <li><Link href="/#contact" className="hover:text-white">Контакты</Link></li>
             </ul>
           </div>

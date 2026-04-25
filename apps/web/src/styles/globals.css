@@ -199,6 +199,51 @@ input[type='range']::-webkit-slider-thumb {
 .pb-tabbar { padding-bottom: calc(env(safe-area-inset-bottom) + 88px); }
 @media (min-width: 768px) { .pb-tabbar { padding-bottom: 0; } }
 
+/* ============ ВАУ-АНИМАЦИИ (CSS-only, GPU-friendly) ============ */
+
+/* Shimmer для бейджей и ярлыков */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 70%
+  ) center/200% 100%;
+  animation: shimmer 2.6s linear infinite;
+}
+
+/* Лёгкая пульсация дотов и значков «онлайн» */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(232, 18, 36, 0.55); }
+  70%  { box-shadow: 0 0 0 12px rgba(232, 18, 36, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(232, 18, 36, 0); }
+}
+.pulse-ring { animation: pulseRing 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+
+/* Float — лёгкое плавающее движение для декоративных элементов */
+@keyframes floaty {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -8px, 0); }
+}
+.floaty { animation: floaty 5s ease-in-out infinite; will-change: transform; }
+
+/* Slide-up для модалок */
+@keyframes modalIn {
+  from { opacity: 0; transform: translate3d(0, 24px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.modal-in { animation: modalIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-in { animation: fadeIn 0.25s ease-out both; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

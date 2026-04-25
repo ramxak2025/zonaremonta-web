@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
-import { CartProvider } from '@/lib/cart';
 
 /**
- * Корневой провайдер. Сейчас здесь только корзина —
- * её состояние нужно почти везде (Header показывает счётчик).
+ * Корневой провайдер. Сейчас пуст — на публичных страницах нет
+ * клиентского состояния, требующего React-context.
  */
 export function Providers({ children }: { children: ReactNode }) {
-  return <CartProvider>{children}</CartProvider>;
+  return <>{children}</>;
 }

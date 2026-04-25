@@ -77,11 +77,20 @@ Prado), Volvo VEA, новые Audi TFSI.
 - Max: ${SITE.maxLink}
 - Яндекс.Карты: ${SITE.yandexMapsLink}
 
+## Услуги ремонта и диагностики
+- Компьютерная диагностика на стенде — от 1 500 ₽
+- Ремонт редуктора (Lovato, BRC, Tomasetto, OMVL) — от 2 500 ₽
+- Ультразвуковая чистка / замена форсунок — от 1 800 ₽
+- Прошивка / замена ЭБУ — от 3 500 ₽
+- Ремонт мультиклапана / ВЗУ — от 1 200 ₽
+- Подготовка к поверке баллона — от 1 500 ₽
+
 ## Ключевые страницы
 - [Главная](${SITE.siteUrl}/)
-- [Услуги](${SITE.siteUrl}/services)
-- [Калькулятор](${SITE.siteUrl}/calculator)
-- [Каталог](${SITE.siteUrl}/catalog)
+- [Установка ГБО](${SITE.siteUrl}/install)
+- [Диагностика и ремонт ГБО](${SITE.siteUrl}/repair)
+- [Наши работы — портфолио](${SITE.siteUrl}/works)
+- [Калькулятор экономии](${SITE.siteUrl}/calculator)
 `;
   return new Response(body, {
     headers: {
