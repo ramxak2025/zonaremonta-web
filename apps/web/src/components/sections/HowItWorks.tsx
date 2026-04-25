@@ -9,10 +9,10 @@ export function HowItWorks() {
   return (
     <section className="border-y border-white/[0.05] bg-black/20">
       <div className="section section-y">
-        <div className="section-head">
-          <span className="eyebrow">Как мы работаем</span>
-          <h2 className="h-1 text-white">От звонка до заправки газом — один день</h2>
-          <p className="lead">
+        <div className="max-w-3xl mb-8 md:mb-10">
+          <span className="eyebrow block mb-3">Как мы работаем</span>
+          <h2 className="h-1 text-white mb-4 md:mb-5">От звонка до заправки газом — один день</h2>
+          <p className="lead max-w-prose">
             Никаких скрытых доплат. Цена озвучивается после диагностики двигателя и не меняется.
           </p>
         </div>

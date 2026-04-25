@@ -42,8 +42,8 @@ export default function CartPage() {
           Продолжить покупки
         </Link>
 
-        <div className="section-head mt-5">
-          <span className="eyebrow">Корзина</span>
+        <div className="max-w-3xl mt-5 mb-8 md:mb-10">
+          <span className="eyebrow block mb-3">Корзина</span>
           <h1 className="h-1 text-white">Ваш заказ</h1>
         </div>
 

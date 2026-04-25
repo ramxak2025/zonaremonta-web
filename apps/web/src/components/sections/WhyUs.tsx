@@ -36,8 +36,8 @@ const REASONS = [
 export function WhyUs() {
   return (
     <section className="section section-y">
-      <div className="section-head">
-        <span className="eyebrow">Почему мы</span>
+      <div className="max-w-3xl mb-8 md:mb-10">
+        <span className="eyebrow block mb-3">Почему мы</span>
         <h2 className="h-1 text-white">Шесть причин записаться именно к нам</h2>
       </div>
 

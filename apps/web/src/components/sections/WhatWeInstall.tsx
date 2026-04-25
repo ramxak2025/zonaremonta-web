@@ -119,10 +119,10 @@ export function WhatWeInstall() {
 
   return (
     <section id="services" className="section section-y">
-      <div className="section-head">
-        <span className="eyebrow">Услуги</span>
-        <h2 className="h-1 text-white">Комплекты ГБО под любой двигатель</h2>
-        <p className="lead">
+      <div className="max-w-3xl mb-8 md:mb-10">
+        <span className="eyebrow block mb-3">Услуги</span>
+        <h2 className="h-1 text-white mb-4 md:mb-5">Комплекты ГБО под любой двигатель</h2>
+        <p className="lead max-w-prose">
           Ставим на распределённый впрыск (4 / 6 / 8 цилиндров), на прямой впрыск и на комбинированные
           системы. Для прямого и комбинированного — оборудование{' '}
           <span className="text-white">Prins</span> и <span className="text-white">OMVL</span>.

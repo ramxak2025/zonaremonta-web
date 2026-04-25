@@ -3,17 +3,10 @@
 @tailwind utilities;
 
 /* =================================================================
-   ДИЗАЙН-СИСТЕМА «Зона Ремонта» — v4 MINIMAL
-   Принципы:
-   — BLOCK-layout для текстовых групп (section-head, card-body).
-     Никаких flex-column + gap для заголовков — только margin.
-   — Margin между заголовком и текстом задаётся через OWL-селектор
-     (> * + * { margin-top }) на контейнерах, гарантированно работает
-     во всех браузерах (включая Safari iOS 15–17).
-   — Heading-классы несут ТОЛЬКО font/size/line-height. Никаких
-     padding-block, text-wrap, margin.
-   — .eyebrow = display:block (не inline-flex) — не скачет в потоке.
-   — Всё через CSS vars, ни одного arbitrary Tailwind значения.
+   ДИЗАЙН-СИСТЕМА «Зона Ремонта» — v5 ZERO-MAGIC
+   Никакого flex/gap для текстовых блоков. Никаких em-margin.
+   Только block + явные пиксельные margins.
+   Заголовки: ТОЛЬКО font/size. Все остальное — через утилиты mb-*.
    ================================================================= */
 
 :root {
@@ -39,47 +32,8 @@
   --accent: #FFCC00;
   --success: #22C55E;
 
-  /* Spacing (pixels, не em — чтобы margin ВСЕГДА работал одинаково) */
-  --s-1: 4px;
-  --s-2: 8px;
-  --s-3: 12px;
-  --s-4: 16px;
-  --s-5: 20px;
-  --s-6: 24px;
-  --s-7: 32px;
-  --s-8: 40px;
-  --s-9: 48px;
-  --s-10: 64px;
-  --s-11: 80px;
-  --s-12: 96px;
-
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 24px;
-  --r-2xl: 32px;
-  --r-pill: 999px;
-
-  --section-px: 16px;
-  --section-py: 48px;
-  --card-p: 20px;
-  --card-p-lg: 24px;
-
   --container-max: 1280px;
   --container-wide: 1440px;
-}
-
-@media (min-width: 640px) {
-  :root { --section-px: 20px; --card-p: 22px; --card-p-lg: 28px; }
-}
-@media (min-width: 768px) {
-  :root { --section-px: 24px; --section-py: 64px; --card-p: 24px; --card-p-lg: 32px; }
-}
-@media (min-width: 1024px) {
-  :root { --section-px: 32px; --section-py: 96px; }
-}
-@media (min-width: 1440px) {
-  :root { --section-px: 48px; }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -91,8 +45,6 @@ html {
   -webkit-tap-highlight-color: transparent;
   color-scheme: dark;
   background: var(--bg);
-  text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
 }
 
 html, body {
@@ -107,15 +59,11 @@ html, body {
 body {
   font-family: var(--font-inter);
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.6;
   min-height: 100dvh;
-  min-height: 100vh;
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
-/* Базовый reset */
+/* Reset */
 h1, h2, h3, h4, h5, h6, p, ul, ol, dl, figure, blockquote {
   margin: 0;
   padding: 0;
@@ -125,7 +73,7 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: transparent; border: 0; padding: 0; cursor: pointer; }
 img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
 
-/* ============ ЖИВОЙ ФОН ============ */
+/* ============ ФОН ============ */
 .live-bg {
   position: fixed;
   inset: 0;
@@ -137,62 +85,43 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
     radial-gradient(700px 600px at 0% 65%, rgba(20, 25, 45, 0.8), transparent 60%),
     linear-gradient(180deg, #14141A 0%, #0A0A10 100%);
 }
-@media (min-width: 768px) {
-  .live-bg::after {
-    content: '';
-    position: absolute;
-    top: -8%;
-    right: -8%;
-    width: 480px;
-    height: 480px;
-    background: radial-gradient(circle, rgba(232, 18, 36, 0.28) 0%, transparent 70%);
-    filter: blur(60px);
-    border-radius: 50%;
-    animation: bgBreath 16s ease-in-out infinite;
-    will-change: opacity, transform;
-    transform: translateZ(0);
-  }
-}
-@keyframes bgBreath {
-  0%, 100% { opacity: 0.45; transform: translate3d(0, 0, 0) scale(1); }
-  50%      { opacity: 0.8;  transform: translate3d(-3%, 4%, 0) scale(1.08); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .live-bg::after { animation: none !important; }
-}
 
 /* ============ TYPOGRAPHY ============
-   Только размеры/шрифт/высота строки. Никаких margin/padding/text-wrap. */
+   Только font + size. Никаких margin/padding.
+   Расстояния задаются через mb-* / mt-* в JSX. */
 
-.h-display,
-.h-1,
-.h-2,
-.h-3 {
+.h-display {
   font-family: var(--font-oswald);
   display: block;
-  margin: 0;
-}
-.h-display {
   font-weight: 700;
-  font-size: clamp(28px, 5.2vw, 60px);
+  font-size: clamp(28px, 5vw, 56px);
   line-height: 1.15;
   letter-spacing: -0.02em;
   text-transform: uppercase;
 }
+
 .h-1 {
+  font-family: var(--font-oswald);
+  display: block;
   font-weight: 700;
-  font-size: clamp(22px, 3vw, 34px);
+  font-size: clamp(22px, 3vw, 32px);
   line-height: 1.2;
   letter-spacing: -0.02em;
   text-transform: uppercase;
 }
+
 .h-2 {
+  font-family: var(--font-oswald);
+  display: block;
   font-weight: 600;
-  font-size: clamp(18px, 2.2vw, 24px);
+  font-size: clamp(18px, 2vw, 22px);
   line-height: 1.3;
   letter-spacing: -0.015em;
 }
+
 .h-3 {
+  font-family: var(--font-oswald);
+  display: block;
   font-weight: 600;
   font-size: clamp(16px, 1.5vw, 18px);
   line-height: 1.4;
@@ -209,20 +138,16 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
   text-transform: uppercase;
   color: var(--primary-2);
 }
-.eyebrow-mute {
-  color: rgba(255, 255, 255, 0.55);
-}
+.eyebrow-mute { color: rgba(255, 255, 255, 0.55); }
 
 .lead {
   display: block;
   font-size: clamp(14px, 1.4vw, 17px);
   line-height: 1.6;
   color: var(--ink-80);
-  max-width: 65ch;
 }
 
-/* ============ ЦИФРЫ / СЧЁТЧИКИ ============
-   Фиксированная шкала. Никаких inline fontSize в компонентах. */
+/* Цифры — фиксированная шкала */
 .num-sm, .num, .num-lg, .num-xl, .num-2xl {
   font-family: var(--font-oswald);
   display: inline-block;
@@ -236,123 +161,83 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
 .num-xl  { font-size: clamp(34px, 4.8vw, 48px); }
 .num-2xl { font-size: clamp(44px, 6vw, 64px); }
 
-/* ============ КОНТЕЙНЕР И СЕКЦИИ ============ */
+/* ============ КОМПОНЕНТЫ ============ */
 @layer components {
+  /* Контейнер */
   .section {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
     max-width: var(--container-max);
-    padding-left: var(--section-px);
-    padding-right: var(--section-px);
+    padding-left: 16px;
+    padding-right: 16px;
   }
+  @media (min-width: 640px)  { .section { padding-left: 20px; padding-right: 20px; } }
+  @media (min-width: 768px)  { .section { padding-left: 24px; padding-right: 24px; } }
+  @media (min-width: 1024px) { .section { padding-left: 32px; padding-right: 32px; } }
   @media (min-width: 1440px) {
-    .section { max-width: var(--container-wide); }
+    .section { max-width: var(--container-wide); padding-left: 48px; padding-right: 48px; }
   }
 
   .section-y {
-    padding-top: var(--section-py);
-    padding-bottom: var(--section-py);
+    padding-top: 48px;
+    padding-bottom: 48px;
   }
+  @media (min-width: 768px)  { .section-y { padding-top: 64px; padding-bottom: 64px; } }
+  @media (min-width: 1024px) { .section-y { padding-top: 96px; padding-bottom: 96px; } }
 
-  /* ──────────────────────────────────────────────────────────────
-     ЗАГОЛОВОК СЕКЦИИ — eyebrow/chip + heading + lead.
-     BLOCK-layout. Отступы через owl-selector (> * + *).
-     Универсальное правило: 12px между ЛЮБЫМИ детьми, 16/20px
-     между heading и параграфом. Работает гарантированно.
-     ──────────────────────────────────────────────────────────── */
-  .section-head {
-    display: block;
-    max-width: 48rem;
-    margin-bottom: var(--s-7);
-  }
-  @media (min-width: 768px) {
-    .section-head { margin-bottom: var(--s-8); }
-  }
-
-  /* База: 12px между любыми соседними детьми */
-  .section-head > * + * {
-    margin-top: var(--s-3);
-  }
-  /* Heading → параграф: 16/20px */
-  .section-head > :is(.h-display, .h-1, .h-2, .h-3) + :is(.lead, p) {
-    margin-top: var(--s-4);
-  }
-  @media (min-width: 768px) {
-    .section-head > :is(.h-display, .h-1, .h-2, .h-3) + :is(.lead, p) {
-      margin-top: var(--s-5);
-    }
-  }
-
-  /* ──────────────────────────────────────────────────────────────
-     ТЕЛО КАРТОЧКИ. Тоже block + owl, гарантированно работает.
-     ──────────────────────────────────────────────────────────── */
-  .card-body > * + * {
-    margin-top: var(--s-3);
-  }
-  .card-body > .eyebrow + :is(.h-display, .h-1, .h-2, .h-3) {
-    margin-top: var(--s-2);
-  }
-  .card-body > :is(.h-display, .h-1, .h-2, .h-3) + :is(.lead, p, .eyebrow) {
-    margin-top: var(--s-3);
-  }
-  /* Над/под мелкими надписями (eyebrow внутри body) — 4px ближе к цифре/заголовку */
-  .card-body > .num-lg + .eyebrow,
-  .card-body > .num-xl + .eyebrow,
-  .card-body > .num-2xl + .eyebrow,
-  .card-body > .eyebrow + .num-lg,
-  .card-body > .eyebrow + .num-xl,
-  .card-body > .eyebrow + .num-2xl {
-    margin-top: var(--s-1);
-  }
-
-  /* ──────────────────────────────────────────────────────────────
-     КАРТОЧКИ
-     ──────────────────────────────────────────────────────────── */
+  /* Карточки */
   .card {
-    padding: var(--card-p);
+    padding: 20px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--r-xl);
+    border-radius: 24px;
   }
+  @media (min-width: 768px) { .card { padding: 24px; } }
+
   .card-lg {
-    padding: var(--card-p-lg);
+    padding: 24px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--r-xl);
+    border-radius: 24px;
   }
+  @media (min-width: 768px) { .card-lg { padding: 32px; } }
+
   .card-strong {
-    padding: var(--card-p);
+    padding: 20px;
     background: var(--bg-elev);
     border: 1px solid var(--border-strong);
-    border-radius: var(--r-xl);
+    border-radius: 24px;
   }
+  @media (min-width: 768px) { .card-strong { padding: 24px; } }
+
   .card-strong-lg {
-    padding: var(--card-p-lg);
+    padding: 24px;
     background: var(--bg-elev);
     border: 1px solid var(--border-strong);
-    border-radius: var(--r-xl);
+    border-radius: 24px;
   }
+  @media (min-width: 768px) { .card-strong-lg { padding: 32px; } }
+
   .liquid-glass {
-    padding: var(--card-p-lg);
+    padding: 24px;
     background: rgba(255, 255, 255, 0.035);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: var(--r-xl);
+    border-radius: 24px;
     backdrop-filter: blur(20px) saturate(1.5);
     -webkit-backdrop-filter: blur(20px) saturate(1.5);
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset,
       0 10px 30px -10px rgba(0, 0, 0, 0.5);
   }
+  @media (min-width: 768px) { .liquid-glass { padding: 32px; } }
 
-  /* ──────────────────────────────────────────────────────────────
-     КНОПКИ
-     ──────────────────────────────────────────────────────────── */
+  /* Кнопки */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--s-2);
-    padding: 0 var(--s-5);
+    gap: 8px;
+    padding: 0 20px;
     height: 48px;
     min-height: 48px;
     font-family: var(--font-inter);
@@ -360,15 +245,15 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
     font-size: 15px;
     line-height: 1;
     letter-spacing: -0.01em;
-    border-radius: var(--r-pill);
+    border-radius: 999px;
     cursor: pointer;
     user-select: none;
     white-space: nowrap;
     transition: transform 0.15s ease, filter 0.15s ease, background 0.15s ease;
   }
   .btn:active { transform: scale(0.97); }
-  .btn-sm { height: 40px; min-height: 40px; padding: 0 var(--s-4); font-size: 13px; }
-  .btn-lg { height: 56px; min-height: 56px; padding: 0 var(--s-6); font-size: 16px; }
+  .btn-sm { height: 40px; min-height: 40px; padding: 0 16px; font-size: 13px; }
+  .btn-lg { height: 56px; min-height: 56px; padding: 0 24px; font-size: 16px; }
 
   .btn-primary {
     color: white;
@@ -393,20 +278,18 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
   }
   .btn-whatsapp:hover { filter: brightness(1.08); }
 
-  /* ──────────────────────────────────────────────────────────────
-     CHIP / ICON-TILE / ACCENT
-     ──────────────────────────────────────────────────────────── */
+  /* Chip */
   .chip {
     display: inline-flex;
     align-items: center;
-    gap: var(--s-2);
+    gap: 8px;
     padding: 6px 12px;
     font-size: 11px;
     font-weight: 600;
     line-height: 1;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    border-radius: var(--r-pill);
+    border-radius: 999px;
     color: var(--ink-80);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -415,16 +298,17 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
   .chip .dot {
     width: 6px;
     height: 6px;
-    border-radius: var(--r-pill);
+    border-radius: 999px;
     background: var(--primary);
     box-shadow: 0 0 8px rgba(232, 18, 36, 0.8);
     flex-shrink: 0;
   }
 
+  /* Icon tile */
   .icon-tile {
     width: 44px;
     height: 44px;
-    border-radius: var(--r-md);
+    border-radius: 14px;
     display: grid;
     place-items: center;
     flex-shrink: 0;
@@ -441,101 +325,77 @@ img, svg, video, canvas { max-width: 100%; height: auto; display: block; }
     width: 28px;
     height: 2px;
     background: var(--primary);
-    border-radius: var(--r-pill);
+    border-radius: 999px;
     flex-shrink: 0;
   }
 
-  .pill { border-radius: var(--r-pill); }
+  .pill { border-radius: 999px; }
 
   .text-gradient {
     background: linear-gradient(135deg, #FF3E4F 0%, #E81224 60%, #4A9FD9 140%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    padding-bottom: 0.04em; /* компенсация клипинга descender у ₽/ф */
+    padding-bottom: 0.06em;
   }
 }
 
-/* ============ УТИЛИТЫ ============ */
+/* Утилиты */
 .text-break { word-break: break-word; overflow-wrap: break-word; }
 .clamp-1 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; overflow: hidden; }
 .clamp-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 
-/* ============ REVEAL ============ */
+/* Reveal */
 .reveal {
   opacity: 0;
   transform: translateY(18px);
   transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
 }
-.reveal.in {
-  opacity: 1;
-  transform: translateY(0);
-}
+.reveal.in { opacity: 1; transform: translateY(0); }
 
 @keyframes resultPulse {
-  0%   { opacity: 0; transform: translateY(6px); }
+  0% { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 .animate-result { animation: resultPulse 0.4s ease-out both; }
 
 /* Safe area */
-.pt-safe { padding-top: calc(env(safe-area-inset-top) + var(--s-3)); }
-.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + var(--s-2)); }
-.pb-safe-tabbar {
-  padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
-}
-@media (min-width: 768px) {
-  .pb-safe-tabbar { padding-bottom: 0; }
-}
+.pt-safe { padding-top: calc(env(safe-area-inset-top) + 12px); }
+.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 8px); }
+.pb-safe-tabbar { padding-bottom: calc(env(safe-area-inset-bottom) + 88px); }
+@media (min-width: 768px) { .pb-safe-tabbar { padding-bottom: 0; } }
 
-/* Range slider */
+/* Range */
 input[type='range'] {
-  appearance: none;
-  -webkit-appearance: none;
-  background: transparent;
-  width: 100%;
-  height: 24px;
-  cursor: pointer;
+  appearance: none; -webkit-appearance: none;
+  background: transparent; width: 100%; height: 24px; cursor: pointer;
 }
 input[type='range']::-webkit-slider-runnable-track {
-  height: 6px;
-  border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.1);
+  height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.1);
 }
 input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  margin-top: -8px;
-  border-radius: var(--r-pill);
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; margin-top: -8px; border-radius: 999px;
   background: linear-gradient(180deg, #FF3E4F, #E81224);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 4px 10px -2px rgba(232, 18, 36, 0.6);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 4px 10px -2px rgba(232, 18, 36, 0.6);
   border: 2px solid rgba(0, 0, 0, 0.6);
 }
 input[type='range']::-moz-range-track {
-  height: 6px;
-  border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.1);
+  height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.1);
 }
 input[type='range']::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border-radius: var(--r-pill);
+  width: 22px; height: 22px; border-radius: 999px;
   background: linear-gradient(180deg, #FF3E4F, #E81224);
   border: 2px solid rgba(0, 0, 0, 0.6);
 }
 
-/* Focus */
 :focus { outline: none; }
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
-  border-radius: var(--r-sm);
+  border-radius: 8px;
 }
 
 @media (prefers-reduced-motion: reduce) {

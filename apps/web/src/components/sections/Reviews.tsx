@@ -16,10 +16,10 @@ export function Reviews({ settings }: Props) {
 
   return (
     <section className="section section-y">
-      <div className="section-head">
-        <span className="eyebrow">Отзывы</span>
-        <h2 className="h-1 text-white">Что пишут реальные клиенты</h2>
-        <p className="lead">
+      <div className="max-w-3xl mb-8 md:mb-10">
+        <span className="eyebrow block mb-3">Отзывы</span>
+        <h2 className="h-1 text-white mb-4 md:mb-5">Что пишут реальные клиенты</h2>
+        <p className="lead max-w-prose">
           Все отзывы — с Яндекс.Карт и 2ГИС. Без редактуры. Откройте профиль, если хотите
           увидеть полную картину.
         </p>

@@ -50,10 +50,10 @@ export default async function CategoryPage(
           Все категории
         </Link>
 
-        <div className="section-head mt-5">
-          <span className="eyebrow">Каталог</span>
-          <h1 className="h-1 text-white">{c.name}</h1>
-          <p className="lead">{c.description}</p>
+        <div className="max-w-3xl mt-5 mb-8 md:mb-10">
+          <span className="eyebrow block mb-3">Каталог</span>
+          <h1 className="h-1 text-white mb-4 md:mb-5">{c.name}</h1>
+          <p className="lead max-w-prose">{c.description}</p>
         </div>
 
         {products.length === 0 ? (

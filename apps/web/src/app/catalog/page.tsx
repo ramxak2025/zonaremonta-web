@@ -31,10 +31,10 @@ export default function CatalogPage() {
       <main>
         {/* HERO магазина */}
         <section className="section pt-6 pb-6 md:pt-10 md:pb-10">
-          <div className="section-head">
-            <span className="chip"><span className="dot" />Магазин</span>
-            <h1 className="h-1 text-white">Комплектующие ГБО со своего склада</h1>
-            <p className="lead">
+          <div className="max-w-3xl mb-6 md:mb-8">
+            <span className="chip mb-4 inline-flex"><span className="dot" />Магазин</span>
+            <h1 className="h-1 text-white mb-4 md:mb-5">Комплектующие ГБО со своего склада</h1>
+            <p className="lead max-w-prose">
               Редукторы, форсунки, ЭБУ, баллоны и расходники.
               Самовывоз в Махачкале. По желанию — установим прямо на месте со скидкой на работу.
             </p>
@@ -88,8 +88,8 @@ export default function CatalogPage() {
 
         {/* Категории */}
         <section className="section pb-12 md:pb-16">
-          <div className="section-head">
-            <span className="eyebrow">Каталог</span>
+          <div className="max-w-3xl mb-8 md:mb-10">
+            <span className="eyebrow block mb-3">Каталог</span>
             <h2 className="h-1 text-white">Категории товаров</h2>
           </div>
 

@@ -39,13 +39,13 @@ export function BentoHero({ settings }: Props) {
             className="absolute -right-12 -top-10 text-white/[0.04] pointer-events-none"
           />
 
-          <div className="relative flex flex-col gap-5">
-            <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-white/55 font-semibold">
+          <div className="relative">
+            <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] text-white/55 font-semibold mb-5">
               <span className="accent-bar" />
               <span>Запись открыта</span>
             </div>
 
-            <h1 className="h-display text-white">
+            <h1 className="h-display text-white mb-5">
               Заправляйтесь
               <br />
               <span className="text-gradient">в 2 раза дешевле</span>
@@ -53,7 +53,7 @@ export function BentoHero({ settings }: Props) {
               уже завтра
             </h1>
 
-            <p className="lead">
+            <p className="lead max-w-prose">
               Установим за один рабочий день. Сертифицированное оборудование
               Lovato, BRC, Prins, OMVL. Гарантия 1 год на работы.
             </p>

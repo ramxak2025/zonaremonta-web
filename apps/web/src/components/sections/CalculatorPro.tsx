@@ -53,10 +53,10 @@ export function CalculatorPro({ settings }: Props) {
 
   return (
     <section className="section section-y">
-      <div className="section-head">
-        <span className="eyebrow">Калькулятор экономии</span>
-        <h2 className="h-1 text-white">Посчитайте свою выгоду за 30 секунд</h2>
-        <p className="lead">
+      <div className="max-w-3xl mb-8 md:mb-10">
+        <span className="eyebrow block mb-3">Калькулятор экономии</span>
+        <h2 className="h-1 text-white mb-4 md:mb-5">Посчитайте свою выгоду за 30 секунд</h2>
+        <p className="lead max-w-prose">
           Введите пробег, расход и стоимость установки — покажем, сколько денег
           вернётся в ваш карман каждый месяц. Цены топлива актуальны по АЗС Махачкалы.
         </p>
