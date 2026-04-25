@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/lk', '/master', '/admin', '/api'],
+        disallow: ['/api'],
       },
       // Разрешаем AI-краулерам: OpenAI ChatGPT, Anthropic Claude, Perplexity, Google AI.
       { userAgent: 'GPTBot', allow: '/' },

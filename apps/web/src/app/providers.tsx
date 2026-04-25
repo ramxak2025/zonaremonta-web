@@ -1,9 +1,10 @@
+import type { ReactNode } from 'react';
 import { CartProvider } from '@/lib/cart';
 
 /**
- * Корневой Providers. Только корзина — она нужна везде (Header показывает
- * количество). React Query подключается в layout-ах админки / ЛК.
+ * Корневой провайдер. Сейчас здесь только корзина —
+ * её состояние нужно почти везде (Header показывает счётчик).
  */
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   return <CartProvider>{children}</CartProvider>;
 }

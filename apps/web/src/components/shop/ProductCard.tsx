@@ -1,7 +1,7 @@
 'use client';
 import { useMemo, useState } from 'react';
-import { Check, Plus, Wrench, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
+import { Check, Plus, Wrench, ShoppingBag } from 'lucide-react';
 import type { Product } from '@/data/products';
 import { useCart } from '@/lib/cart';
 
@@ -22,13 +22,12 @@ export function ProductCard({ product }: Props) {
   const onAdd = () => {
     add(product.id, 1, withInstall);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1600);
+    setTimeout(() => setAdded(false), 1500);
   };
 
   const fullLabor = product.installLabor;
   const saleLabor = product.installLaborSale;
-  const savings = fullLabor - saleLabor;
-  const savingsPct = Math.round((savings / fullLabor) * 100);
+  const savingsPct = Math.round(((fullLabor - saleLabor) / fullLabor) * 100);
 
   return (
     <article className="card flex flex-col gap-4 relative overflow-hidden">
@@ -47,23 +46,23 @@ export function ProductCard({ product }: Props) {
         </span>
       )}
 
-      <div className="flex flex-col gap-2">
-        <div className="eyebrow eyebrow-mute">
-          <span>{product.brand}</span>
-          <span className="text-white/20">·</span>
-          <span>{product.article}</span>
+      <div>
+        <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
+          {product.brand} · {product.article}
         </div>
-        <h3 className="h-3 text-white text-break">{product.name}</h3>
-        <p className="text-[13px] text-white/65 leading-relaxed text-break">
+        <h3 className="mt-2 font-display font-semibold uppercase tracking-tight text-white text-[16px] md:text-[18px] leading-tight text-break">
+          {product.name}
+        </h3>
+        <p className="mt-3 text-[13px] text-white/65 leading-relaxed text-break">
           {product.description}
         </p>
       </div>
 
-      <dl className="grid grid-cols-1 gap-1 text-[12px]">
+      <dl className="grid gap-1.5 text-[12px]">
         {product.specs.slice(0, 3).map((s) => (
-          <div key={s.k} className="flex justify-between gap-3 text-break">
+          <div key={s.k} className="flex justify-between gap-3">
             <dt className="text-white/45">{s.k}</dt>
-            <dd className="text-white/80 text-right">{s.v}</dd>
+            <dd className="text-white/85 text-right">{s.v}</dd>
           </div>
         ))}
       </dl>
@@ -71,7 +70,7 @@ export function ProductCard({ product }: Props) {
       <label
         className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-colors select-none ${
           withInstall
-            ? 'bg-primary/10 border border-primary/25'
+            ? 'bg-[#E81224]/10 border border-[#E81224]/30'
             : 'bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05]'
         }`}
       >
@@ -85,7 +84,7 @@ export function ProductCard({ product }: Props) {
           className={`w-5 h-5 rounded-md flex-shrink-0 grid place-items-center mt-0.5 transition-colors ${
             withInstall
               ? 'bg-[#FF3E4F] border border-[#FF3E4F]'
-              : 'border border-white/25 bg-transparent'
+              : 'border border-white/25'
           }`}
         >
           {withInstall && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
@@ -104,12 +103,14 @@ export function ProductCard({ product }: Props) {
       </label>
 
       <div className="mt-auto pt-4 border-t border-white/5 flex items-end justify-between gap-3">
-        <div className="flex flex-col gap-1 min-w-0">
-          <div className="eyebrow eyebrow-mute">Цена</div>
-          <div className="num-lg text-white">
+        <div className="min-w-0">
+          <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
+            Цена
+          </div>
+          <div className="font-display font-bold text-white text-[20px] md:text-[24px] mt-1.5 leading-none">
             {product.price.toLocaleString('ru-RU')} ₽
           </div>
-          <div className="text-[11px] text-white/45">
+          <div className="text-[11px] text-white/45 mt-1">
             {product.inStock ? 'В наличии' : 'Под заказ 1–3 дня'}
           </div>
         </div>
@@ -122,9 +123,7 @@ export function ProductCard({ product }: Props) {
           <button
             type="button"
             onClick={onAdd}
-            className={`btn btn-sm flex-shrink-0 transition-all ${
-              added ? 'btn-ghost' : 'btn-primary'
-            }`}
+            className={`btn btn-sm flex-shrink-0 ${added ? 'btn-ghost' : 'btn-primary'}`}
           >
             {added ? (
               <>

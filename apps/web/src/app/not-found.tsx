@@ -1,18 +1,33 @@
 import Link from 'next/link';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
+import { Section } from '@/components/ui/Section';
 
 export default function NotFound() {
   return (
-    <>
-      <Header />
-      <main className="section py-24 text-center">
-        <div className="font-display text-7xl text-primary">404</div>
-        <h1 className="h-section mt-4">Страница не найдена</h1>
-        <p className="text-ink-70 mt-2">Возможно, она переехала или адрес введён с ошибкой.</p>
-        <Link href="/" className="btn-primary mt-6 inline-flex">На главную</Link>
-      </main>
-      <Footer />
-    </>
+    <Section>
+      <div className="text-center py-12">
+        <div
+          className="font-display font-bold leading-none"
+          style={{
+            fontSize: 'clamp(80px, 14vw, 140px)',
+            background: 'linear-gradient(135deg, #FF3E4F, #B40E1C)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            color: 'transparent',
+            paddingBottom: '0.06em',
+          }}
+        >
+          404
+        </div>
+        <h1 className="mt-4 font-display font-bold uppercase text-white text-[24px] md:text-[32px]">
+          Страница не найдена
+        </h1>
+        <p className="mt-3 text-white/60 max-w-md mx-auto">
+          Возможно, она переехала или адрес введён с ошибкой.
+        </p>
+        <Link href="/" className="btn btn-primary mt-8 inline-flex">
+          На главную
+        </Link>
+      </div>
+    </Section>
   );
 }
