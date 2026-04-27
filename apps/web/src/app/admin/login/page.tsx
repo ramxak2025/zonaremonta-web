@@ -1,7 +1,7 @@
 'use client';
-import { Suspense, useState, type FormEvent } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Lock, ArrowRight } from 'lucide-react';
+import { Suspense, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLogin() {
   return (
@@ -12,31 +12,10 @@ export default function AdminLogin() {
 }
 
 function LoginForm() {
-  const router = useRouter();
   const search = useSearchParams();
   const next = search.get('next') ?? '/admin';
-
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ password }),
-    });
-    if (res.ok) {
-      router.replace(next);
-    } else {
-      const body = await res.json().catch(() => ({}));
-      setError(body?.error ?? 'Неверный пароль');
-      setLoading(false);
-    }
-  }
+  const hasError = search.get('err') === '1';
+  const [show, setShow] = useState(false);
 
   return (
     <div className="min-h-dvh -mt-[68px] md:-mt-[80px] bg-[#0A0A10] flex items-center justify-center p-6">
@@ -57,8 +36,11 @@ function LoginForm() {
           </p>
         </div>
 
+        {/* Native form POST — самый надёжный способ. Server-side редирект, никаких
+            проблем с client-side cookie sync. */}
         <form
-          onSubmit={onSubmit}
+          method="POST"
+          action={`/api/admin/login?next=${encodeURIComponent(next)}`}
           className="rounded-3xl p-6 md:p-7 flex flex-col gap-4"
           style={{
             background: 'rgba(20,20,26,0.7)',
@@ -72,40 +54,47 @@ function LoginForm() {
             <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-white/50">
               Пароль
             </span>
-            <input
-              type="password"
-              autoFocus
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-2 w-full h-12 px-4 rounded-xl bg-white/[0.04] border border-white/10 text-white text-[15px] focus:outline-none focus:border-[#FF3E4F] transition-colors"
-              placeholder="••••••••••"
-            />
+            <div className="mt-2 relative">
+              <input
+                name="password"
+                type={show ? 'text' : 'password'}
+                autoFocus
+                autoComplete="current-password"
+                inputMode="text"
+                required
+                className="w-full h-12 pl-4 pr-12 rounded-xl bg-white/[0.04] border border-white/10 text-white text-[16px] focus:outline-none focus:border-[#FF3E4F] transition-colors font-mono tracking-wider"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShow((v) => !v)}
+                aria-label={show ? 'Скрыть пароль' : 'Показать пароль'}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 grid place-items-center text-white/55 hover:text-white"
+              >
+                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </label>
 
-          {error && (
+          {hasError && (
             <div
               className="text-[13px] px-4 py-3 rounded-xl"
               style={{ background: 'rgba(232,18,36,0.1)', border: '1px solid rgba(232,18,36,0.3)', color: '#FF3E4F' }}
             >
-              {error}
+              Неверный пароль. Проверьте раскладку клавиатуры.
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading || password.length === 0}
-            className="btn btn-primary btn-lg w-full disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Проверяю...' : 'Войти'}
+          <button type="submit" className="btn btn-primary btn-lg w-full">
+            Войти
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <p className="text-center text-[12px] text-white/35 mt-6">
+        <p className="text-center text-[12px] text-white/35 mt-6 leading-relaxed">
           Если забыли пароль — измените{' '}
           <code className="text-white/55">ADMIN_PASSWORD</code> в .env и перезапустите контейнер.
+          <br />Дефолтный пароль: <code className="text-white/70">20120505</code>
         </p>
       </div>
     </div>
