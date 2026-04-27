@@ -15,7 +15,7 @@ COPY packages/ui/package.json packages/ui/package.json
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-ARG CACHE_BUST=2026-04-27-v9-admin-fix
+ARG CACHE_BUST=2026-04-27-v10-cookie-secure-fix
 RUN echo "Build cache bust: ${CACHE_BUST}"
 COPY . .
 # Сборка workspace-пакетов до next build

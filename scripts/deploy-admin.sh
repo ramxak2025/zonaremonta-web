@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 ENV_FILE=".env"
-DEFAULT_PASSWORD="ZRmaster2026"
+DEFAULT_PASSWORD="20120505"
 
 if [ ! -f "$ENV_FILE" ]; then
   echo "❌ Файл .env не найден. Создайте его (cp .env.example .env) и заполните." >&2

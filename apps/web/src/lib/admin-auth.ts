@@ -20,17 +20,21 @@ function getSecret(): string {
   return v && v.length >= 16 ? v : 'change-me-in-production-please-32chars';
 }
 
+const DEFAULT_PASSWORD = '20120505';
+
 function getPassword(): string {
   // ВАЖНО: проверка через length (а не ??), потому что docker-compose может
   // прокинуть пустую строку '' если в .env нет ADMIN_PASSWORD.
   const v = process.env.ADMIN_PASSWORD;
-  return v && v.length >= 4 ? v : 'ZRmaster2026';
+  return v && v.length >= 4 ? v : DEFAULT_PASSWORD;
 }
 
-// Лог при первом импорте — видно, какой пароль активен (только длина, без значения).
+// Лог при первом импорте — видно, какой пароль активен (только длина).
 if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
   const fromEnv = process.env.ADMIN_PASSWORD;
-  const using = fromEnv && fromEnv.length >= 4 ? `ENV (length=${fromEnv.length})` : 'DEFAULT (ZRmaster2026)';
+  const using = fromEnv && fromEnv.length >= 4
+    ? `ENV (length=${fromEnv.length})`
+    : `DEFAULT (${DEFAULT_PASSWORD})`;
   console.log(`[admin-auth] password source: ${using}`);
 }
 
