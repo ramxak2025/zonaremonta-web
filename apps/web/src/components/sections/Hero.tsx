@@ -6,9 +6,9 @@ import { Reveal } from '@/components/ui/Reveal';
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden isolate">
       {/* ───────── ФОНОВОЕ ФОТО ───────── */}
-      <div className="absolute inset-0 -z-[1]">
+      <div className="absolute inset-0 z-0">
         <Image
           src="/hero-master.jpg"
           alt=""
@@ -54,8 +54,9 @@ export function Hero() {
       </div>
 
       {/* ───────── КОНТЕНТ ───────── */}
-      <Container>
-        <div className="relative pt-10 pb-16 md:pt-20 md:pb-32 lg:pt-28 lg:pb-40 min-h-[88vh] md:min-h-[600px] lg:min-h-[680px] flex flex-col justify-end">
+      <div className="relative z-10">
+        <Container>
+          <div className="pt-10 pb-16 md:pt-20 md:pb-32 lg:pt-28 lg:pb-40 min-h-[88vh] md:min-h-[600px] lg:min-h-[680px] flex flex-col justify-end">
           <div className="max-w-[42rem]">
             <Reveal>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[11px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-md mb-6 md:mb-8">
@@ -122,10 +123,12 @@ export function Hero() {
           </div>
         </div>
       </Container>
+      </div>
 
       {/* ───────── TRUST-ПЛАШКИ ВНИЗУ ───────── */}
+      <div className="relative z-10">
       <Container>
-        <div className="relative -mt-4 md:-mt-12 lg:-mt-16 mb-10 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+        <div className="-mt-4 md:-mt-12 lg:-mt-16 mb-10 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
           <Reveal delay={420}>
             <Trust icon={Star} title="4.9 на Яндексе" sub="200+ отзывов" />
           </Reveal>
@@ -137,6 +140,7 @@ export function Hero() {
           </Reveal>
         </div>
       </Container>
+      </div>
     </section>
   );
 }
