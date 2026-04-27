@@ -15,7 +15,7 @@ COPY packages/ui/package.json packages/ui/package.json
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-ARG CACHE_BUST=2026-04-27-v12-visible-password
+ARG CACHE_BUST=2026-04-27-v13-perm-fix
 RUN echo "Build cache bust: ${CACHE_BUST}"
 COPY . .
 # Сборка workspace-пакетов до next build
@@ -26,17 +26,20 @@ RUN pnpm --filter @05auto/web build
 FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
 WORKDIR /app
-RUN addgroup -S app && adduser -S app -G app
+
+# Используем встроенного пользователя `node` (UID=1000, GID=1000) — есть на всех
+# официальных node-образах и соответствует chown 1000:1000 на хосте volumes.
 COPY --from=build /repo/apps/web/.next/standalone ./
 COPY --from=build /repo/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build /repo/apps/web/public ./apps/web/public
 
-# Создаём папки контента и uploads, чтобы volumes монтировались с правильными правами.
-# Если volume пустой — JSON-файлы там создадутся при первой записи через админку,
-# а до этого читаются дефолты из кода.
-RUN mkdir -p /app/apps/web/content /app/apps/web/public/uploads/works \
- && chown -R app:app /app/apps/web/content /app/apps/web/public/uploads
+# Создаём папки и даём ВСЕ права node:node — иначе Next.js не сможет писать
+# в .next/cache (для image optimization), а админка — в content/ и uploads/.
+RUN mkdir -p /app/apps/web/.next/cache \
+             /app/apps/web/content \
+             /app/apps/web/public/uploads/works \
+ && chown -R node:node /app
 
-USER app
+USER node
 EXPOSE 3000
 CMD ["node", "apps/web/server.js"]
