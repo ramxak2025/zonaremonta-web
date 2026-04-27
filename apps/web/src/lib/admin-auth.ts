@@ -16,11 +16,22 @@ const TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 дней
 
 function getSecret(): string {
   // На проде ОБЯЗАТЕЛЬНО задать ADMIN_SECRET. Дефолт оставлен для локала.
-  return process.env.ADMIN_SECRET ?? 'change-me-in-production-please-32chars';
+  const v = process.env.ADMIN_SECRET;
+  return v && v.length >= 16 ? v : 'change-me-in-production-please-32chars';
 }
 
 function getPassword(): string {
-  return process.env.ADMIN_PASSWORD ?? 'Demo05auto!';
+  // ВАЖНО: проверка через length (а не ??), потому что docker-compose может
+  // прокинуть пустую строку '' если в .env нет ADMIN_PASSWORD.
+  const v = process.env.ADMIN_PASSWORD;
+  return v && v.length >= 4 ? v : 'ZRmaster2026';
+}
+
+// Лог при первом импорте — видно, какой пароль активен (только длина, без значения).
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
+  const fromEnv = process.env.ADMIN_PASSWORD;
+  const using = fromEnv && fromEnv.length >= 4 ? `ENV (length=${fromEnv.length})` : 'DEFAULT (ZRmaster2026)';
+  console.log(`[admin-auth] password source: ${using}`);
 }
 
 function b64url(buf: Buffer | string): string {
