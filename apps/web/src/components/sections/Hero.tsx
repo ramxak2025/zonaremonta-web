@@ -65,25 +65,21 @@ export function Hero() {
       {/* ───────── КОНТЕНТ ───────── */}
       <div className="relative z-10">
         <Container>
-          {/*
-            DESKTOP: высокий блок 100vh, текст — слева снизу, фото — справа сверху.
-            MOBILE: высота 100svh, текст внизу под фото.
-          */}
-          <div className="flex flex-col justify-end pt-[120px] pb-10 md:pt-32 md:pb-24 lg:pt-40 lg:pb-32 min-h-[100svh] md:min-h-[100vh]">
+          <div className="pt-[110px] pb-12 md:pt-[140px] md:pb-20 lg:pt-[160px] lg:pb-24">
             <div className="max-w-[42rem]">
               <Reveal>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-md mb-5 md:mb-7">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E4F] pulse-ring" />
-                  Сертифицированный сервис ГБО
+                  Сертифицированный сервис ГБО · Махачкала
                 </div>
               </Reveal>
 
               <Reveal delay={120}>
                 <h1
-                  className="font-display font-bold uppercase tracking-tight text-white text-[34px] sm:text-[44px] md:text-[58px] lg:text-[72px] leading-[1.04] mb-5 md:mb-7"
+                  className="font-display font-bold uppercase tracking-tight text-white text-[34px] sm:text-[44px] md:text-[56px] lg:text-[68px] leading-[1.04] mb-5 md:mb-7"
                   style={{ textShadow: '0 4px 32px rgba(0,0,0,0.55)' }}
                 >
-                  ГБО за один день.
+                  Заправляйтесь
                   <br />
                   <span
                     className="inline-block pb-1"
@@ -94,23 +90,20 @@ export function Hero() {
                       color: 'transparent',
                     }}
                   >
-                    Газ дешевле бензина в 2 раза.
+                    в 2 раза дешевле
                   </span>
+                  <br />
+                  уже завтра
                 </h1>
               </Reveal>
 
               <Reveal delay={220}>
                 <p
-                  className="text-[14px] md:text-[18px] leading-relaxed text-white/85 max-w-[48ch] mb-7 md:mb-9"
+                  className="text-[14px] md:text-[18px] leading-relaxed text-white/85 max-w-[52ch] mb-7 md:mb-9"
                   style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
                 >
-                  <span className="hidden md:inline">
-                    Установим за один рабочий день. Сертифицированное оборудование Lovato, BRC, Prins, OMVL.
-                    Гарантия 1 год. Уже стоит ГБО — починим и настроим.
-                  </span>
-                  <span className="md:hidden">
-                    Lovato · BRC · Prins · OMVL. Установка за день, гарантия 1 год.
-                  </span>
+                  Установим за один рабочий день. Сертифицированное оборудование Lovato, BRC,
+                  Prins, OMVL. Гарантия 1 год на работы. Уже стоит ГБО — починим и настроим.
                 </p>
               </Reveal>
 
