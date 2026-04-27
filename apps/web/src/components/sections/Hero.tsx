@@ -6,9 +6,11 @@ import { Reveal } from '@/components/ui/Reveal';
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden isolate">
+    <section
+      className="relative isolate -mt-[68px] md:-mt-[80px]"
+    >
       {/* ───────── ФОНОВОЕ ФОТО ───────── */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <Image
           src="/hero-master.jpg"
           alt=""
@@ -16,39 +18,46 @@ export function Hero() {
           priority
           sizes="100vw"
           quality={88}
-          className="object-cover object-[70%_center] md:object-[75%_center]"
+          className="object-cover object-[72%_center] md:object-[75%_center]"
         />
 
-        {/* Overlay-градиенты для читаемости текста на любом устройстве */}
+        {/* DESKTOP overlay — горизонтальный градиент. Текст слева на тёмной зоне. */}
         <div
           aria-hidden
-          className="absolute inset-0"
+          className="hidden md:block absolute inset-0"
           style={{
             background:
-              'linear-gradient(90deg, rgba(10,10,16,0.95) 0%, rgba(10,10,16,0.85) 35%, rgba(10,10,16,0.55) 60%, rgba(10,10,16,0.2) 100%)',
+              'linear-gradient(90deg, rgba(10,10,16,0.96) 0%, rgba(10,10,16,0.86) 30%, rgba(10,10,16,0.5) 55%, rgba(10,10,16,0.15) 80%, transparent 100%)',
           }}
         />
+
+        {/* MOBILE overlay — вертикальный. Сверху лёгкое затемнение для шапки,
+            фото в центре чистое, снизу плотный фон под текст и плавный fade. */}
         <div
           aria-hidden
-          className="absolute inset-0 md:hidden"
+          className="md:hidden absolute inset-0"
           style={{
-            background: 'linear-gradient(180deg, rgba(10,10,16,0.6) 0%, rgba(10,10,16,0.95) 80%)',
+            background:
+              'linear-gradient(180deg, rgba(10,10,16,0.55) 0%, rgba(10,10,16,0.05) 28%, rgba(10,10,16,0.05) 45%, rgba(10,10,16,0.85) 75%, #0A0A10 100%)',
           }}
         />
+
+        {/* Финальный fade в фон страницы — никаких видимых стыков снизу */}
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-40"
+          className="absolute inset-x-0 bottom-0 h-32 md:h-40"
           style={{
             background: 'linear-gradient(180deg, transparent, #0A0A10)',
           }}
         />
-        {/* Красный блик слева — фирменный акцент */}
+
+        {/* Красный акцент-блик слева на десктопе */}
         <div
           aria-hidden
-          className="absolute -left-20 top-1/3 w-[420px] h-[420px] rounded-full pointer-events-none"
+          className="hidden md:block absolute -left-20 top-1/3 w-[420px] h-[420px] rounded-full pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, rgba(232,18,36,0.28), transparent 70%)',
-            filter: 'blur(40px)',
+            background: 'radial-gradient(circle, rgba(232,18,36,0.25), transparent 70%)',
+            filter: 'blur(50px)',
           }}
         />
       </div>
@@ -56,90 +65,95 @@ export function Hero() {
       {/* ───────── КОНТЕНТ ───────── */}
       <div className="relative z-10">
         <Container>
-          <div className="pt-10 pb-16 md:pt-20 md:pb-32 lg:pt-28 lg:pb-40 min-h-[88vh] md:min-h-[600px] lg:min-h-[680px] flex flex-col justify-end">
-          <div className="max-w-[42rem]">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[11px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-md mb-6 md:mb-8">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E4F] pulse-ring" />
-                Сертифицированный сервис ГБО · Махачкала
-              </div>
-            </Reveal>
+          {/*
+            DESKTOP: высокий блок 100vh, текст — слева снизу, фото — справа сверху.
+            MOBILE: высота 100svh, текст внизу под фото.
+          */}
+          <div className="flex flex-col justify-end pt-[120px] pb-10 md:pt-32 md:pb-24 lg:pt-40 lg:pb-32 min-h-[100svh] md:min-h-[100vh]">
+            <div className="max-w-[42rem]">
+              <Reveal>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-md mb-5 md:mb-7">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF3E4F] pulse-ring" />
+                  Сертифицированный сервис ГБО
+                </div>
+              </Reveal>
 
-            <Reveal delay={120}>
-              <h1
-                className="font-display font-bold uppercase tracking-tight text-white text-[36px] sm:text-[48px] md:text-[64px] lg:text-[76px] leading-[1.02] mb-6 md:mb-8"
-                style={{
-                  textShadow: '0 4px 32px rgba(0,0,0,0.55)',
-                }}
-              >
-                Заправляйтесь
-                <br />
-                <span
-                  className="inline-block pb-1"
-                  style={{
-                    background: 'linear-gradient(135deg, #FF3E4F 0%, #E81224 50%, #FFCC00 130%)',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    color: 'transparent',
-                  }}
+              <Reveal delay={120}>
+                <h1
+                  className="font-display font-bold uppercase tracking-tight text-white text-[34px] sm:text-[44px] md:text-[58px] lg:text-[72px] leading-[1.04] mb-5 md:mb-7"
+                  style={{ textShadow: '0 4px 32px rgba(0,0,0,0.55)' }}
                 >
-                  в 2 раза дешевле
-                </span>
-                <br />
-                уже завтра
-              </h1>
-            </Reveal>
+                  ГБО за один день.
+                  <br />
+                  <span
+                    className="inline-block pb-1"
+                    style={{
+                      background: 'linear-gradient(135deg, #FF3E4F 0%, #E81224 50%, #FFCC00 130%)',
+                      WebkitBackgroundClip: 'text',
+                      backgroundClip: 'text',
+                      color: 'transparent',
+                    }}
+                  >
+                    Газ дешевле бензина в 2 раза.
+                  </span>
+                </h1>
+              </Reveal>
 
-            <Reveal delay={220}>
-              <p
-                className="text-[15px] md:text-[18px] leading-relaxed text-white/85 max-w-[52ch] mb-8 md:mb-10"
-                style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
-              >
-                Установим за один рабочий день. Сертифицированное оборудование Lovato, BRC, Prins, OMVL.
-                Гарантия 1 год на работы. Уже стоит ГБО — починим и настроим.
-              </p>
-            </Reveal>
-
-            <Reveal delay={320}>
-              <div className="flex flex-wrap items-center gap-3">
-                <Link href="/install" className="btn btn-primary btn-lg">
-                  Установить ГБО
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="/works"
-                  className="btn btn-lg text-white"
-                  style={{
-                    background: 'rgba(255,255,255,0.12)',
-                    border: '1px solid rgba(255,255,255,0.22)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                  }}
+              <Reveal delay={220}>
+                <p
+                  className="text-[14px] md:text-[18px] leading-relaxed text-white/85 max-w-[48ch] mb-7 md:mb-9"
+                  style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}
                 >
-                  Наши работы
-                </Link>
-              </div>
-            </Reveal>
+                  <span className="hidden md:inline">
+                    Установим за один рабочий день. Сертифицированное оборудование Lovato, BRC, Prins, OMVL.
+                    Гарантия 1 год. Уже стоит ГБО — починим и настроим.
+                  </span>
+                  <span className="md:hidden">
+                    Lovato · BRC · Prins · OMVL. Установка за день, гарантия 1 год.
+                  </span>
+                </p>
+              </Reveal>
+
+              <Reveal delay={320}>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link href="/install" className="btn btn-primary btn-lg">
+                    Установить ГБО
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/works"
+                    className="btn btn-lg text-white"
+                    style={{
+                      background: 'rgba(255,255,255,0.12)',
+                      border: '1px solid rgba(255,255,255,0.22)',
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                    }}
+                  >
+                    Наши работы
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
       </div>
 
-      {/* ───────── TRUST-ПЛАШКИ ВНИЗУ ───────── */}
+      {/* ───────── TRUST-ПЛАШКИ ВНИЗУ (поверх Hero, наезжают на след. секцию) ───────── */}
       <div className="relative z-10">
-      <Container>
-        <div className="-mt-4 md:-mt-12 lg:-mt-16 mb-10 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-          <Reveal delay={420}>
-            <Trust icon={Star} title="4.9 на Яндексе" sub="200+ отзывов" />
-          </Reveal>
-          <Reveal delay={520}>
-            <Trust icon={ShieldCheck} title="Гарантия 1 год" sub="на работы и комплект" />
-          </Reveal>
-          <Reveal delay={620}>
-            <Trust icon={Wrench} title="Один рабочий день" sub="приехали — уехали на газе" />
-          </Reveal>
-        </div>
-      </Container>
+        <Container>
+          <div className="-mt-2 md:-mt-12 lg:-mt-16 mb-10 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+            <Reveal delay={420}>
+              <Trust icon={Star} title="4.9 на Яндексе" sub="200+ отзывов" />
+            </Reveal>
+            <Reveal delay={520}>
+              <Trust icon={ShieldCheck} title="Гарантия 1 год" sub="на работы и комплект" />
+            </Reveal>
+            <Reveal delay={620}>
+              <Trust icon={Wrench} title="Один рабочий день" sub="приехали — уехали на газе" />
+            </Reveal>
+          </div>
+        </Container>
       </div>
     </section>
   );

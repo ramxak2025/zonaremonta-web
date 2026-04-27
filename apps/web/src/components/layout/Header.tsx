@@ -25,19 +25,23 @@ export function Header() {
   }, []);
 
   const phoneDigits = SITE.phone.replace(/[^\d+]/g, '');
-  const bg = scrolled ? 'rgba(20, 20, 26, 0.85)' : 'rgba(255,255,255,0.04)';
+  // Прозрачный header вверху, появляется заливка после скролла
+  const bg = scrolled ? 'rgba(20, 20, 26, 0.78)' : 'transparent';
+  const border = scrolled ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent';
 
   return (
-    <header className="sticky top-0 z-40 pt-3">
+    <header className="fixed top-0 left-0 right-0 z-50 pt-3">
       <Container>
         <div
-          className="flex items-center gap-3 h-14 md:h-16 pl-4 pr-1.5 md:pl-5 md:pr-2 rounded-full transition-colors"
+          className="flex items-center gap-3 h-14 md:h-16 pl-4 pr-1.5 md:pl-5 md:pr-2 rounded-full transition-all duration-300"
           style={{
             background: bg,
-            backdropFilter: 'blur(18px) saturate(1.5)',
-            WebkitBackdropFilter: 'blur(18px) saturate(1.5)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            boxShadow: '0 1px 0 rgba(255,255,255,0.1) inset, 0 8px 24px -10px rgba(0,0,0,0.5)',
+            backdropFilter: scrolled ? 'blur(18px) saturate(1.5)' : 'none',
+            WebkitBackdropFilter: scrolled ? 'blur(18px) saturate(1.5)' : 'none',
+            border,
+            boxShadow: scrolled
+              ? '0 1px 0 rgba(255,255,255,0.1) inset, 0 8px 24px -10px rgba(0,0,0,0.5)'
+              : 'none',
           }}
         >
           <Link href="/" aria-label="На главную" className="flex-shrink-0">

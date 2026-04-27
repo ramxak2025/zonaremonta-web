@@ -49,7 +49,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="page-bg" aria-hidden />
         <Providers>
           <Header />
-          <main className="pb-tabbar">{children}</main>
+          {/*
+            Header теперь fixed (не занимает место в потоке).
+            pt-[68px]/pt-[80px] компенсирует высоту шапки для всех страниц.
+            Hero использует mt-[-68px]/-mt-[-80px], чтобы фото шло из-под шапки.
+          */}
+          <main className="pb-tabbar pt-[68px] md:pt-[80px]">{children}</main>
           <Footer />
           <MobileNav />
         </Providers>
