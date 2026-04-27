@@ -15,7 +15,7 @@ COPY packages/ui/package.json packages/ui/package.json
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-ARG CACHE_BUST=2026-04-25-v7-marketing
+ARG CACHE_BUST=2026-04-27-v8-admin
 RUN echo "Build cache bust: ${CACHE_BUST}"
 COPY . .
 # Сборка workspace-пакетов до next build
@@ -30,6 +30,13 @@ RUN addgroup -S app && adduser -S app -G app
 COPY --from=build /repo/apps/web/.next/standalone ./
 COPY --from=build /repo/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build /repo/apps/web/public ./apps/web/public
+
+# Создаём папки контента и uploads, чтобы volumes монтировались с правильными правами.
+# Если volume пустой — JSON-файлы там создадутся при первой записи через админку,
+# а до этого читаются дефолты из кода.
+RUN mkdir -p /app/apps/web/content /app/apps/web/public/uploads/works \
+ && chown -R app:app /app/apps/web/content /app/apps/web/public/uploads
+
 USER app
 EXPOSE 3000
 CMD ["node", "apps/web/server.js"]

@@ -72,5 +72,16 @@ services:
       NEXT_PUBLIC_MAX: ${NEXT_PUBLIC_MAX}
       NEXT_PUBLIC_YANDEX_MAPS_LINK: ${NEXT_PUBLIC_YANDEX_MAPS_LINK}
       NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
+      # Админка
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_SECRET: ${ADMIN_SECRET}
+      # Контент-директория должна быть mounted как volume, иначе изменения
+      # из админки теряются при пересборке контейнера.
+      CONTENT_DIR: /app/apps/web/content
+    volumes:
+      # JSON-файлы (services.json, about.json, contact.json, works.json)
+      - /var/lib/05auto/web-content:/app/apps/web/content
+      # Загруженные фото — внутри public/uploads, чтобы Next.js сам их отдавал
+      - /var/lib/05auto/web-uploads:/app/apps/web/public/uploads
     ports:
       - '127.0.0.1:3000:3000'
