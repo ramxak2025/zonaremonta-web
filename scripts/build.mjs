@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { build, transform } from "esbuild";
+import { indexNowKey, indexNowPath } from "../src/search.js";
 const root=new URL("../",import.meta.url);
 process.chdir(root.pathname);
 await fs.mkdir(".generated",{recursive:true});
@@ -43,6 +44,7 @@ for (const old of await fs.readdir(assetsRoot)) {
   if (/^[a-f0-9]{14}-/.test(old) && !files["/a/" + old]) await fs.unlink(path.join(assetsRoot, old));
 }
 await fs.writeFile("dist/asset-manifest.json",JSON.stringify(urls,null,2)+"\n");
+await fs.writeFile("dist/client"+indexNowPath,indexNowKey);
 await fs.writeFile(".generated/urls.mjs","export const urls="+JSON.stringify(urls)+";");
 await fs.writeFile(".generated/assets.mjs","export const files="+JSON.stringify(files)+";");
 await build({entryPoints:["src/worker.js"],outfile:"dist/server/index.js",platform:"browser",format:"esm",bundle:true,legalComments:"none",target:"es2022",minify:true});

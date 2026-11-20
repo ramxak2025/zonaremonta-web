@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { once } from "node:events";
+import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
@@ -52,6 +53,12 @@ try {
   db.close();
   await start();
   const map = await (await get("/sitemap.xml")).text();
+  const alias = await new Promise((resolve,reject)=>{
+    http.get(base+"/ceny/?utm_source=directory",{headers:{Host:"www.05auto.ru"}},res=>{
+      res.resume(); resolve({status:res.statusCode,location:res.headers.location});
+    }).on("error",reject);
+  });
+  assert.deepEqual(alias,{status:301,location:"https://05auto.ru/ceny/?utm_source=directory"});
   const paths = Array.from(map.matchAll(/<loc>([^<]+)<\/loc>/g), m => {
     const url = new URL(m[1]); assert.equal(url.origin,origin); return url.pathname;
   });

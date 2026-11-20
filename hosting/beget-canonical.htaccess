@@ -1,0 +1,4 @@
+# Include before the Passenger directives in the site's Apache configuration.
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.05auto\.ru(?::[0-9]+)?$ [NC]
+RewriteRule ^ https://05auto.ru%{REQUEST_URI} [R=301,L,NE]

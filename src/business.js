@@ -1,3 +1,4 @@
+const destination = "42.951420,47.534030";
 export const company = {
   name: "Зона Ремонта",
   phone: "+7 (988) 444-44-85",
@@ -5,9 +6,10 @@ export const company = {
   whatsapp: "https://wa.me/79884444485",
   city: "Махачкала",
   street: "ул. Хаджи Булача, 71",
+  destination,
   maps: "https://yandex.ru/maps/org/zona_remonta/130786711189/",
   reviews: "https://yandex.ru/maps/org/zona_remonta/130786711189/reviews/",
-  route: "https://yandex.ru/maps/?rtext=~42.951420,47.534030&rtt=auto",
+  route: "https://yandex.ru/maps/?rtext=~"+destination+"&rtt=auto",
   priceSource: "https://omvlgbo.ru/services/respublika-dagestan/makhachkala/zonaremonta-2/",
 };
 export const priceRows = [

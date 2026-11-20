@@ -63,6 +63,15 @@ export async function checkEditorBrowser(stateDir, password, restartAt) {
       await page.getByRole("button", {name:"Выйти из кабинета"}).click();
       await page.getByLabel("Пароль", {exact:true}).waitFor();
       assert.deepEqual(posts.splice(0), ["/admin/login/", "/admin/ceny/", "/admin/logout/"].map(route => [route, origin, 303]));
+      await page.setViewportSize({width:javaScriptEnabled?1440:320,height:javaScriptEnabled?900:568});
+      await page.goto(origin+"/kontakty/");
+      await page.getByRole("link",{name:"Как добраться из городов Дагестана"}).click();
+      await page.getByRole("heading",{name:"Установка и обслуживание ГБО в Дагестане"}).waitFor();
+      assert.equal(await page.locator(".city-routes a").count(),10);
+      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),"regional page fits viewport");
+      await page.getByRole("link",{name:"ТО и замена фильтров",exact:true}).click();
+      await page.getByRole("heading",{level:1,name:/Замена фильтров ГБО/}).waitFor();
+      assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),"service page fits viewport");
       await context.close();
     }
     console.log("Old blank-login condition reproduced. Native browser login, save, public price and logout passed with JavaScript off and on.");

@@ -714,3 +714,18 @@
   .journal-all { padding-inline: 9px 5px; gap: 4px; font-size: .78rem; }
   .channel-recipient { display: none; }
 }
+
+.contact-region { display: inline-block; margin-top: 14px; color: inherit; font-size: .92rem; text-decoration: underline; text-underline-offset: .2em; }
+.service-directory { margin-top: clamp(32px, 5vw, 62px); }
+.work-links, .prose .work-links { display: grid; gap: 6px; list-style: none; padding: 0; margin: 14px 0 24px; }
+.work-links a { display: inline-block; padding: 4px 0; text-decoration: underline; text-underline-offset: .2em; }
+.city-directions { margin: 0 0 2.4rem; }
+.city-directions p { max-width: 61ch; margin-top: .65rem; }
+.city-routes { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 1.5rem; list-style: none; padding: 0; margin: 1rem 0; }
+.city-routes a { display: flex; gap: .55rem; justify-content: space-between; align-items: center; min-height: 48px; border-bottom: 1px solid var(--line); font-weight: 620; }
+.city-routes .icon { flex: none; color: var(--textred); }
+@media(max-width: 470px) {
+  .city-routes { column-gap: 12px; }
+  .city-routes a { font-size: .9rem; overflow-wrap: anywhere; }
+  .work-links a { padding-block: 8px; }
+}

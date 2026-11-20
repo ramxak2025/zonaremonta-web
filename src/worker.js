@@ -9,7 +9,13 @@ import { fuelMcp } from "./fuel-mcp.js";
 import { initialFuel, readFuel, refreshFuel, fuelDue, fuelStation } from "./fuel.js";
 import { privacyPage,analyticsPreferences,adminLoginPage,models,articles,routes,homePage,servicesPage,servicePage,pricesPage,calcPage,modelsPage,modelPage,vestaDiagnostics,vestaPath,journalPage,articlePage,contactPage,reviewPage,cabinetPage,messagePage } from "./pages.js";
 
-const defaultOrigin="https://zr-auto-gbo.ramxak.chatgpt.site";
+import { regionPage, serviceDetailPage } from "./pages.js";
+import { regionPath } from "./regional.js";
+import { serviceDetails } from "./service-details.js";
+import { formerOrigin, productionOrigin, indexNowPath, indexNowKey, legacyTarget, robotsFile } from "./search.js";
+
+const indexablePaths=routes.filter(path=>path!==preferencesPath);
+const byDetail=new Map(serviceDetails.map(item=>[item.path,item]));
 const byService=new Map(services.map(s=>[serviceUrl(s),s]));
 const byModel=new Map(models.map(m=>[modelUrl(m),m]));
 const byArticle=new Map(articles.map(a=>[articleUrl(a),a]));
@@ -24,17 +30,20 @@ function serveAsset(path,req) {
   return new Response(data,{headers:h});
 }
 function organization(origin){
-  return {"@type":"AutoRepair","@id":origin+"/#service-center",name:"Зона Ремонта",alternateName:"ZR AUTO",url:origin+"/",telephone:"+79884444485",image:origin+asset("exterior"),logo:origin+asset("brand-wordmark"),description:"Установка, диагностика, обслуживание и ремонт пропанового ГБО в Махачкале.",address:{"@type":"PostalAddress",addressCountry:"RU",addressRegion:"Республика Дагестан",addressLocality:"Махачкала",streetAddress:"улица Хаджи Булача, 71",postalCode:"367004"},areaServed:{"@type":"City",name:"Махачкала"},geo:{"@type":"GeoCoordinates",latitude:42.95142,longitude:47.53403},openingHoursSpecification:[{"@type":"OpeningHoursSpecification",dayOfWeek:["Monday","Tuesday","Wednesday","Thursday","Saturday","Sunday"],opens:"09:00",closes:"19:00"},{"@type":"OpeningHoursSpecification",dayOfWeek:"Friday",opens:"14:00",closes:"19:00"}],hasMap:company.maps,sameAs:[company.maps]};
+  return {"@type":"AutoRepair","@id":origin+"/#service-center",name:"Зона Ремонта",alternateName:"ZR AUTO",url:origin+"/",telephone:"+79884444485",image:origin+asset("exterior"),logo:origin+asset("brand-wordmark"),description:"Установка, диагностика, обслуживание и ремонт пропанового ГБО в Махачкале.",address:{"@type":"PostalAddress",addressCountry:"RU",addressRegion:"Республика Дагестан",addressLocality:"Махачкала",streetAddress:"улица Хаджи Булача, 71",postalCode:"367004"},areaServed:[{"@type":"City",name:"Махачкала"},{"@type":"AdministrativeArea",name:"Республика Дагестан"}],geo:{"@type":"GeoCoordinates",latitude:42.95142,longitude:47.53403},openingHoursSpecification:[{"@type":"OpeningHoursSpecification",dayOfWeek:["Monday","Tuesday","Wednesday","Thursday","Saturday","Sunday"],opens:"09:00",closes:"19:00"},{"@type":"OpeningHoursSpecification",dayOfWeek:"Friday",opens:"14:00",closes:"19:00"}],hasMap:company.maps,sameAs:[company.maps]};
 }
 function metadata(p,origin,path) {
   const canonical=origin+path;
   const imageUrl=origin+asset(p.primaryImage||"hero");
-  const graph=[organization(origin)];
+  const center=organization(origin);
+  const graph=[center];
+  if(p.home) graph.push({"@type":"WebSite","@id":origin+"/#website",url:origin+"/",name:"Зона Ремонта",alternateName:"ZR AUTO",inLanguage:"ru",publisher:{"@id":center["@id"]}});
+  if(path==="/kontakty/"||path===regionPath) graph.push({"@type":path===regionPath?"WebPage":"ContactPage","@id":canonical+"#page",url:canonical,name:p.title,inLanguage:"ru",about:{"@id":center["@id"]}});
   if(p.trail.length>1) graph.push({"@type":"BreadcrumbList",itemListElement:p.trail.map((item,i)=>({"@type":"ListItem",position:i+1,name:item.name,item:origin+item.url}))});
-  if(p.service) graph.push({"@type":"Service",name:p.service,serviceType:p.service,description:p.description,url:canonical,provider:{"@id":origin+"/#service-center"},areaServed:"Махачкала"});
-  if(p.article) graph.push({"@type":"BlogPosting",headline:p.article.title,description:p.article.summary,datePublished:p.article.published||"2026-11-20T02:09:55+03:00",...(p.article.modified?{dateModified:p.article.modified}:{}),inLanguage:"ru",image:imageUrl,mainEntityOfPage:canonical,author:{"@type":"Organization",name:"Зона Ремонта","@id":origin+"/#service-center"},publisher:{"@id":origin+"/#service-center"},articleSection:p.article.category});
+  if(p.service) graph.push({"@type":"Service",name:p.service,serviceType:p.service,description:p.description,url:canonical,provider:{"@id":origin+"/#service-center"},areaServed:center.areaServed,availableChannel:{"@type":"ServiceChannel",serviceLocation:{"@id":center["@id"]}}});
+  if(p.article) graph.push({"@type":"BlogPosting",headline:p.article.title,description:p.article.summary,...(p.article.published?{datePublished:p.article.published}:{}),...(p.article.modified?{dateModified:p.article.modified}:{}),inLanguage:"ru",image:imageUrl,mainEntityOfPage:canonical,author:{"@type":"Organization",name:"Зона Ремонта","@id":origin+"/#service-center"},publisher:{"@id":origin+"/#service-center"},articleSection:p.article.category});
   if(p.faq?.length) graph.push({"@type":"FAQPage",mainEntity:p.faq.map(([q,a])=>({"@type":"Question",name:q,acceptedAnswer:{"@type":"Answer",text:a}}))});
-  return `<title>${esc(p.title)}</title><meta name="description" content="${esc(p.description)}"><meta name="robots" content="${p.noindex?"noindex,nofollow":"index,follow,max-image-preview:large"}"><link rel="canonical" href="${esc(canonical)}"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="Зона Ремонта"><meta property="og:type" content="${p.article?"article":"website"}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:image" content="${esc(imageUrl)}"><meta name="twitter:card" content="summary_large_image">${p.noindex?"":`<script type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@graph":graph}).replace(/</g,"\\u003c")}</script>`}`;
+  return `<title>${esc(p.title)}</title><meta name="description" content="${esc(p.description)}"><meta name="robots" content="${p.noindex?(p.privateRobots?"noindex,nofollow":"noindex,follow"):"index,follow,max-image-preview:large"}"><link rel="canonical" href="${esc(canonical)}"><meta property="og:locale" content="ru_RU"><meta property="og:site_name" content="Зона Ремонта"><meta property="og:type" content="${p.article?"article":"website"}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:image" content="${esc(imageUrl)}"><meta name="twitter:card" content="summary_large_image">${p.noindex?"":`<script type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@graph":graph}).replace(/</g,"\\u003c")}</script>`}`;
 }
 function render(p,origin,path,status=200,privatePage=false,requestMethod="GET",analytics=null){
   const enabled=Boolean(analytics?.config.counter)&&!privatePage&&status===200;
@@ -42,12 +51,13 @@ function render(p,origin,path,status=200,privatePage=false,requestMethod="GET",a
   const permitted=enabled&&!legal&&!p.noindex&&analytics.safeLanding&&analytics.choice==="yes";
   const prompt=enabled&&!legal&&!p.noindex&&analytics.safeLanding&&!analytics.choice?consentBanner(analytics.back):"";
   const localControls=enabled?`<script type="module" src="${asset("analytics")}" data-analytics="${permitted?analytics.config.counter:""}"></script>`:"";
-  const head=`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#17191a">${metadata(p,origin,path)}<link rel="icon" href="${asset("favicon")}" type="image/png"><link rel="apple-touch-icon" sizes="180x180" href="${asset("touch-icon")}"><link rel="preload" href="${asset("display-cyr")}" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="${asset("styles")}"><script type="module" src="${asset("client")}" data-motion="${asset("motion")}"></script>${localControls}</head>`;
+  const head=`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#17191a">${metadata(privatePage?{...p,privateRobots:true}:p,origin,path)}<link rel="icon" href="${asset("favicon")}" type="image/png"><link rel="apple-touch-icon" sizes="180x180" href="${asset("touch-icon")}"><link rel="preload" href="${asset("display-cyr")}" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="${asset("styles")}"><script type="module" src="${asset("client")}" data-motion="${asset("motion")}"></script>${localControls}</head>`;
   const mast = privatePage
     ? `<header class="admin-mast"><div class="wrap">${brand()}<nav aria-label="Ссылки для сотрудника"><a href="${policyPath}">Конфиденциальность</a><a href="/">На сайт</a></nav></div></header>`
     : header(path)+dock(path);
   const html=head+`<body id="top">${mast}${prompt}<main id="main">${p.body}</main>${privatePage?"":footer(enabled)}</body></html>`;
   const headers={...commonHeaders,...infoHeaders,"Content-Type":"text/html; charset=utf-8","Content-Language":"ru","Cache-Control":privatePage||enabled||status>=400?"private,no-store":"no-cache"};
+  if(prompt || (path===preferencesPath && analytics?.config.domestic)) headers["Referrer-Policy"]="same-origin";
   if(permitted){
     for(const directive of ["script-src","img-src","connect-src"]){
       headers["Content-Security-Policy"]=headers["Content-Security-Policy"].replace(directive+" 'self'",directive+" 'self' https://mc.yandex.ru");
@@ -118,13 +128,20 @@ async function adminReply(request, env, url, origin) {
 }
 async function route(request,env,ctx) {
   const url=new URL(request.url);
-  const origin=(env.PUBLIC_ORIGIN||defaultOrigin).replace(/\/$/,"");
+  const origin=(env.PUBLIC_ORIGIN||formerOrigin).replace(/\/$/,"");
   const path=url.pathname;
   if(path===choicePath)return storeChoice(request,env,privacyConfig(env,url),routes);
   if(path==="/mcp")return fuelMcp(request,env,isOwner(request,env));
   if(path.startsWith("/admin/"))return adminReply(request,env,url,origin);
   if(["/admin","/kabinet","/kabinet/"].includes(path)&&(request.method==="GET"||request.method==="HEAD"))return new Response(null,{status:308,headers:{Location:"/admin/","Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"}});
   if(request.method!=="GET"&&request.method!=="HEAD")return new Response(null,{status:405,headers:{Allow:"GET, HEAD"}});
+  const oldTarget=legacyTarget(path);
+  const mirror=url.origin===formerOrigin;
+  const clean=path.endsWith("/")?path:path+"/";
+  if(oldTarget || (mirror && (routes.includes(clean)||path==="/sitemap.xml"))) {
+    const location=(mirror?productionOrigin:"")+(oldTarget|| (path==="/sitemap.xml"?path:clean))+url.search;
+    return new Response(null,{status:301,headers:{Location:location,"Cache-Control":"public,max-age=3600"}});
+  }
   if(path==="/api/toplivo/"){
     const headers={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Robots-Tag":"noindex"};
     if(request.method==="HEAD")return new Response(null,{headers});
@@ -141,8 +158,23 @@ async function route(request,env,ctx) {
   if(path.startsWith("/a/"))return serveAsset(path,request);
   if(path==="/favicon.ico")return new Response(null,{status:302,headers:{Location:asset("favicon")}});
   const txt=(v,type)=>new Response(request.method==="HEAD"?null:v,{headers:{...commonHeaders,"Content-Type":type+"; charset=UTF-8","Cache-Control":"public,max-age=900"}});
-  if(path==="/robots.txt")return txt("User-agent: *\nAllow: /\nSitemap: "+origin+"/sitemap.xml\n","text/plain");
-  if(path==="/sitemap.xml")return txt('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+routes.map(p=>"<url><loc>"+esc(origin+p)+"</loc></url>").join("")+"</urlset>","application/xml");
+  if(path==="/robots.txt")return txt(robotsFile(mirror?productionOrigin:origin),"text/plain");
+  if(path===indexNowPath && !mirror)return txt(indexNowKey,"text/plain");
+  if(path==="/sitemap.xml"){
+    let priceEdit="";
+    try {
+      const prices=await catalog(env);
+      if(prices.revision>0 && /^\d{4}-\d{2}-\d{2}T/.test(prices.updated)) priceEdit=prices.updated.slice(0,10);
+    } catch { /* The sitemap stays available when the catalogue is offline. */ }
+    const entries=indexablePaths.map(route=>{
+      const article=byArticle.get(route);
+      const editorial=article?.modified||article?.published||((byDetail.has(route)||route===regionPath)?"2026-11-20":"");
+      const usesPrices=route==="/"||route==="/ceny/"||route==="/kalkulyator/"||route.startsWith("/uslugi/")||byModel.has(route);
+      const date=[editorial,usesPrices?priceEdit:""].filter(Boolean).sort().at(-1);
+      return "<url><loc>"+esc(origin+route)+"</loc>"+(date?"<lastmod>"+esc(date)+"</lastmod>":"")+"</url>";
+    });
+    return txt('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+entries.join("")+"</urlset>","application/xml");
+  }
   if(!path.endsWith("/")&&routes.includes(path+"/"))return new Response(null,{status:308,headers:{Location:path+"/"+url.search}});
   if(!routes.includes(path))return render(messagePage("Страница не найдена","Вернитесь на главную или откройте раздел услуг в меню.","/","На главную"),origin,path,404,false,request.method);
   const config=privacyConfig(env,url);
@@ -156,6 +188,7 @@ async function route(request,env,ctx) {
   if(path===preferencesPath)return show(analyticsPreferences(config,choice));
   if(path==="/zhurnal/")return show(journalPage(url.searchParams));
   if(path==="/avtomobili/")return show(modelsPage(url.searchParams));
+  if(path===regionPath)return show(regionPage());
   if(path==="/kontakty/")return show(contactPage());
   if(path==="/otzyvy/")return show(reviewPage());
   if(byArticle.has(path))return show(articlePage(byArticle.get(path)));
@@ -176,6 +209,7 @@ async function route(request,env,ctx) {
   if(path==="/uslugi/")return show(servicesPage(c));
   if(path==="/ceny/")return show(pricesPage(c));
   if(path===vestaPath)return show(vestaDiagnostics(c));
+  if(byDetail.has(path))return show(serviceDetailPage(byDetail.get(path),c));
   if(byService.has(path))return show(servicePage(byService.get(path),c));
   return show(modelPage(byModel.get(path),c));
 }

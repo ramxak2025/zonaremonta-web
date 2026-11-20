@@ -9,6 +9,9 @@ import { pbkdf2Sync, randomBytes } from "node:crypto";
 import { initialFuel, stationUrl, reserveUrl, parseStation, parseReserve, readFuel, refreshFuel } from "../src/fuel.js";
 import { inputs, valuesFrom, calculate, resultWords } from "../src/calc.js";
 import { company, priceRows, defaultEntries } from "../src/business.js";
+import { cityRoutes, regionPath } from "../src/regional.js";
+import { serviceDetails } from "../src/service-details.js";
+import { indexNowKey, indexNowPath, formerOrigin, productionOrigin } from "../src/search.js";
 
 const origin="https://check.invalid";
 const db=new DatabaseSync(":memory:");
@@ -86,8 +89,43 @@ for(const p of reached)for(const link of outgoing.get(p)||[])if(paths.includes(l
 assert.equal(paths.filter(p=>!reached.has(p)).length,0,"orphan pages");
 for(const p of allInternal){
   if(p.startsWith("/a/"))assert.equal((await run(p,{method:"HEAD"})).status,200,p);
+  else if (p==="/privacy/analytics/") assert.equal((await run(p)).headers.get("X-Robots-Tag"),"noindex");
   else assert(paths.includes(p),p);
 }
+const homeGraph=JSON.parse(docs.get("/").match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1])["@graph"];
+assert(homeGraph.some(node=>node["@type"]==="WebSite" && node.url===origin+"/"));
+const workshop=homeGraph.find(node=>node["@type"]==="AutoRepair");
+assert.equal(workshop.address.addressLocality,"Махачкала");
+assert(workshop.areaServed.some(place=>place.name==="Республика Дагестан"));
+assert.deepEqual(homeGraph.filter(node=>node["@type"]==="AutoRepair").map(node=>node.address.streetAddress),["улица Хаджи Булача, 71"]);
+const region=docs.get(regionPath);
+assert(region.includes('class="city-routes"') && docs.get("/kontakty/").includes('href="'+regionPath+'"'));
+for(const [name,from,start] of cityRoutes){
+  const match=[...region.matchAll(/<a href="([^"]+)"[^>]+aria-label="Маршрут из ([^"]+)"/g)].find(m=>m[2].startsWith(from+" "));
+  assert(match,name+" a named route");
+  const direction=new URL(match[1].replaceAll("&amp;","&"));
+  assert.equal(direction.origin,"https://yandex.ru");assert.equal(direction.searchParams.get("rtext"),start+"~"+company.destination);
+}
+for(const item of serviceDetails){
+  const parent=item.path.replace(/[^/]+\/$/,"");
+  assert(outgoing.get(parent).has(item.path) && outgoing.get(item.path).has(parent),item.path+" service hierarchy");
+  assert(docs.get(item.path).includes('class="price-row"'));
+}
+const keyResponse=await run(indexNowPath);
+assert.equal(await keyResponse.text(),indexNowKey); assert(keyResponse.headers.get("Content-Type").startsWith("text/plain"));
+assert((await (await run("/robots.txt")).text()).includes("Sitemap: "+origin+"/sitemap.xml"));
+assert(!/<loc>[^<]*\?/.test(sitemap));
+for(const p of ["/home/ustanovka-gbo/", "/home/ustanovka-gbo"]){
+  const moved=await run(p+"?utm_source=directory"); assert.equal(moved.status,301);assert.equal(moved.headers.get("Location"),"/uslugi/ustanovka-gbo/?utm_source=directory");
+}
+const mirror=(path,options={})=>worker.fetch(new Request(formerOrigin+path,options),env,{});
+for(const p of ["/", "/zhurnal/raskhod-gaza/", regionPath, "/sitemap.xml"]){
+  const moved=await mirror(p); assert.equal(moved.status,301);assert.equal(moved.headers.get("Location"),productionOrigin+p);
+}
+assert.equal((await mirror("/api/toplivo/",{method:"HEAD"})).status,200);
+assert.equal((await mirror("/mcp")).headers.get("Location"),null);
+assert.equal((await mirror("/admin/")).headers.get("Location"),null);
+assert((await (await mirror("/robots.txt")).text()).includes(productionOrigin+"/sitemap.xml"));
 const leadUrl="/zhurnal/gaz-ubivaet-dvigatel/";
 const fuelUrl="/zhurnal/raskhod-gaza/";
 for(const path of ["/","/zhurnal/"]){
@@ -266,13 +304,16 @@ const alternate=await refreshFuel(env.DB,await readFuel(env.DB),async url=>url==
 assert.equal(alternate.rates.provider,"fuelprice");
 assert.equal(alternate.rates.gasPrice,46);
 assert(docs.get("/privacy/").includes('href="/privacy/analytics/"'));
-assert(!docs.get("/privacy/analytics/").includes("data-consent-form"));
+assert(!paths.includes("/privacy/analytics/"));
+assert(!(await (await run("/privacy/analytics/")).text()).includes("data-consent-form"));
 const hostedOrigin="https://zr-auto-gbo.ramxak.chatgpt.site";
 const privacyEnv={...env,ZR_OPERATOR_NAME:"Тестовый оператор",ZR_OPERATOR_ADDRESS:"Тестовый адрес",ZR_RF_ORIGIN:origin,ZR_METRIKA_ID:"7654321"};
 const sampleRequest=(path,init={})=>worker.fetch(new Request(origin+path,init),privacyEnv,{});
 const anotherOrigin=await worker.fetch(new Request(hostedOrigin+"/"),{...privacyEnv,ZR_RF_ORIGIN:hostedOrigin},{});
 assert(!(await anotherOrigin.text()).includes("data-consent-form"),"the Sites domain cannot run analytics");
 const beforeConsent=await sampleRequest("/?yclid=2356789");
+assert.equal(beforeConsent.headers.get("Referrer-Policy"),"same-origin");
+assert.equal((await sampleRequest("/privacy/analytics/")).headers.get("Referrer-Policy"),"same-origin");
 const prompt=await beforeConsent.text();
 assert(prompt.includes('value="yes"')&&prompt.includes('value="no"')&&prompt.includes('href="/privacy/analytics/"'));
 assert(prompt.includes('name="back" value="/?yclid=2356789"'));

@@ -2,6 +2,7 @@ import http from "node:http";
 import { isIP } from "node:net";
 import { openDatabase } from "./database.mjs";
 import { stateDir, workerSettings } from "./config.mjs";
+import { productionOrigin } from "../src/search.js";
 import worker from "../dist/server/index.js";
 
 process.umask(0o077);
@@ -40,6 +41,10 @@ const server = http.createServer({maxHeaderSize: 16384, requestTimeout: 30000}, 
   try {
     if (!req.url.startsWith("/") || req.url.startsWith("//") || req.url.includes("\\")) {
       res.writeHead(400).end();
+      return;
+    }
+    if (settings.PUBLIC_ORIGIN === productionOrigin && /^www\.05auto\.ru(?::\d+)?$/i.test(req.headers.host || "")) {
+      res.writeHead(301, {Location:productionOrigin + req.url, "Cache-Control":"public,max-age=3600"}).end();
       return;
     }
     const headers = new Headers();

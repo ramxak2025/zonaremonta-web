@@ -3,6 +3,7 @@ import { company, reviewStories, displayPrice, serviceUrl, modelUrl, articleUrl 
 import { icon } from "./icons.js";
 import { inputs, calculate, resultWords } from "./calc.js";
 import { fuelStation } from "./fuel.js";
+import { regionPath } from "./regional.js";
 
 export const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 export const asset=key=>urls[key];
@@ -38,7 +39,7 @@ const navLinks=[
 const mobileTabs=[["Главная","/","home"],storiesLink,pricesLink,contactsLink];
 const menuLinks=[
   ...navLinks.filter(link=>!mobileTabs.includes(link)),
-  ["Отзывы","/otzyvy/","review"],
+  ["Отзывы","/otzyvy/","review"], ["Из городов Дагестана",regionPath,"map"],
 ];
 function current(path,href){
   if(path===href)return ' aria-current="page"';
@@ -50,7 +51,7 @@ function nav(path,links=navLinks,withIcons=false){
 export function header(path){
   return `<a href="#main" class="skip">К содержанию</a>
     <header class="header"><div class="wrap head-row">
-      <div class="mast-identity">${brand()}<span class="mast-caption"><strong>Центр ГБО</strong><small>${esc(company.city)}</small></span></div>
+      <div class="mast-identity">${brand()}<span class="mast-caption"><strong>Центр ГБО</strong> <small>${esc(company.city)}</small></span></div>
       <nav class="desktop-nav" aria-label="Главное меню">${nav(path)}</nav>
       <a class="head-phone" href="${company.tel}">${icon("phone",18)} <span>${company.phone}</span></a>
       <a class="mast-route" href="${esc(company.route)}" ${external} aria-label="Маршрут до «Зоны Ремонта», ${esc(company.city)}, ${esc(company.street)}. Открыть Яндекс Карты">
@@ -98,7 +99,7 @@ export const yaMark='<span class="ya-mark" aria-hidden="true">Я</span>';
 export const stars='<span class="stars" aria-hidden="true">★★★★★</span>';
 export function homeHero(entries){
   const price=displayPrice(entries,"mpi4");
-  return `<section class="hero"><div class="hero-visual"><picture><source media="(max-width: 700px)" srcset="${asset("hero-mobile")}"><img src="${asset("hero")}" alt="Мастер «Зоны Ремонта» у Changan с открытым капотом" width="1550" height="705" fetchpriority="high" decoding="async"></picture></div><div class="wrap hero-inner"><div class="hero-copy"><div class="eyebrow">${slashes} <span class="hero-kind">ЦЕНТР ГБО</span> <span class="fine-dot" aria-hidden="true">/</span> С 2014 ГОДА</div><h1>Установка ГБО<br><em>в Махачкале</em></h1><p>Подберём пропановое оборудование под ваш двигатель. Установим, настроим и возьмём на обслуживание.</p><div class="hero-actions">${buttons(true)}</div></div><a class="hero-price" href="/ceny/"><span>Установка на 4 цилиндра</span><strong>${esc(price)}</strong></a></div></section>`;
+  return `<section class="hero"><div class="hero-visual"><picture><source media="(max-width: 700px)" srcset="${asset("hero-mobile")}"><img src="${asset("hero")}" alt="Мастер «Зоны Ремонта» у Changan с открытым капотом" width="1550" height="705" fetchpriority="high" decoding="async"></picture></div><div class="wrap hero-inner"><div class="hero-copy"><div class="eyebrow">${slashes} <span class="hero-kind">ЦЕНТР ГБО</span> <span class="fine-dot" aria-hidden="true">/</span> С 2014 ГОДА</div><h1>Установка ГБО <br><em>в Махачкале</em></h1><p>Подберём пропановое оборудование под ваш двигатель. Установим, настроим и возьмём на обслуживание.</p><div class="hero-actions">${buttons(true)}</div></div><a class="hero-price" href="/ceny/"><span>Установка на 4 цилиндра</span><strong>${esc(price)}</strong></a></div></section>`;
 }
 export function proof(){
   return `<div class="trust"><div class="wrap trust-row"><a href="${company.reviews}" ${external} class="trust-item">${yaMark}<div><span class="trust-main">5,0 ${stars}</span><span class="trust-sub">132 оценки в Яндекс Картах</span></div></a><a href="${company.route}" ${external} class="trust-item"><span class="trust-icon">${icon("pin",25)}</span><div><span class="trust-main">Хаджи Булача, 71</span><span class="trust-sub">Махачкала · Построить маршрут</span></div></a><a href="/kontakty/" class="trust-item"><span class="trust-icon">${icon("clock",25)}</span><div><span class="trust-main">09:00–19:00</span><span class="trust-sub">В пятницу с 14:00</span></div></a></div></div>`;
@@ -110,6 +111,7 @@ export function serviceCard(s,entries){
   return `<a class="service-card" href="${serviceUrl(s)}"><div class="service-image">${photo(s.photo,"reveal-media")}</div><div class="service-body"><h3>${esc(s.name)}</h3><p>${esc(s.short)}</p><div class="card-meta"><span>${esc(displayPrice(entries,s.price))}</span><span class="card-link">Подробнее</span></div></div></a>`;
 }
 export const articlePhotos={
+  "to-gbo-v-taksi":"maintenance","pokupka-avto-s-gbo":"diagnostics",
   "gaz-ubivaet-dvigatel":"maintenance",
   "mashina-troit-na-gazu":"diagnostics","okupaemost-gbo":"install","gbo-na-neposredstvennyy-vprysk":"injectors","gbo-perekhodit-na-benzin":"detail","raskhod-gaza":"interior","to-i-filtry-gbo":"maintenance","kak-vybrat-ballon":"install","reduktor-gbo":"reducer","kak-rabotaet-gbo-4":"injectors",
 };
@@ -122,13 +124,14 @@ export function storyCover(a,{article=false,eager=false,home=false}={}){
   const heading=article?"h1":home?"h3":"h2";
   const mobileSize=home?"(max-width: 780px) 185px":"(max-width: 700px) 95vw";
   const coverSizes=mobileSize+", (max-width: 1250px) 72vw, 920px";
+  const published=a.published && new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"long",year:"numeric",timeZone:"Europe/Moscow"}).format(new Date(a.published));
   const attributes=article?"":` href="${articleUrl(a)}"${home?` aria-label="${esc(a.title)}"`:""}`;
   return `<${tag} class="story-cover"${attributes}>
     <div class="story-picture">${photo(articlePhotos[a.slug],"reveal-media",coverSizes,eager)}</div>
     <div class="story-cover-copy">
       <div class="story-meta"><span>${esc(a.category)}</span><span>${esc(a.readTime)} чтения</span></div>
       <${heading}>${esc(a.title)}</${heading}>
-      ${article?'<span class="story-byline">Мастерская «Зона Ремонта»</span>':`<p>${esc(a.summary)}</p><span class="story-read">${icon("book",17)}Читать статью</span>`}
+      ${article?`<span class="story-byline">Мастерская «Зона Ремонта»${published?` · <time datetime="${esc(a.published)}">${esc(published)}</time>`:""}</span>`:`<p>${esc(a.summary)}</p><span class="story-read">${icon("book",17)}Читать статью</span>`}
     </div></${tag}>`;
 }
 export function modelLinks(models,{compact=false}={}){
@@ -154,12 +157,12 @@ export function contacts(section=true){
     ${section?sectionHead("Как нас найти"):""}
     <div class="contact-panel"><div class="contact-details">
       <span class="minor-title">Адрес сервиса</span>
-      <${addressHeading}>Махачкала,<br>Хаджи Булача, 71</${addressHeading}>
+      <${addressHeading}>Махачкала, <br>Хаджи Булача, 71</${addressHeading}>
       ${section?`<a class="contact-number" href="${company.tel}">${company.phone}</a>`:""}
       <p>Пн–чт, сб–вс · 09:00–19:00<br>Пятница · 14:00–19:00</p>
       <div class="contact-actions"><a class="btn ${section?"red":"outline"}" href="${esc(company.route)}" ${external}>${icon("navigation",18)}Построить маршрут</a>
         ${section?`<a class="text-link" href="${company.whatsapp}" ${external}>WhatsApp</a>`:""}
-      </div></div>
+      </div><a class="contact-region" href="${regionPath}">Как добраться из городов Дагестана</a></div>
       <div class="map-panel">${photo("outside","map-cover","(max-width: 740px) 100vw, 55vw")}
         <a class="map-button" href="${company.maps}" ${external}>${icon("map",19)} Открыть Яндекс Карты</a>
       </div>
