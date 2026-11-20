@@ -90,6 +90,15 @@ try {
   assert((await (await get("/admin/",{headers:{Cookie:cookie}})).text()).includes('name="revision"'));
   assert.equal((await post("/admin/logout/",{},cookie)).status,303);
   assert(!(await (await get("/admin/",{headers:{Cookie:cookie}})).text()).includes('name="revision"'));
+  if (process.argv.includes("--browser")) {
+    const {checkEditorBrowser} = await import("./check-editor-browser.mjs");
+    await checkEditorBrowser(stateDir, password, async origin => {
+      await stop();
+      env.PUBLIC_ORIGIN = origin;
+      await start();
+      return base;
+    });
+  }
   console.log(`${paths.length} pages, ${Object.keys(assets).length} assets, calculator, admin login, price persistence and logout passed.`);
 } finally {
   await stop();

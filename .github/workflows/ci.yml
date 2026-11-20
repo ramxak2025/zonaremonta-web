@@ -14,4 +14,9 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run check
-      - run: npm run check:hosting
+      - name: Check hosting and native browser price forms
+        run: |
+          npm install --prefix "$RUNNER_TEMP/zr-price-browser" --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          export ZR_TEST_PLAYWRIGHT="$RUNNER_TEMP/zr-price-browser/node_modules/playwright-core"
+          export CHROME_BIN="$(command -v google-chrome)"
+          npm run check:hosting -- --browser

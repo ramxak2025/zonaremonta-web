@@ -139,6 +139,7 @@ const salt=randomBytes(16);
 env.ZR_ADMIN_PASSWORD_HASH=salt.toString("hex")+"."+pbkdf2Sync(testPassword,salt,100000,32,"sha256").toString("hex");
 const loginPage=await run("/admin/",{headers:ownerHeaders});
 assert.equal(loginPage.status,200);
+assert.equal(loginPage.headers.get("Referrer-Policy"),"same-origin");
 assert.equal(loginPage.headers.get("X-Robots-Tag"),"noindex, nofollow");
 assert(loginPage.headers.get("Cache-Control").includes("no-store"));
 const privateMarkup=await loginPage.text();
@@ -146,14 +147,24 @@ assert(privateMarkup.includes('autocomplete="username"')&&privateMarkup.includes
 const post=(path,body,headers={})=>run(path,{method:"POST",headers:{Origin:origin,...headers},body});
 const login=(password,headers={})=>post("/admin/login/",new URLSearchParams({username:"zr-admin",password}),headers);
 assert.equal((await login("wrong")).status,401);
-assert.equal((await login(testPassword,{Origin:"https://example.invalid"})).status,403);
+for (const headers of [{Origin:"null"},{Origin:"https://example.invalid"},{"Sec-Fetch-Site":"cross-site"}]) {
+  const blocked=await login(testPassword,headers);
+  assert.equal(blocked.status,403);
+  assert.equal(blocked.headers.get("Set-Cookie"),null);
+  assert((await blocked.text()).includes("Открыть кабинет"));
+}
+const missingOrigin=await run("/admin/login/",{method:"POST",body:new URLSearchParams({username:"zr-admin",password:testPassword})});
+assert.equal(missingOrigin.status,403);
 const signedIn=await login(testPassword);
 assert.equal(signedIn.status,303);
 assert.equal(signedIn.headers.get("Location"),"/admin/");
 const setCookie=signedIn.headers.get("Set-Cookie");
 for(const flag of ["HttpOnly","Secure","SameSite=Strict","Path=/admin/"])assert(setCookie.includes(flag));
 const sessionHeaders={Cookie:setCookie.split(";")[0]};
-const editorForm=await (await run("/admin/",{headers:sessionHeaders})).text();
+const editorPage=await run("/admin/",{headers:sessionHeaders});
+assert.equal(editorPage.headers.get("Referrer-Policy"),"same-origin");
+assert(editorPage.headers.get("Cache-Control").includes("no-store"));
+const editorForm=await editorPage.text();
 assert(editorForm.includes('name="di6"')&&editorForm.includes('name="di8"')&&editorForm.includes('action="/admin/logout/"'));
 const initial=defaultEntries();
 assert.equal(priceRows.length,9);

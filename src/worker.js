@@ -56,7 +56,8 @@ function render(p,origin,path,status=200,privatePage=false,requestMethod="GET",a
   if(privatePage||p.noindex)headers["X-Robots-Tag"]="noindex";
   if(privatePage){
     headers["X-Robots-Tag"]="noindex, nofollow";
-    headers["Referrer-Policy"]="no-referrer";
+    // Native form POSTs need the origin for internal requests.
+    headers["Referrer-Policy"]="same-origin";
     headers["X-Frame-Options"]="DENY";
     headers["Content-Security-Policy"]+="; frame-ancestors 'none'";
   }
@@ -84,7 +85,9 @@ async function adminReply(request, env, url, origin) {
     }
     if (!["/admin/login/", "/admin/logout/", "/admin/ceny/"].includes(path)) return reply(404);
     if (request.method !== "POST") return reply(405, {Allow:"POST"});
-    if (request.headers.get("Origin") !== url.origin || request.headers.get("Sec-Fetch-Site") === "cross-site") return reply(403);
+    if (request.headers.get("Origin") !== url.origin || request.headers.get("Sec-Fetch-Site") === "cross-site") {
+      return show(messagePage("Откройте редактор цен ещё раз", "Не удалось подтвердить, откуда отправлена форма. Откройте кабинет и повторите действие.", origin + "/admin/", "Открыть кабинет"), 403);
+    }
     if (path === "/admin/logout/") return redirect("/admin/", await signOut(request, env));
     if (path === "/admin/ceny/" && !await hasSession(request, env)) {
       return show(adminLoginPage("Войдите, чтобы изменить прайс."), 401);
