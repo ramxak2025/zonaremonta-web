@@ -1,0 +1,22 @@
+[Unit]
+Description=Зона Ремонта 05auto.ru
+After=network.target
+[Service]
+User=zonaremonta
+Group=zonaremonta
+WorkingDirectory=/srv/zonaremonta/current
+Environment=NODE_ENV=production
+Environment=PUBLIC_ORIGIN=https://05auto.ru
+Environment=ZR_DATA_DIR=/var/lib/zonaremonta
+Environment=ZR_TRUST_LOCAL_PROXY=1
+EnvironmentFile=-/etc/zonaremonta/05auto.env
+StateDirectory=zonaremonta
+StateDirectoryMode=0700
+UMask=0077
+ExecStart=/usr/bin/node /srv/zonaremonta/current/app.cjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

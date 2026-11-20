@@ -1,0 +1,203 @@
+{
+  "hero.webp": {
+    "width": 1550,
+    "height": 705,
+    "bytes": 65638,
+    "description": "Мастер в куртке «Зона ремонта» стоит спиной перед открытым капотом Changan. Почти чёрный кузов и рассеянный свет мастерской.",
+    "source": "https://avatars.mds.yandex.net/get-altay/19689422/2a0000019efdb1c080bed7716e719fb5be50/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1860,
+      846
+    ]
+  },
+  "hero-mobile.webp": {
+    "width": 820,
+    "height": 746,
+    "bytes": 46014,
+    "description": "Та же фотография, мобильный кадр: мастер и передняя часть Changan.",
+    "source": "https://avatars.mds.yandex.net/get-altay/19689422/2a0000019efdb1c080bed7716e719fb5be50/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1860,
+      846
+    ]
+  },
+  "engine.webp": {
+    "width": 1152,
+    "height": 804,
+    "bytes": 143518,
+    "description": "Газовый редуктор и фильтр с подключёнными магистралями в моторном отсеке. Крупный план.",
+    "source": "https://avatars.mds.yandex.net/get-altay/10700095/2a0000018a6fcbea46474ac8884886acdb2b/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      4032,
+      3024
+    ]
+  },
+  "diagnostics.webp": {
+    "width": 887,
+    "height": 700,
+    "bytes": 112796,
+    "description": "Мастер проверяет параметры ГБО на ноутбуке; открытый капот машины и диагностические графики. Лиц в кадре нет.",
+    "source": "https://avatars.mds.yandex.net/get-altay/4447467/2a0000017753052f571b397ca16e8777dc9d/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1280,
+      960
+    ]
+  },
+  "installation.webp": {
+    "width": 870,
+    "height": 635,
+    "bytes": 118840,
+    "description": "Газовые форсунки с синей рампой, проложенные шланги и моторный отсек автомобиля в мастерской.",
+    "source": "https://avatars.mds.yandex.net/get-altay/11396712/2a0000018cc4e1726b36365d807d8affc070/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      2160,
+      3840
+    ]
+  },
+  "workshop.webp": {
+    "width": 1050,
+    "height": 625,
+    "bytes": 99986,
+    "description": "Автомобили с поднятыми капотами в боксе Зоны ремонта, красные стойки и места мастеров.",
+    "source": "https://avatars.mds.yandex.net/get-altay/18108291/2a0000019c86725733c78e4cf3fe6ba2532c/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1280,
+      762
+    ]
+  },
+  "workshop-vertical.webp": {
+    "width": 700,
+    "height": 849,
+    "bytes": 104016,
+    "description": "Белые автомобили у рабочих мест в цехе; кадр первого плана с открытым капотом.",
+    "source": "https://avatars.mds.yandex.net/get-altay/11375099/2a0000018f2afcc77525a8559a4f9f125971/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      960,
+      1280
+    ]
+  },
+  "exterior.webp": {
+    "width": 900,
+    "height": 544,
+    "bytes": 82298,
+    "description": "Въезд в сервис Зона ремонта, вывеска «Газ на авто» на улице Хаджи Булача в Махачкале.",
+    "source": "https://avatars.mds.yandex.net/get-altay/4284571/2a0000017903a72f7b50f6a2f2ce3599bf6a/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1280,
+      774
+    ]
+  },
+  "interior.webp": {
+    "width": 700,
+    "height": 430,
+    "bytes": 48854,
+    "description": "Вид из салона автомобиля у сервиса: передняя панель, дефлектор и правое зеркало, за стеклом виден бокс.",
+    "source": "https://avatars.mds.yandex.net/get-altay/11381866/2a0000018c00beb9b8a55edbf7a9636e50a5/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      3024,
+      4032
+    ]
+  },
+  "bay-detail.webp": {
+    "width": 700,
+    "height": 430,
+    "bytes": 53336,
+    "description": "Мастер работает под капотом белого автомобиля. Видны разъёмы, проводка и инструмент.",
+    "source": "https://avatars.mds.yandex.net/get-altay/3592340/2a000001775303cd73a54bec1c461f46f80d/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1280,
+      960
+    ]
+  },
+  "workshop-sm.webp": {
+    "width": 560,
+    "height": 350,
+    "bytes": 36932,
+    "description": "Автомобили с поднятыми капотами в боксе Зоны ремонта, красные стойки и места мастеров.",
+    "source": "https://avatars.mds.yandex.net/get-altay/18108291/2a0000019c86725733c78e4cf3fe6ba2532c/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1280,
+      762
+    ]
+  },
+  "diagnostics-sm.webp": {
+    "width": 560,
+    "height": 350,
+    "bytes": 40234,
+    "description": "Мастер проверяет параметры ГБО на ноутбуке; открытый капот машины и диагностические графики. Лиц в кадре нет.",
+    "source": "https://avatars.mds.yandex.net/get-altay/4447467/2a0000017753052f571b397ca16e8777dc9d/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      1280,
+      960
+    ]
+  },
+  "engine-sm.webp": {
+    "width": 560,
+    "height": 350,
+    "bytes": 44926,
+    "description": "Газовый редуктор и фильтр с подключёнными магистралями в моторном отсеке. Крупный план.",
+    "source": "https://avatars.mds.yandex.net/get-altay/10700095/2a0000018a6fcbea46474ac8884886acdb2b/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      4032,
+      3024
+    ]
+  },
+  "installation-sm.webp": {
+    "width": 560,
+    "height": 350,
+    "bytes": 48154,
+    "description": "Газовые форсунки с синей рампой, проложенные шланги и моторный отсек автомобиля в мастерской.",
+    "source": "https://avatars.mds.yandex.net/get-altay/11396712/2a0000018cc4e1726b36365d807d8affc070/orig",
+    "context": "https://yandex.com/maps/org/zona_remonta/130786711189/gallery/",
+    "original_size": [
+      2160,
+      3840
+    ]
+  },
+  "brand-wordmark.webp": {
+    "width": 524,
+    "height": 250,
+    "bytes": 20678,
+    "description": "Фирменный логотип владельца сервиса в две строки.",
+    "source": "design/logo-original.png",
+    "original_size": [
+      1698,
+      926
+    ]
+  },
+  "favicon.png": {
+    "width": 64,
+    "height": 64,
+    "bytes": 1922,
+    "description": "Гайка из буквы О фирменного логотипа.",
+    "source": "design/logo-original.png",
+    "original_size": [
+      1698,
+      926
+    ]
+  },
+  "touch-icon.png": {
+    "width": 180,
+    "height": 180,
+    "bytes": 9232,
+    "description": "Фирменный логотип для значка на домашнем экране.",
+    "source": "design/logo-original.png",
+    "original_size": [
+      1698,
+      926
+    ]
+  }
+}

@@ -1,28 +1,27 @@
 {
-  "name": "zonaremonta",
+  "name": "zr-auto-gbo",
   "version": "1.0.0",
   "private": true,
-  "description": "Зона Ремонта / 05auto — автосервис ГБО в Махачкале",
-  "packageManager": "pnpm@9.12.0",
-  "engines": {
-    "node": ">=20.11.0",
-    "pnpm": ">=9"
-  },
+  "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
-    "dev": "pnpm -r --parallel dev",
-    "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
-    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\"",
-    "db:migrate": "pnpm --filter @05auto/api prisma:migrate",
-    "db:seed": "pnpm --filter @05auto/api prisma:seed",
-    "docker:dev": "docker compose -f docker-compose.yml up -d postgres redis",
-    "docker:dev:down": "docker compose -f docker-compose.yml down"
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/preview.mjs",
+    "check": "node scripts/check.mjs",
+    "db:generate": "drizzle-kit generate",
+    "start": "node app.cjs",
+    "check:hosting": "node scripts/check-hosting.mjs"
+  },
+  "dependencies": {
+    "gsap": "^3.13.0",
+    "@fontsource-variable/inter": "^5.2.0",
+    "@fontsource-variable/roboto-condensed": "^5.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
-    "prettier": "^3.4.0",
-    "typescript": "^5.7.0"
+    "esbuild": "^0.25.0",
+    "drizzle-kit": "^0.31.0",
+    "drizzle-orm": "^0.44.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

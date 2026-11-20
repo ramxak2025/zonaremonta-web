@@ -1,0 +1,11 @@
+{
+  "price_catalog": [],
+  "fuel_board": [
+    {
+      "id": 1,
+      "payload": "{\"provider\":\"fuelprice\",\"petrolPrice\":95,\"gasPrice\":46,\"petrolDate\":\"2026-11-20\",\"gasDate\":\"2026-11-20\"}",
+      "checked_at": "2026-11-20T11:08:43.048Z",
+      "next_attempt": 1795244400000
+    }
+  ]
+}
